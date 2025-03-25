@@ -14,7 +14,8 @@ public class Main {
 
         long window = glfwCreateWindow(800, 600, "Simple Triangle", 0, 0);
         if (window == 0) throw new RuntimeException("Failed to create window");
-
+        
+        System.out.println(new Vector(1));
 
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
