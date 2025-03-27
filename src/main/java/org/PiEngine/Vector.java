@@ -28,8 +28,7 @@ class Vector
 
     public double sqmagnitude()
     {
-        double i = (x*x) + (y*y) + (z*z); 
-        return i;
+        return  (x*x) + (y*y) + (z*z);
     }
 
     public double magnitude()
