@@ -1,9 +1,10 @@
 package org.PiEngine;
 
-//import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+
+import org.PiEngine.Math.Vector;
 
 public class Main {
     public static void main(String[] args)
