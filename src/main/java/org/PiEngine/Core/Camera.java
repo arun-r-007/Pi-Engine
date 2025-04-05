@@ -15,5 +15,6 @@ public class Camera
     private float nearPlane;
     private float farPlane;
 
+    
 }
 
