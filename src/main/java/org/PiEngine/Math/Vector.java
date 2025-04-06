@@ -1,48 +1,62 @@
 package org.PiEngine.Math;
 
-public class Vector 
+/**
+ * Represents a 3D vector with x, y, z components.
+ * Used for positions, directions, normals, etc.
+ */
+public class Vector
 {
-    public float x;
-    public float y;
-    public float z;
+    public float x, y, z;
 
-    Vector()
+    /** Default constructor: creates a zero vector */
+    public Vector()
     {
-        x = 0; y = 0; z = 0;
+        this(0, 0, 0);
     }
 
-    public Vector(float i)
+    /** Uniform constructor: all components set to the same value */
+    public Vector(float value)
     {
-        x = i; y = i; z = i;
+        this(value, value, value);
     }
 
-    Vector(float x, float y, float z)
+    /** Constructor with specific x, y, z values */
+    public Vector(float x, float y, float z)
     {
-        this.x = x; this.y = y; this.z = z;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    Vector(Vector copy)
+    /** Copy constructor */
+    public Vector(Vector copy)
     {
-        this.x = copy.x; this.y = copy.y; this.z = copy.z;
+        this(copy.x, copy.y, copy.z);
     }
 
-    public float sqmagnitude()
+    /** Returns the squared magnitude (length) of the vector */
+    public float sqMagnitude()
     {
-        return  (x*x) + (y*y) + (z*z);
+        return x * x + y * y + z * z;
     }
 
+    /** Returns the actual magnitude (length) of the vector */
     public float magnitude()
     {
-        return (float)Math.sqrt(sqmagnitude());
+        return (float) Math.sqrt(sqMagnitude());
     }
 
-    public Vector normal() {
+    /** Returns a new vector in the same direction but with a magnitude of 1 */
+    public Vector normal()
+    {
         float mag = magnitude();
         if (mag == 0) return new Vector(0, 0, 0);
         return new Vector(x / mag, y / mag, z / mag);
     }
 
-    public void normalize() {
+    /** Normalizes this vector in-place (sets magnitude to 1) */
+    public void normalize()
+    {
         float mag = magnitude();
         if (mag == 0) return;
         x /= mag;
@@ -50,44 +64,62 @@ public class Vector
         z /= mag;
     }
 
+    /** Adds another vector to this one and returns the result */
     public Vector add(Vector operand)
     {
-        return new Vector(operand.x + x, operand.y + y, operand.z + z);
+        return new Vector(x + operand.x, y + operand.y, z + operand.z);
     }
 
+    /** Subtracts another vector from this one and returns the result */
     public Vector sub(Vector operand)
     {
         return new Vector(x - operand.x, y - operand.y, z - operand.z);
     }
 
-    @Override
-    public String toString() 
-    {    
-        return "Vector(" + x + ", " + y + ", " + z +")";
+    /** Returns the dot product (angle-based similarity) between two vectors */
+    public float dot(Vector other)
+    {
+        return x * other.x + y * other.y + z * other.z;
     }
 
-    public float dot(Vector other) 
+    /** Returns the cross product (perpendicular vector) of this and another vector */
+    public Vector cross(Vector other)
     {
-        return this.x * other.x + this.y * other.y + this.z * other.z;
-    }
-
-    public Vector cross(Vector other) 
-    {
-        return new Vector
-        (
-            this.y * other.z - this.z * other.y,
-            this.z * other.x - this.x * other.z,
-            this.x * other.y - this.y * other.x
+        return new Vector(
+            y * other.z - z * other.y,
+            z * other.x - x * other.z,
+            x * other.y - y * other.x
         );
     }
 
-    public Vector scale(float scalar) 
+    /** Multiplies this vector by a scalar and returns the result */
+    public Vector scale(float scalar)
     {
-        return new Vector(this.x * scalar, this.y * scalar, this.z * scalar);
+        return new Vector(x * scalar, y * scalar, z * scalar);
     }
 
+    /** Returns this vector transformed by a 4x4 matrix (world transform) */
+    public Vector transform(Matrix4 matrix)
+    {
+        return matrix.multiply(this);
+    }
+
+    /** Returns the float array representation: [x, y, z] */
+    public float[] toFloatArray()
+    {
+        return new float[] { x, y, z };
+    }
+
+    /** Clones this vector */
     @Override
-    public boolean equals(Object obj) 
+    public Vector clone()
+    {
+        return new Vector(this);
+    }
+
+    /** Checks if another object is a vector and has the same components */
+    @Override
+    public boolean equals(Object obj)
     {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
@@ -97,14 +129,10 @@ public class Vector
                Float.compare(z, other.z) == 0;
     }
 
+    /** Returns a string representation of this vector */
     @Override
-    public Vector clone() 
+    public String toString()
     {
-        return new Vector(this);
-    }
-
-    public float[] toFloatArray() 
-    {
-        return new float[] { x, y, z };
+        return "Vector(" + x + ", " + y + ", " + z + ")";
     }
 }
