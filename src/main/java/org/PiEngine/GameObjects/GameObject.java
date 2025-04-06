@@ -35,7 +35,7 @@ public class GameObject
     public void update()
     {
 
-        debugDrawSquare(transform.getWorldPosition(), 1.0f);
+        debugDrawSquare(transform.getWorldPosition(), 0.4f);
         
         for (Transform childTransform : transform.getChildren())
         {
