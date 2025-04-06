@@ -33,9 +33,9 @@ public class Main
         camera.setPosition(new Vector(0, 0, 3.0f)); // Move camera back to see triangle
         camera.setRotation(new Vector(0, 0, 0));
         
-        //camera.setOrthographic(-1, 1, -1, 1, 1f, 100f);
+        camera.setOrthographic(-1, 1, -1, 1, 1, 100f);
 
-        camera.setPerspective(30.0f, (float) 4/3, 0.01f, 100f);
+        //camera.setPerspective(30.0f, (float) 4/3, 0.01f, 100f);
         
         System.out.println("Projection:\n" + camera.getProjectionMatrix());
         System.out.println("View:\n" + camera.getViewMatrix());
