@@ -30,12 +30,12 @@ public class Main
 
         // 🔷 Create a Camera
         Camera camera = new Camera((float) width / height, 0.01f, 100.0f);
-        camera.setPosition(new Vector(3, 0, 10.0f)); // Move camera back to see triangle
+        camera.setPosition(new Vector(0, 0, 3.0f)); // Move camera back to see triangle
         camera.setRotation(new Vector(0, 0, 0));
         
-        camera.setOrthographic(-1, 1, -1, 1, 1f, 100f);
+        //camera.setOrthographic(-1, 1, -1, 1, 1f, 100f);
 
-        //camera.setPerspective(45.0f, (float) 4/3, 0.01f, 100f);
+        camera.setPerspective(30.0f, (float) 4/3, 0.01f, 100f);
         
         System.out.println("Projection:\n" + camera.getProjectionMatrix());
         System.out.println("View:\n" + camera.getViewMatrix());
@@ -50,16 +50,48 @@ public class Main
         // Main loop
         while (!glfwWindowShouldClose(window))
         {
-            if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+            // Handle camera movement (WASD keys)
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) 
             {
-                camera.getPosition().x -= 0.001f;
-
+                camera.getPosition().y -= 0.001f; 
             }
 
-            if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-            {    
-                camera.getPosition().x += 0.001f;
+            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) 
+            {
+                camera.getPosition().y += 0.001f; 
             }
+
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) 
+            {
+                camera.getPosition().x -= 0.001f; 
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) 
+            {
+                camera.getPosition().x += 0.001f; 
+            }
+
+
+            if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) 
+            {
+                camera.getRotation().x -= 0.01f; 
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) 
+            {
+                camera.getRotation().x += 0.01f; 
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) 
+            {
+                camera.getRotation().y -= 0.01f; 
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) 
+            {
+                camera.getRotation().y += 0.01f; 
+            }
+
 
                 
             

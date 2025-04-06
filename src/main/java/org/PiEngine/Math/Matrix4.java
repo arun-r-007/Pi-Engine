@@ -258,7 +258,7 @@ public class Matrix4
         {
             for (int row = 0; row < 4; row++)
             {
-                buffer.put(elements[col * 4 + row]); // Accessing 1D array in column-major layout
+                buffer.put(elements[row * 4 + col]); // Accessing 1D array in column-major layout
             }
         }
 
