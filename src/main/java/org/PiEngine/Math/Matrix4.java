@@ -1,14 +1,12 @@
 package org.PiEngine.Math;
-
 import java.nio.FloatBuffer;
-
 import org.lwjgl.BufferUtils;
 
 /**
  * Represents a 4x4 matrix used for 3D transformations (translation, rotation, scale, projection, etc).
  * Stored in column-major order to match OpenGL expectations.
  */
-public class Matrix4 
+public class Matrix4
 {
     public float[] elements = new float[16]; // 4x4 matrix stored in column-major order
 
@@ -17,7 +15,6 @@ public class Matrix4
     {
         this.elements = new float[16]; // Just allocate memory, don't call identity
     }
-
 
     /**
      * Creates and returns an identity matrix.
@@ -227,6 +224,21 @@ public class Matrix4
     }
 
     /**
+ * Extracts and returns the translation component (position) from this matrix.
+ *
+ * @return A {@code Vector} representing the position in 3D space.
+ */
+    public Vector getTranslation()
+    {
+        return new Vector
+        (
+            elements[3 + 0 * 4],
+            elements[3 + 1 * 4],
+            elements[3 + 2 * 4]
+        );
+    }
+
+    /**
      * Returns a readable string representation of the matrix.
      */
     @Override
@@ -258,13 +270,155 @@ public class Matrix4
         {
             for (int row = 0; row < 4; row++)
             {
-                buffer.put(elements[row * 4 + col]); // Accessing 1D array in column-major layout
+                buffer.put(elements[row * 4 + col]);
             }
         }
 
         buffer.flip(); // Prepare buffer for reading by OpenGL
         return buffer;
     }
-    
 
+    /**
+     * Calculates and returns the inverse of this 4x4 matrix.
+     * <p>
+     * This method uses the cofactor approach to compute the inverse. If the matrix is
+     * not invertible (i.e., determinant is zero), it returns an identity matrix as a fallback.
+     * <p>
+     * Useful for transforming coordinates from world space to local space,
+     * or for undoing a transformation.
+     *
+     * @return A new {@code Matrix4} that is the inverse of this matrix.
+     */    
+    public static Matrix4 invert(Matrix4 m) 
+    {
+        float[] inv = new float[16];
+        float[] mat = m.elements;
+
+        inv[0] = mat[5]  * mat[10] * mat[15] - 
+                mat[5]  * mat[11] * mat[14] - 
+                mat[9]  * mat[6]  * mat[15] + 
+                mat[9]  * mat[7]  * mat[14] +
+                mat[13] * mat[6]  * mat[11] - 
+                mat[13] * mat[7]  * mat[10];
+
+        inv[4] = -mat[4]  * mat[10] * mat[15] + 
+                mat[4]  * mat[11] * mat[14] + 
+                mat[8]  * mat[6]  * mat[15] - 
+                mat[8]  * mat[7]  * mat[14] - 
+                mat[12] * mat[6]  * mat[11] + 
+                mat[12] * mat[7]  * mat[10];
+
+        inv[8] = mat[4]  * mat[9] * mat[15] - 
+                mat[4]  * mat[11] * mat[13] - 
+                mat[8]  * mat[5] * mat[15] + 
+                mat[8]  * mat[7] * mat[13] + 
+                mat[12] * mat[5] * mat[11] - 
+                mat[12] * mat[7] * mat[9];
+
+        inv[12] = -mat[4]  * mat[9] * mat[14] + 
+                mat[4]  * mat[10] * mat[13] +
+                mat[8]  * mat[5] * mat[14] - 
+                mat[8]  * mat[6] * mat[13] - 
+                mat[12] * mat[5] * mat[10] + 
+                mat[12] * mat[6] * mat[9];
+
+        inv[1] = -mat[1]  * mat[10] * mat[15] + 
+                mat[1]  * mat[11] * mat[14] + 
+                mat[9]  * mat[2] * mat[15] - 
+                mat[9]  * mat[3] * mat[14] - 
+                mat[13] * mat[2] * mat[11] + 
+                mat[13] * mat[3] * mat[10];
+
+        inv[5] = mat[0]  * mat[10] * mat[15] - 
+                mat[0]  * mat[11] * mat[14] - 
+                mat[8]  * mat[2] * mat[15] + 
+                mat[8]  * mat[3] * mat[14] + 
+                mat[12] * mat[2] * mat[11] - 
+                mat[12] * mat[3] * mat[10];
+
+        inv[9] = -mat[0]  * mat[9] * mat[15] + 
+                mat[0]  * mat[11] * mat[13] + 
+                mat[8]  * mat[1] * mat[15] - 
+                mat[8]  * mat[3] * mat[13] - 
+                mat[12] * mat[1] * mat[11] + 
+                mat[12] * mat[3] * mat[9];
+
+        inv[13] = mat[0]  * mat[9] * mat[14] - 
+                mat[0]  * mat[10] * mat[13] - 
+                mat[8]  * mat[1] * mat[14] + 
+                mat[8]  * mat[2] * mat[13] + 
+                mat[12] * mat[1] * mat[10] - 
+                mat[12] * mat[2] * mat[9];
+
+        inv[2] = mat[1]  * mat[6] * mat[15] - 
+                mat[1]  * mat[7] * mat[14] - 
+                mat[5]  * mat[2] * mat[15] + 
+                mat[5]  * mat[3] * mat[14] + 
+                mat[13] * mat[2] * mat[7] - 
+                mat[13] * mat[3] * mat[6];
+
+        inv[6] = -mat[0]  * mat[6] * mat[15] + 
+                mat[0]  * mat[7] * mat[14] + 
+                mat[4]  * mat[2] * mat[15] - 
+                mat[4]  * mat[3] * mat[14] - 
+                mat[12] * mat[2] * mat[7] + 
+                mat[12] * mat[3] * mat[6];
+
+        inv[10] = mat[0]  * mat[5] * mat[15] - 
+                mat[0]  * mat[7] * mat[13] - 
+                mat[4]  * mat[1] * mat[15] + 
+                mat[4]  * mat[3] * mat[13] + 
+                mat[12] * mat[1] * mat[7] - 
+                mat[12] * mat[3] * mat[5];
+
+        inv[14] = -mat[0]  * mat[5] * mat[14] + 
+                mat[0]  * mat[6] * mat[13] + 
+                mat[4]  * mat[1] * mat[14] - 
+                mat[4]  * mat[2] * mat[13] - 
+                mat[12] * mat[1] * mat[6] + 
+                mat[12] * mat[2] * mat[5];
+
+        inv[3] = -mat[1] * mat[6] * mat[11] + 
+                mat[1] * mat[7] * mat[10] + 
+                mat[5] * mat[2] * mat[11] - 
+                mat[5] * mat[3] * mat[10] - 
+                mat[9] * mat[2] * mat[7] + 
+                mat[9] * mat[3] * mat[6];
+
+        inv[7] = mat[0] * mat[6] * mat[11] - 
+                mat[0] * mat[7] * mat[10] - 
+                mat[4] * mat[2] * mat[11] + 
+                mat[4] * mat[3] * mat[10] + 
+                mat[8] * mat[2] * mat[7] - 
+                mat[8] * mat[3] * mat[6];
+
+        inv[11] = -mat[0] * mat[5] * mat[11] + 
+                mat[0] * mat[7] * mat[9] + 
+                mat[4] * mat[1] * mat[11] - 
+                mat[4] * mat[3] * mat[9] - 
+                mat[8] * mat[1] * mat[7] + 
+                mat[8] * mat[3] * mat[5];
+
+        inv[15] = mat[0] * mat[5] * mat[10] - 
+                mat[0] * mat[6] * mat[9] - 
+                mat[4] * mat[1] * mat[10] + 
+                mat[4] * mat[2] * mat[9] + 
+                mat[8] * mat[1] * mat[6] - 
+                mat[8] * mat[2] * mat[5];
+
+        float det = mat[0] * inv[0] + mat[1] * inv[4] + mat[2] * inv[8] + mat[3] * inv[12];
+
+        if (det == 0)
+            return Matrix4.identity(); // Return identity if not invertible
+
+        det = 1.0f / det;
+
+        Matrix4 result = new Matrix4();
+        for (int i = 0; i < 16; i++)
+            result.elements[i] = inv[i] * det;
+
+        return result;
+    }
+    
+    
 }
