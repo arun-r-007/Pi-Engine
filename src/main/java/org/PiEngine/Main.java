@@ -18,7 +18,7 @@ public class Main
             throw new IllegalStateException("Unable to initialize GLFW");
         }
 
-        long window = glfwCreateWindow(800, 600, "Pi-Engine", 0, 0);
+        long window = glfwCreateWindow(800, 800, "Pi-Engine", 0, 0);
         if (window == 0)
         {
             throw new RuntimeException("Failed to create window");
@@ -36,9 +36,9 @@ public class Main
         camera.setPosition(new Vector(0, 0, 20.0f)); // Move camera back to see triangle
         camera.setRotation(new Vector(0, 0, 0));
         
-        camera.setOrthographic(-10, 10, -10, 10, 1.0f, 100f);
+        //camera.setOrthographic(-10, 10, -10, 10, 1.0f, 100f);
 
-        //camera.setPerspective(70.0f, (float) width / height, 0.01f, 100f);
+        camera.setPerspective(70.0f, (float) width / height, 0.01f, 100f);
         
         //System.out.println("Projection:\n" + camera.getProjectionMatrix());
         //System.out.println("View:\n" + camera.getViewMatrix());
