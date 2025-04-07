@@ -114,6 +114,39 @@ public class Transform
     }
 
     /**
+     * Gets the rotation in world space by recursively combining parent rotations.
+     * For 2D, only the Z-axis rotation is considered.
+     */
+    public Vector getWorldRotation()
+    {
+        if (parent != null)
+        {
+            // Add local rotation to parent's world rotation
+            return parent.getWorldRotation().add(this.rotation);
+        }
+        return new Vector(rotation); // Return a copy of local rotation if no parent
+    }
+
+
+    /**
+     * Sets the world rotation. Internally converts it to local rotation
+     * using the parent's world rotation. Only works for Z rotation in 2D.
+     */
+    public void setWorldRotation(Vector worldRot)
+    {
+        if (parent == null)
+        {
+            this.rotation = new Vector(worldRot);
+        }
+        else
+        {
+            Vector parentWorldRot = parent.getWorldRotation();
+            this.rotation = worldRot.sub(parentWorldRot);
+        }
+    }
+
+
+    /**
      * Sets the local position.
      */
     public void setLocalPosition(Vector pos) { this.position = pos; }

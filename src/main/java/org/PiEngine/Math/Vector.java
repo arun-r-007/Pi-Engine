@@ -129,6 +129,14 @@ public class Vector
                Float.compare(z, other.z) == 0;
     }
 
+    public static Vector lerp(Vector a, Vector b, float t)
+    {
+        float x = MathF.lerp(a.x, b.x, t);
+        float y = MathF.lerp(a.y, b.y, t);
+        float z = MathF.lerp(a.z, b.z, t);
+        return new Vector(x, y, z);
+    }
+
     /** Returns a string representation of this vector */
     @Override
     public String toString()

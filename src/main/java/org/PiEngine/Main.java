@@ -12,13 +12,10 @@ import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.ImVec2;
 
-
-
-
 import org.PiEngine.Math.*;
 import org.PiEngine.Core.*;
 import org.PiEngine.GameObjects.*;
-
+import org.PiEngine.Component.*;
 
 
 public class Main
@@ -30,7 +27,7 @@ public class Main
             throw new IllegalStateException("Unable to initialize GLFW");
         }
 
-        long window = glfwCreateWindow(800, 800, "Pi-Engine", 0, 0);
+        long window = glfwCreateWindow(1280, 720, "Pi-Engine", 0, 0);
 
 
         if (window == 0)
@@ -43,8 +40,8 @@ public class Main
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
 
-        int width = 800;
-        int height = 800;   
+        int width = 1280;
+        int height = 720;   
         glViewport(0, 0, width, height);
 
         // Initialize ImGui
@@ -60,7 +57,7 @@ public class Main
         Camera camera = new Camera((float) width / height, 0.01f, 100.0f);
         camera.setPosition(new Vector(0, 0, 20.0f)); // Move camera back to see triangle
         camera.setRotation(new Vector(0, 0, 0));
-        //camera.setOrthographic(-10, 10, -10, 10, 1.0f, 100f);
+        //camera.setOrthographic( 8*-2, 8*2, -2 *4.5f, 2*4.5f, 1.0f, 100f);
         camera.setPerspective(70.0f, (float) width / height, 0.01f, 100f);
         camera.updateProjectionMatrix();
         camera.updateViewMatrix();
@@ -70,22 +67,65 @@ public class Main
         // Setup GameObjects
         GameObject world = new GameObject("World");
         GameObject player = new GameObject("Player");
-        GameObject Hand = new GameObject("Hand");
-        GameObject gun = new GameObject("Gun");
-        GameObject muzzle = new GameObject("Muzzle");
         GameObject enemy = new GameObject("Enemy");
 
+        GameObject Holder = new GameObject("Holder");
+        GameObject ChildHolder = new GameObject("ChindHolder");
+        GameObject CChildHolder = new GameObject("CChindHolder");
+
+        
+
+
+
+
+        //GameObject Hand = new GameObject("Hand");
+        //GameObject gun = new GameObject("Gun");
+        //GameObject muzzle = new GameObject("Muzzle");
+
         player.transform.setLocalPosition(new Vector(0f, 0, 0));
-        gun.transform.setLocalPosition(new Vector(5, 0, 0));
-        gun.transform.setLocalRotation(new Vector(0, 0, 90));
-        muzzle.transform.setLocalPosition(new Vector(5, 0, 5));
+
+        Holder.transform.setLocalPosition(new Vector(4f, 0, 0));
+        ChildHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
+        CChildHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
+
+
+
+
+        //gun.transform.setLocalPosition(new Vector(5, 0, 0));
+        //gun.transform.setLocalRotation(new Vector(0, 0, 90));
+        //muzzle.transform.setLocalPosition(new Vector(5, 0, 0));
 
         world.addChild(player);
-        player.addChild(gun);
-        gun.addChild(muzzle);
-        player.addChild(Hand);
+        //player.addChild(gun);
+        //gun.addChild(muzzle);
+        //player.addChild(Hand);
         world.addChild(enemy);
         world.printHierarchy();
+
+        world.addChild(Holder);
+        Holder.addChild(ChildHolder);
+        ChildHolder.addChild(CChildHolder);
+
+
+
+
+        player.addComponent(new Movemet());
+        enemy.addComponent(new Follower());
+        Holder.addComponent(new SpinComponent());
+        ChildHolder.addComponent(new SpinComponent());
+
+        enemy.getComponent(Follower.class).Target = player;
+
+
+
+
+        //player.addComponent(new SpinComponent());
+        //gun.addComponent(new SpinComponent());
+
+        //player.getComponent(SpinComponent.class).speed = 50.0f;
+
+        Time.timeScale = 1.0f;
+        float fp = 0;
 
         // Main loop
         while (!glfwWindowShouldClose(window))
@@ -95,34 +135,45 @@ public class Main
 
             Input.update();
 
-            if (Input.isKeyDown(GLFW_KEY_W)) camera.getPosition().y -= 0.01f;
-            if (Input.isKeyDown(GLFW_KEY_S)) camera.getPosition().y += 0.01f;
-            if (Input.isKeyDown(GLFW_KEY_A)) camera.getPosition().x += 0.01f;
-            if (Input.isKeyDown(GLFW_KEY_D)) camera.getPosition().x -= 0.01f;
+            if (Input.isKeyDown(GLFW_KEY_UP))
+            camera.getPosition().y -= 2 * Time.deltaTime;
 
-            if (Input.isKeyDown(GLFW_KEY_UP)) camera.getRotation().z -= 0.01f;
-            if (Input.isKeyDown(GLFW_KEY_DOWN)) camera.getRotation().z += 0.01f;
-            if (Input.isKeyDown(GLFW_KEY_LEFT)) camera.getRotation().y -= 0.01f;
-            if (Input.isKeyDown(GLFW_KEY_RIGHT)) camera.getRotation().y += 0.01f;
+            if (Input.isKeyDown(GLFW_KEY_DOWN))
+            camera.getPosition().y += 2 * Time.deltaTime;
 
-            if (Input.isKeyDown(GLFW_KEY_SPACE))
-            {
-                player.transform.setWorldPosition(player.transform.getWorldPosition().add(new Vector(0.01f, 0, 0)));
-            }
+            if (Input.isKeyDown(GLFW_KEY_LEFT))
+            camera.getPosition().x -= 2 * Time.deltaTime;
 
+            if (Input.isKeyDown(GLFW_KEY_RIGHT))
+            camera.getPosition().x += 2 * Time.deltaTime;
+            
             world.update();
+            world.debugRender();
             camera.updateViewMatrix();
             camera.applyToOpenGL();
 
-            imguiGlfw.newFrame();
+            imguiGlfw.newFrame();   
             imguiGl3.newFrame();
             ImGui.newFrame();
 
             ImGui.begin("PiEngine Debug");
             ImGui.text("Camera Pos: " + camera.getPosition());
             ImGui.text("Player Pos: " + player.transform.getWorldPosition());
-            ImGui.text("Deltatime : " + Time.deltaTime);
-            ImGui.text("FPS : " + 1/Time.deltaTime);
+            ImGui.text("Enemy Pos: " + enemy.transform.getWorldPosition());
+            ImGui.text("DeltaTime : " + String.format("%.10f", Time.unscaledDeltaTime));
+            ImGui.text("FPS : " + 1/Time.unscaledDeltaTime);
+
+            float ifs = Time.getAverageFPS();
+            if(ifs%20 == 0)
+            {
+                ImGui.text("Average FPS : " + ifs);
+                fp = ifs;
+            }
+            else
+            {
+                ImGui.text("Average FPS : " + fp);
+            }
+
             ImGui.plotLines("Delta Time (ms)", Time.getDeltaHistory(), Time.getHistorySize(), 0, null, 0.0f, 0.01f,new ImVec2(0f, 80f));
 
             ImGui.end();
@@ -136,7 +187,6 @@ public class Main
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
-
 
         ImGui.destroyContext();
         glfwTerminate();
