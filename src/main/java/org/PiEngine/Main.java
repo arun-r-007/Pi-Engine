@@ -13,10 +13,9 @@ import imgui.glfw.ImGuiImplGlfw;
 import imgui.ImVec2;
 
 
-
-
 import org.PiEngine.Math.*;
 import org.PiEngine.Core.*;
+import org.PiEngine.Editor.*;
 import org.PiEngine.GameObjects.*;
 
 
@@ -30,7 +29,7 @@ public class Main
             throw new IllegalStateException("Unable to initialize GLFW");
         }
 
-        long window = glfwCreateWindow(800, 800, "Pi-Engine", 0, 0);
+        long window = glfwCreateWindow(1280, 720, "Pi-Engine", 0, 0);
 
 
         if (window == 0)
@@ -43,11 +42,11 @@ public class Main
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
 
-        int width = 800;
-        int height = 800;   
+        int width = 1280;
+        int height = 720;   
         glViewport(0, 0, width, height);
 
-        // Initialize ImGui
+        //Initialize ImGui
         ImGui.createContext();
         ImGuiIO io = ImGui.getIO();
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
@@ -94,6 +93,11 @@ public class Main
         world.addChild(enemy);
         world.printHierarchy();
 
+        EditWindow PrimaryEditor = new EditWindow(new PrimaryEditor(), window,world);
+        PrimaryEditor.init();
+        PrimaryEditor.run();
+        PrimaryEditor.destroy();
+
         // Main loop
         while (!glfwWindowShouldClose(window))
         {
@@ -138,7 +142,6 @@ public class Main
             glDisable(GL_DEPTH_TEST);
             imguiGl3.renderDrawData(ImGui.getDrawData());
             glEnable(GL_DEPTH_TEST);
-
 
             glfwSwapBuffers(window);
             glfwPollEvents();
