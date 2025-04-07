@@ -93,7 +93,6 @@ public class Camera
     }
     
     
-
     /**
      * Returns the view matrix.
      */
