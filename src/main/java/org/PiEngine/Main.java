@@ -1,12 +1,24 @@
 package org.PiEngine;
 
 import org.lwjgl.opengl.GL;
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+
+import imgui.ImGui;
+import imgui.ImGuiIO;
+import imgui.flag.ImGuiConfigFlags;
+import imgui.gl3.ImGuiImplGl3;
+import imgui.glfw.ImGuiImplGlfw;
+import imgui.ImVec2;
+
+
+
 
 import org.PiEngine.Math.*;
 import org.PiEngine.Core.*;
 import org.PiEngine.GameObjects.*;
+
 
 
 public class Main
@@ -19,10 +31,14 @@ public class Main
         }
 
         long window = glfwCreateWindow(800, 800, "Pi-Engine", 0, 0);
+
+
         if (window == 0)
         {
             throw new RuntimeException("Failed to create window");
         }
+
+        Input.init(window);
 
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
@@ -31,27 +47,27 @@ public class Main
         int height = 800;   
         glViewport(0, 0, width, height);
 
+        // Initialize ImGui
+        ImGui.createContext();
+        ImGuiIO io = ImGui.getIO();
+        io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
+        ImGuiImplGlfw imguiGlfw = new ImGuiImplGlfw();
+        ImGuiImplGl3 imguiGl3 = new ImGuiImplGl3();
+        imguiGlfw.init(window, true);
+        imguiGl3.init("#version 330 core");
+
         // 🔷 Create a Camera
         Camera camera = new Camera((float) width / height, 0.01f, 100.0f);
         camera.setPosition(new Vector(0, 0, 20.0f)); // Move camera back to see triangle
         camera.setRotation(new Vector(0, 0, 0));
-        
         //camera.setOrthographic(-10, 10, -10, 10, 1.0f, 100f);
-
         camera.setPerspective(70.0f, (float) width / height, 0.01f, 100f);
-        
-        //System.out.println("Projection:\n" + camera.getProjectionMatrix());
-        //System.out.println("View:\n" + camera.getViewMatrix());
-        //System.out.println("View:\n" + camera.getPosition());
-        
         camera.updateProjectionMatrix();
         camera.updateViewMatrix();
 
         glEnable(GL_DEPTH_TEST); // Optional if you're using z-buffer
 
-  
-
-        // Print all transform positions
+        // Setup GameObjects
         GameObject world = new GameObject("World");
         GameObject player = new GameObject("Player");
         GameObject Hand = new GameObject("Hand");
@@ -62,8 +78,7 @@ public class Main
         player.transform.setLocalPosition(new Vector(0f, 0, 0));
         gun.transform.setLocalPosition(new Vector(5, 0, 0));
         gun.transform.setLocalRotation(new Vector(0, 0, 90));
-        muzzle.transform.setLocalPosition(new Vector(10, 0, 0));
-        
+        muzzle.transform.setLocalPosition(new Vector(5, 0, 5));
 
         world.addChild(player);
         player.addChild(gun);
@@ -71,81 +86,59 @@ public class Main
         player.addChild(Hand);
         world.addChild(enemy);
         world.printHierarchy();
-       
-
 
         // Main loop
         while (!glfwWindowShouldClose(window))
         {
+            Time.update();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            // Handle camera movement (WASD keys)
-            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) 
+            Input.update();
+
+            if (Input.isKeyDown(GLFW_KEY_W)) camera.getPosition().y -= 0.01f;
+            if (Input.isKeyDown(GLFW_KEY_S)) camera.getPosition().y += 0.01f;
+            if (Input.isKeyDown(GLFW_KEY_A)) camera.getPosition().x += 0.01f;
+            if (Input.isKeyDown(GLFW_KEY_D)) camera.getPosition().x -= 0.01f;
+
+            if (Input.isKeyDown(GLFW_KEY_UP)) camera.getRotation().z -= 0.01f;
+            if (Input.isKeyDown(GLFW_KEY_DOWN)) camera.getRotation().z += 0.01f;
+            if (Input.isKeyDown(GLFW_KEY_LEFT)) camera.getRotation().y -= 0.01f;
+            if (Input.isKeyDown(GLFW_KEY_RIGHT)) camera.getRotation().y += 0.01f;
+
+            if (Input.isKeyDown(GLFW_KEY_SPACE))
             {
-                camera.getPosition().y -= 0.001f; 
+                player.transform.setWorldPosition(player.transform.getWorldPosition().add(new Vector(0.01f, 0, 0)));
             }
 
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) 
-            {
-                camera.getPosition().y += 0.001f; 
-            }
-
-            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) 
-            {
-                camera.getPosition().x += 0.001f; 
-            }
-
-            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) 
-            {
-                camera.getPosition().x -= 0.001f; 
-            }
-
-
-            if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) 
-            {
-                camera.getRotation().x -= 0.01f; 
-            }
-
-            if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) 
-            {
-                camera.getRotation().x += 0.01f; 
-            }
-
-            if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) 
-            {
-                camera.getRotation().y -= 0.01f; 
-            }
-
-            if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) 
-            {
-                camera.getRotation().y += 0.01f; 
-            }
-
-            if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) 
-            {
-                player.transform.setWorldPosition(player.transform.getWorldPosition().add(new Vector(0.001f, 0, 0)));
-                //world.printHierarchy();
-                //world.transform.updateMatrix();
-                //System.out.println(" ");
-            }
-
-            
-            
             world.update();
             camera.updateViewMatrix();
-
-            ///GameObject.debugDrawCube(world.transform.getWorldPosition(), 0.1f);
-            //GameObject.debugDrawCube(gun.transform.getWorldPosition(), 0.7f);
-            //System.err.println(gun.transform.getLocalPosition());
-            
             camera.applyToOpenGL();
 
+            imguiGlfw.newFrame();
+            imguiGl3.newFrame();
+            ImGui.newFrame();
 
-            
+            ImGui.begin("PiEngine Debug");
+            ImGui.text("Camera Pos: " + camera.getPosition());
+            ImGui.text("Player Pos: " + player.transform.getWorldPosition());
+            ImGui.text("Deltatime : " + Time.deltaTime);
+            ImGui.text("FPS : " + 1/Time.deltaTime);
+            ImGui.plotLines("Delta Time (ms)", Time.getDeltaHistory(), Time.getHistorySize(), 0, null, 0.0f, 0.01f,new ImVec2(0f, 80f));
+
+            ImGui.end();
+
+            ImGui.render();
+            glDisable(GL_DEPTH_TEST);
+            imguiGl3.renderDrawData(ImGui.getDrawData());
+            glEnable(GL_DEPTH_TEST);
+
+
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
 
+
+        ImGui.destroyContext();
         glfwTerminate();
     }
 }
