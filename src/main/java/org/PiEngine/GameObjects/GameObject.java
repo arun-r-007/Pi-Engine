@@ -75,30 +75,36 @@ public class GameObject
         }
     }
 
+    /**
+     * 
+     * @param position Position of the Object
+     * @param size Size of the Plane
+     */
+
     public void debugDrawSquare(Vector position, float size)
     {
         float half = size / 2.0f;
         float x = position.x;
         float y = position.y;
+        float z = position.z;
 
-        glColor3f(1.0f, 0.0f, 0.0f); // Red color
+        //glColor3f(1.0f, 0.0f, 0.0f); // Red color
 
         glBegin(GL_TRIANGLES);
 
         // Triangle 1
-        glVertex2f(x - half, y - half);
-        glVertex2f(x + half, y - half);
-        glVertex2f(x + half, y + half);
+        glVertex3f(x - half, y - half, z);
+        glVertex3f(x + half, y - half, z);
+        glVertex3f(x + half, y + half, z);
 
         // Triangle 2
-        glVertex2f(x - half, y - half);
-        glVertex2f(x + half, y + half);
-        glVertex2f(x - half, y + half);
+        glVertex3f(x - half, y - half, z);
+        glVertex3f(x + half, y + half, z);
+        glVertex3f(x - half, y + half, z);
 
         glEnd();
-
-        //System.err.println(Name); // debug print
     }
+
 
     /**
      * Returns a readable string representation of the GameObject.
