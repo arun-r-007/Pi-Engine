@@ -40,7 +40,7 @@ public class Editor
         }
 
         io.getFonts().addFontDefault();
-        imguiGlfw.init(windowPtr, true);
+        imguiGlfw.init(windowPtr, false);
         imguiGl3.init(glslVersion);
     }
 
