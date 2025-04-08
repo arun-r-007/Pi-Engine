@@ -1,6 +1,7 @@
 package org.PiEngine.GameObjects;
 
 import org.PiEngine.Math.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,19 +12,18 @@ import java.util.List;
  */
 public class Transform
 {
-    private Vector position;  // Local position relative to parent
-    private Vector rotation;  // Local rotation (only Z used in 2D)
-    private Vector scale;     // Local scale
+    private Vector position;              // Local position relative to parent
+    private Vector rotation;              // Local rotation (only Z used in 2D)
+    private Vector scale;                 // Local scale
 
-    private Transform parent; // Reference to the parent transform
-    private List<Transform> childrens; // List of child transforms
+    private Transform parent;             // Reference to the parent transform
+    private List<Transform> childrens;    // List of child transforms
+    private Matrix4 transformMatrix;      // Cached world transformation matrix
 
-    private Matrix4 transformMatrix; // Cached world transformation matrix
-
-    private GameObject gameObject;
+    private GameObject gameObject;        // Reference to owning GameObject
 
     /**
-     * Constructs a new Transform with default position (0,0,0), 
+     * Constructs a new Transform with default position (0,0,0),
      * rotation (0,0,0), and scale (1,1,1).
      */
     public Transform()
@@ -34,6 +34,10 @@ public class Transform
         childrens = new ArrayList<>();
         transformMatrix = Matrix4.identity();
     }
+
+    // ----------------------------
+    // Hierarchy Management
+    // ----------------------------
 
     /**
      * Adds a child Transform to this Transform.
@@ -54,12 +58,89 @@ public class Transform
     }
 
     /**
-     * Returns the local transformation matrix built from position, rotation, and scale.
+     * Returns the parent Transform.
+     */
+    public Transform getParent()
+    {
+        return parent;
+    }
+
+    /**
+     * Returns the list of child Transforms.
+     */
+    public List<Transform> getChildren()
+    {
+        return childrens;
+    }
+
+    // ----------------------------
+    // Local Transform Getters
+    // ----------------------------
+
+    /**
+     * Returns the local position relative to the parent.
+     */
+    public Vector getLocalPosition()
+    {
+        return position;
+    }
+
+    /**
+     * Returns the local rotation.
+     */
+    public Vector getLocalRotation()
+    {
+        return rotation;
+    }
+
+    /**
+     * Returns the local scale.
+     */
+    public Vector getLocalScale()
+    {
+        return scale;
+    }
+
+    // ----------------------------
+    // Local Transform Setters
+    // ----------------------------
+
+    /**
+     * Sets the local position.
+     */
+    public void setLocalPosition(Vector pos)
+    {
+        this.position = pos;
+    }
+
+    /**
+     * Sets the local rotation.
+     */
+    public void setLocalRotation(Vector rot)
+    {
+        this.rotation = new Vector(rot);
+        this.rotation.z = ((this.rotation.z % 360) + 360) % 360;
+    }
+
+    /**
+     * Sets the local scale.
+     */
+    public void setLocalScale(Vector scale)
+    {
+        this.scale = scale;
+    }
+
+    // ----------------------------
+    // World Transform Getters
+    // ----------------------------
+
+    /**
+     * Returns the transformation matrix built from position, rotation, and scale.
      */
     public Matrix4 getLocalMatrix()
     {
         Matrix4 translation = Matrix4.translate(position);
-        Matrix4 rotationMatrix = Matrix4.rotate(rotation.z, new Vector(0, 0, 1)); 
+        Matrix4 rotationMatrix = Matrix4.rotate(rotation.z, new Vector(0, 0, 1));
         Matrix4 scaleMatrix = Matrix4.scale(scale);
 
         return Matrix4.multiply(translation, Matrix4.multiply(rotationMatrix, scaleMatrix));
@@ -79,34 +160,7 @@ public class Transform
     }
 
     /**
-     * Recursively updates this transform and its children's transformation matrices.
-     */
-    public void updateMatrix()
-    {
-        transformMatrix = getWorldMatrix();
-        for (Transform child : childrens)
-        {
-            child.updateMatrix();
-        }
-    }
-
-    /**
-     * Gets the local position relative to the parent.
-     */
-    public Vector getLocalPosition() { return position; }
-
-    /**
-     * Gets the local rotation.
-     */
-    public Vector getLocalRotation() { return rotation; }
-
-    /**
-     * Gets the local scale.
-     */
-    public Vector getLocalScale()    { return scale; }
-
-    /**
-     * Gets the position in world space by extracting translation from the world matrix.
+     * Gets the position in world space.
      */
     public Vector getWorldPosition()
     {
@@ -114,56 +168,41 @@ public class Transform
     }
 
     /**
-     * Gets the rotation in world space by recursively combining parent rotations.
-     * For 2D, only the Z-axis rotation is considered.
+     * Gets the rotation in world space by recursively adding parent rotations.
      */
     public Vector getWorldRotation()
     {
         if (parent != null)
         {
-            // Add local rotation to parent's world rotation
             return parent.getWorldRotation().add(this.rotation);
         }
-        return new Vector(rotation); // Return a copy of local rotation if no parent
+        return new Vector(rotation);
     }
 
-
     /**
-     * Sets the world rotation. Internally converts it to local rotation
-     * using the parent's world rotation. Only works for Z rotation in 2D.
+     * Gets the scale in world space by accumulating parent scales.
      */
-    public void setWorldRotation(Vector worldRot)
+    public Vector getWorldScale()
     {
         if (parent == null)
         {
-            this.rotation = new Vector(worldRot);
+            return new Vector(scale);
         }
-        else
-        {
-            Vector parentWorldRot = parent.getWorldRotation();
-            this.rotation = worldRot.sub(parentWorldRot);
-        }
+
+        Vector parentScale = parent.getWorldScale();
+        return new Vector(
+            parentScale.x * scale.x,
+            parentScale.y * scale.y,
+            parentScale.z * scale.z
+        );
     }
 
+    // ----------------------------
+    // World Transform Setters
+    // ----------------------------
 
     /**
-     * Sets the local position.
-     */
-    public void setLocalPosition(Vector pos) { this.position = pos; }
-
-    /**
-     * Sets the local rotation.
-     */
-    public void setLocalRotation(Vector rot) { this.rotation = rot; }
-
-    /**
-     * Sets the local scale.
-     */
-    public void setLocalScale(Vector scale)  { this.scale = scale; }
-
-    /**
-     * Sets the position in world space.
-     * Internally converts it to local space using the inverse of the parent's world matrix.
+     * Sets the position in world space by converting it to local space.
      */
     public void setWorldPosition(Vector worldPos)
     {
@@ -181,20 +220,70 @@ public class Transform
     }
 
     /**
+     * Sets the world rotation by converting it to local rotation.
+     * Only Z rotation is considered in 2D.
+     */
+    public void setWorldRotation(Vector worldRot)
+    {
+        if (parent == null)
+        {
+            this.rotation = new Vector(worldRot);
+        }
+        else
+        {
+            Vector parentWorldRot = parent.getWorldRotation();
+            this.rotation = worldRot.sub(parentWorldRot);
+        }
+        this.rotation.z = ((this.rotation.z % 360) + 360) % 360;
+    }
+
+    /**
+     * Sets the world scale by converting it to local scale.
+     */
+    public void setWorldScale(Vector worldScale)
+    {
+        if (parent == null)
+        {
+            this.scale = new Vector(worldScale);
+        }
+        else
+        {
+            Vector parentScale = parent.getWorldScale();
+            this.scale = new Vector(
+                worldScale.x / parentScale.x,
+                worldScale.y / parentScale.y,
+                worldScale.z / parentScale.z
+            );
+        }
+    }
+
+    // ----------------------------
+    // Matrix and Update
+    // ----------------------------
+
+    /**
      * Returns the cached world transformation matrix.
      */
-    public Matrix4 getMatrix() { return transformMatrix; }
+    public Matrix4 getMatrix()
+    {
+        return transformMatrix;
+    }
 
     /**
-     * Returns the parent Transform.
+     * Recursively updates this transform and all child transforms.
      */
-    public Transform getParent() { return parent; }
+    public void updateMatrix()
+    {
+        transformMatrix = getWorldMatrix();
+        for (Transform child : childrens)
+        {
+            child.updateMatrix();
+        }
+    }
 
-    /**
-     * Returns the list of children Transforms.
-     */
-    public List<Transform> getChildren() { return childrens; }
-
+    // ----------------------------
+    // GameObject Reference
+    // ----------------------------
 
     /**
      * Sets the GameObject that owns this Transform.
@@ -212,14 +301,19 @@ public class Transform
         return gameObject;
     }
 
+    // ----------------------------
+    // Debug and Utility
+    // ----------------------------
+
     /**
      * Returns a readable string representation of the Transform.
      */
     @Override
     public String toString()
     {
-        return String.format("Transform(Position: %s, Rotation: %s, Scale: %s)", 
-            position, rotation, scale);
+        return String.format(
+            "Transform(Position: %s, Rotation: %s, Scale: %s)",
+            position, rotation, scale
+        );
     }
-
 }
