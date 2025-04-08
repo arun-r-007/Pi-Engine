@@ -2,10 +2,8 @@ package org.PiEngine.Editor;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiTreeNodeFlags;
-import imgui.type.ImFloat;
 import org.PiEngine.GameObjects.GameObject;
 import org.PiEngine.GameObjects.Transform;
-import org.PiEngine.Math.Vector;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,44 +53,70 @@ public class PrimaryEditor {
         }
     }
 
-    private void renderTransformEditor(GameObject obj) {
+    private void renderTransformEditor(GameObject obj)
+    {
         ImGui.text("All Transform Properties of " + obj.Name);
+        ImGui.separator();
     
-        // World Position
+        
+        ImGui.text("GLOBAL");
+        ImGui.separator();
+    
+        // Global Position
         VectorPropertyBlock worldPosBlock = new VectorPropertyBlock("worldPos");
         worldPosBlock.set(obj.transform.getWorldPosition());
-        worldPosBlock.draw("World Position");
+        worldPosBlock.draw("Position  "); 
         if (!ImGui.isAnyItemActive()) {
             obj.transform.setWorldPosition(worldPosBlock.get());
         }
+    
+        // Global Rotation
+        VectorPropertyBlock worldRotBlock = new VectorPropertyBlock("worldRot");
+        worldRotBlock.set(obj.transform.getWorldRotation());
+        worldRotBlock.draw("Rotation  ");
+        if (!ImGui.isAnyItemActive()) {
+            obj.transform.setWorldRotation(worldRotBlock.get());
+        }
+    
+        // Global Size (Scale)
+        VectorPropertyBlock worldScaleBlock = new VectorPropertyBlock("worldScale");
+        worldScaleBlock.set(obj.transform.getWorldScale());
+        worldScaleBlock.draw("Size      ");
+        if (!ImGui.isAnyItemActive()) {
+            obj.transform.setWorldScale(worldScaleBlock.get());
+        }
+    
+        ImGui.separator();
+    
+        // === LOCAL TRANSFORM ===
+        ImGui.text("LOCAL");
         ImGui.separator();
     
         // Local Position
         VectorPropertyBlock localPosBlock = new VectorPropertyBlock("localPos");
         localPosBlock.set(obj.transform.getLocalPosition());
-        localPosBlock.draw("Local Position");
+        localPosBlock.draw("Position  ");
         if (!ImGui.isAnyItemActive()) {
             obj.transform.setLocalPosition(localPosBlock.get());
         }
-        ImGui.separator();
     
         // Local Rotation
         VectorPropertyBlock localRotBlock = new VectorPropertyBlock("localRot");
         localRotBlock.set(obj.transform.getLocalRotation());
-        localRotBlock.draw("Local Rotation");
+        localRotBlock.draw("Rotation  ");
         if (!ImGui.isAnyItemActive()) {
             obj.transform.setLocalRotation(localRotBlock.get());
         }
-        ImGui.separator();
     
-        // Local Scale
+        // Local Size (Scale)
         VectorPropertyBlock localScaleBlock = new VectorPropertyBlock("localScale");
         localScaleBlock.set(obj.transform.getLocalScale());
-        localScaleBlock.draw("Local Scale");
+        localScaleBlock.draw("Size      ");
         if (!ImGui.isAnyItemActive()) {
             obj.transform.setLocalScale(localScaleBlock.get());
         }
-    }
     
+        ImGui.separator();
+    }
     
 }

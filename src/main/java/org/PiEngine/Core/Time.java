@@ -126,10 +126,10 @@ public class Time
         float total = 0f;
         for (int i = 0; i < size; i++)
         {
-            total += history[i];
+            total += 1/history[i];
         }
 
-        float averageDeltaTime = total / size;
-        return (float) Math.floor(1.0f / averageDeltaTime);
+        float average = total / size;
+        return (float) Math.floor(average);
     }
 }
