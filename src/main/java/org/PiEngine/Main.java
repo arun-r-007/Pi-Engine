@@ -102,6 +102,7 @@ public class Main
         world.addChild(enemy);
         world.printHierarchy();
 
+<<<<<<< Updated upstream
         world.addChild(Holder);
         Holder.addChild(ChildHolder);
         ChildHolder.addChild(CChildHolder);
@@ -126,6 +127,12 @@ public class Main
 
         Time.timeScale = 1.0f;
         float fp = 0;
+=======
+        // EditWindow PrimaryEditor = new EditWindow(new PrimaryEditor(), window,world);
+        // PrimaryEditor.init();
+        // PrimaryEditor.run();
+        // PrimaryEditor.destroy();
+>>>>>>> Stashed changes
 
         // Main loop
         while (!glfwWindowShouldClose(window))
@@ -152,6 +159,7 @@ public class Main
             camera.updateViewMatrix();
             camera.applyToOpenGL();
 
+<<<<<<< Updated upstream
             imguiGlfw.newFrame();   
             imguiGl3.newFrame();
             ImGui.newFrame();
@@ -175,13 +183,25 @@ public class Main
             }
 
             ImGui.plotLines("Delta Time (ms)", Time.getDeltaHistory(), Time.getHistorySize(), 0, null, 0.0f, 0.01f,new ImVec2(0f, 80f));
+=======
+            // imguiGlfw.newFrame();
+            // imguiGl3.newFrame();
+            // ImGui.newFrame();
 
-            ImGui.end();
+            // ImGui.begin("PiEngine Debug");
+            // ImGui.text("Camera Pos: " + camera.getPosition());
+            // ImGui.text("Player Pos: " + player.transform.getWorldPosition());
+            // ImGui.text("Deltatime : " + Time.deltaTime);
+            // ImGui.text("FPS : " + 1/Time.deltaTime);
+            // ImGui.plotLines("Delta Time (ms)", Time.getDeltaHistory(), Time.getHistorySize(), 0, null, 0.0f, 0.01f,new ImVec2(0f, 80f));
+>>>>>>> Stashed changes
 
-            ImGui.render();
-            glDisable(GL_DEPTH_TEST);
-            imguiGl3.renderDrawData(ImGui.getDrawData());
-            glEnable(GL_DEPTH_TEST);
+            // ImGui.end();
+
+            //ImGui.render();
+            //glDisable(GL_DEPTH_TEST);
+            //imguiGl3.renderDrawData(ImGui.getDrawData());
+            //glEnable(GL_DEPTH_TEST);
 
 
             glfwSwapBuffers(window);

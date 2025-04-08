@@ -58,6 +58,7 @@ public class EditWindow {
     public void run() {
         while (!glfwWindowShouldClose(windowPtr)) 
         {
+            
             glClearColor(0.1f, 0.09f, 0.1f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
     
