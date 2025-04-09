@@ -3,7 +3,6 @@ package org.PiEngine.GameObjects;
 
 import org.PiEngine.Component.Component;
 import org.PiEngine.Math.*;
-import org.PiEngine.Render.Shader;
 
 import static org.lwjgl.opengl.GL32.*; 
 

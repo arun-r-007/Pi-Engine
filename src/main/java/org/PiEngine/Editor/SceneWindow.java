@@ -9,9 +9,9 @@ public class SceneWindow extends EditorWindow
 
     int outputTex;
 
-    public SceneWindow()
+    public SceneWindow(String name)
     {
-        super("Perfomance");
+        super(name);
     }
 
     public void setid(int o)
@@ -22,7 +22,7 @@ public class SceneWindow extends EditorWindow
     @Override
     public void onRender()
     {
-        ImGui.begin("Viewport");
+        ImGui.begin(name);
 
         ImGui.image(
         outputTex,                                 // texture ID

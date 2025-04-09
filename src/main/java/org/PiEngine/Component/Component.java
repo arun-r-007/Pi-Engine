@@ -1,7 +1,6 @@
 package org.PiEngine.Component;
 
 import org.PiEngine.GameObjects.*;
-import org.PiEngine.Render.*;
 
 /**
  * Base class for all components that can be attached to a GameObject.

@@ -3,6 +3,12 @@ package org.PiEngine;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.*;
 
 import imgui.ImGui;
@@ -54,9 +60,16 @@ public class Main
         Camera camera = new Camera((float) width / height, 0.01f, 100.0f);
         camera.setPosition(new Vector(0, 0, 20.0f));
         camera.setRotation(new Vector(0, 0, 0));
-        camera.setOrthographic(-16f, 16f, -9f, 9f, 1.0f, 100f);
+        camera.setOrthographic( 8*-2, 8*2, -2 *4.5f, 2*4.5f, 1.0f, 100f);
         camera.updateProjectionMatrix();
         camera.updateViewMatrix();
+        
+        
+        Camera camera1 = new Camera((float) 1, 0.01f, 100.0f);
+        camera1.setPosition(new Vector(0, 0, 20.0f));
+        camera1.setPerspective(45.0f, (float) width / height, 0.01f, 100f);
+        camera1.updateProjectionMatrix();
+        camera1.updateViewMatrix();
 
         glEnable(GL_DEPTH_TEST);
 
@@ -127,8 +140,11 @@ public class Main
 
         editor.addWindow(new PerfomanceWindow());
 
-        SceneWindow sceneWindow = new SceneWindow();
+        SceneWindow sceneWindow = new SceneWindow("Orthograpic");
         editor.addWindow(sceneWindow);
+
+        SceneWindow sceneWindow1 = new SceneWindow("Perspective");
+        editor.addWindow(sceneWindow1);
 
         // --- Renderer Setup ---
         Shader mainShader = new Shader(
@@ -136,7 +152,15 @@ public class Main
             "src/main/java/org/PiEngine/Shaders/Camera/camera.frag",
             null
         );
+
+        Shader mainShader1 = new Shader(
+            "src/main/java/org/PiEngine/Shaders/Camera/camera.vert",
+            "src/main/java/org/PiEngine/Shaders/Camera/camera.frag",
+            null
+        );
         Renderer renderer = new Renderer(width / 2, height / 2, mainShader);
+        Renderer renderer1 = new Renderer(width / 2, height / 2, mainShader1);
+
 
         // --- Main Loop ---
         while (!glfwWindowShouldClose(window))
@@ -162,11 +186,21 @@ public class Main
             world.update();
             camera.updateViewMatrix();
             camera.applyToShader(mainShader);
+
             
             // --- Render to Texture ---
             renderer.render(camera, world);
             int outputTex = renderer.getOutputTexture();
             sceneWindow.setid(outputTex);
+            
+            
+            
+            
+            camera1.updateViewMatrix();
+            camera1.applyToShader(mainShader1);
+            renderer1.render(camera1, world);
+            int outputTex1 = renderer1.getOutputTexture();
+            sceneWindow1.setid(outputTex1);
 
             // --- Editor Update ---
             editor.update(Time.deltaTime);

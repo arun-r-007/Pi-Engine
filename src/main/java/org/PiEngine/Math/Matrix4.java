@@ -263,9 +263,18 @@ public class Matrix4
      */
     public FloatBuffer toFloatBuffer()
     {
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
-        buffer.put(elements);
-        buffer.flip();
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(16); // Allocate space for 4x4 matrix
+
+        // Fill buffer in column-major order (OpenGL expects this)
+        for (int col = 0; col < 4; col++)
+        {
+            for (int row = 0; row < 4; row++)
+            {
+                buffer.put(elements[row * 4 + col]);
+            }
+        }
+
+        buffer.flip(); // Prepare buffer for reading by OpenGL
         return buffer;
     }
 
