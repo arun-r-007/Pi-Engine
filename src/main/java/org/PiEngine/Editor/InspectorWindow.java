@@ -2,7 +2,7 @@ package org.PiEngine.Editor;
 
 import imgui.ImGui;
 import org.PiEngine.GameObjects.*;
-import 
+import org.PiEngine.Component.*;
 
 public class InspectorWindow extends EditorWindow
 {
