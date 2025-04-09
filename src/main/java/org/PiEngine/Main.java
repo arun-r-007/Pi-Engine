@@ -137,7 +137,7 @@ public class Main
         editor.addWindow(new PerfomanceWindow());
 
 
-
+        
         // Main loop
         while (!glfwWindowShouldClose(window))
         {
