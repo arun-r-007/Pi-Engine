@@ -58,8 +58,8 @@ public class Main
         Camera camera = new Camera((float) width / height, 0.01f, 100.0f);
         camera.setPosition(new Vector(0, 0, 20.0f)); // Move camera back to see triangle
         camera.setRotation(new Vector(0, 0, 0));
-        //camera.setOrthographic( 8*-2, 8*2, -2 *4.5f, 2*4.5f, 1.0f, 100f);
-        camera.setPerspective(70.0f, (float) width / height, 0.01f, 100f);
+        camera.setOrthographic( 8*-2, 8*2, -2 *4.5f, 2*4.5f, 1.0f, 100f);
+        //camera.setPerspective(70.0f, (float) width / height, 0.01f, 100f);
         camera.updateProjectionMatrix();
         camera.updateViewMatrix();
 
@@ -69,6 +69,11 @@ public class Main
         GameObject world = new GameObject("World");
         GameObject player = new GameObject("Player");
         GameObject enemy = new GameObject("Enemy");
+        GameObject enemy1 = new GameObject("Enemy1");
+        GameObject enemy2 = new GameObject("Enemy2");
+        GameObject enemy3 = new GameObject("Enemy3");
+
+
 
         GameObject Holder = new GameObject("Holder");
         GameObject ChildHolder = new GameObject("ChindHolder");
@@ -83,21 +88,37 @@ public class Main
 
         world.addChild(player);
         world.addChild(enemy);
+        world.addChild(enemy1);
+        world.addChild(enemy2);
+        world.addChild(enemy3);
+
+
         
         world.addChild(Holder);
         Holder.addChild(ChildHolder);
         ChildHolder.addChild(CChildHolder);
-        
+
+
         //world.printHierarchy();
 
 
 
         player.addComponent(new Movemet());
         enemy.addComponent(new Follower());
+        enemy1.addComponent(new Follower());
+        enemy2.addComponent(new Follower());
+        enemy3.addComponent(new Follower());
+
+
+
         Holder.addComponent(new SpinComponent());
         ChildHolder.addComponent(new SpinComponent());
 
         enemy.getComponent(Follower.class).Target = player;
+        enemy1.getComponent(Follower.class).Target = enemy;
+        enemy2.getComponent(Follower.class).Target = enemy1;
+        enemy3.getComponent(Follower.class).Target = enemy2;
+
 
 
 
@@ -126,16 +147,26 @@ public class Main
             Input.update();
 
             if (Input.isKeyDown(GLFW_KEY_UP))
-            camera.getPosition().y -= 2 * Time.deltaTime;
+            camera.getPosition().y -= 10 * Time.deltaTime;
 
             if (Input.isKeyDown(GLFW_KEY_DOWN))
-            camera.getPosition().y += 2 * Time.deltaTime;
+            camera.getPosition().y += 10 * Time.deltaTime;
 
             if (Input.isKeyDown(GLFW_KEY_LEFT))
-            camera.getPosition().x -= 2 * Time.deltaTime;
+            camera.getPosition().x -= 10 * Time.deltaTime;
 
             if (Input.isKeyDown(GLFW_KEY_RIGHT))
-            camera.getPosition().x += 2 * Time.deltaTime;
+            camera.getPosition().x += 10 * Time.deltaTime;
+
+            if (Input.isKeyDown(GLFW_KEY_SPACE)) CChildHolder.reparentTo(worldRoot);
+
+            if (Input.isKeyDown(GLFW_KEY_ENTER)) CChildHolder.reparentTo(ChildHolder);
+
+            if (Input.isKeyDown(GLFW_KEY_N)) CChildHolder.reparentTo(player);
+
+
+
+
             
             world.update();
             world.debugRender();

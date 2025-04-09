@@ -229,6 +229,37 @@ public class GameObject
 
 
     /**
+     * Reparents this GameObject to a new parent GameObject.
+     * 
+     * This will remove this GameObject from its current parent's children list
+     * and add it to the specified new parent's children list.
+     *
+     * @param newParent The GameObject to become the new parent of this GameObject.
+     */
+    public void reparentTo(GameObject newParent)
+    {
+        // Remove from current parent if it exists
+        Transform currentParent = this.transform.getParent();
+        Vector gpos = transform.getWorldPosition();
+        Vector grot = transform.getWorldRotation();
+        Vector gscl = transform.getWorldScale();
+
+        if (currentParent != null)
+        {
+            currentParent.getChildren().remove(this.transform);
+        }
+
+        // Add to new parent's children
+        newParent.addChild(this);
+        this.transform.setWorldPosition(gpos);
+        this.transform.setWorldRotation(grot);
+        this.transform.setWorldScale(gscl);
+
+    }
+
+
+
+    /**
      * Returns a readable string representation of the GameObject.
      */
     @Override
