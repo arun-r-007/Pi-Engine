@@ -268,4 +268,11 @@ public class GameObject
     {
         return String.format("GameObject(Name: %s, %s)", Name, transform);
     }
+
+     /**
+     * @return return all the components of a Gameobject 
+     */
+    public List<Component> getAllComponents() {
+        return new ArrayList<>(components);
+    }    
 }
