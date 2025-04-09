@@ -2,6 +2,7 @@ package org.PiEngine.Editor;
 
 import imgui.ImGui;
 import org.PiEngine.GameObjects.*;
+import 
 
 public class InspectorWindow extends EditorWindow
 {
@@ -37,7 +38,7 @@ public class InspectorWindow extends EditorWindow
         
         if (ImGui.collapsingHeader("Transform"))
         {
-            renderTransformEditor(current);
+            renderComponentEditor(current);
         }
         
         
@@ -108,5 +109,20 @@ public class InspectorWindow extends EditorWindow
         ImGui.separator();
     }
 
-    // private void renderComponents(GameObject obj){}
+    private void renderComponentEditor(GameObject obj) {
+        ImGui.separator();
+        ImGui.spacing();                          // Add some vertical space
+        ImGui.textColored(1.0f, 1.0f, 0.4f, 1.0f, "Component Properties"); // Colored bold-like title
+        ImGui.spacing(); 
+    
+        List<Component> components = obj.getAllComponents();
+        for (Component c : components) {
+            String compName = c.getClass().getSimpleName();
+            if (ImGui.collapsingHeader(compName)) {
+                // Create a block for each component to draw its fields
+                ComponentPropertyBlock comp = new ComponentPropertyBlock(compName);
+                comp.drawComponentFields(c);
+            }
+        }
+    }
 }
