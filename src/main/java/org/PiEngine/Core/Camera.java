@@ -1,9 +1,11 @@
 package org.PiEngine.Core;
 
 import org.PiEngine.Math.Vector;
+import org.PiEngine.Render.Shader;
 import org.PiEngine.Math.Matrix4;
 
-import static org.lwjgl.opengl.GL11.*;
+
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * The Camera class handles view and projection matrix generation
@@ -156,4 +158,11 @@ public class Camera
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(viewMatrix.toFloatBuffer());
     }
+
+
+    public void applyToShader(Shader shader)
+    {
+
+    }
+
 }
