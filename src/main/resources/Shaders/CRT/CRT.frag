@@ -8,7 +8,7 @@
 uniform sampler2D u_Texture0;
 uniform vec2 u_Resolution;
 
-in vec2 v_UV; // make sure you're passing this from the vertex shader
+in vec2 v_UV;
 out vec4 fragColor;
 
 void main()

@@ -4,13 +4,10 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
+
 import static org.lwjgl.opengl.GL30.*;
+
+import java.io.File;
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -24,6 +21,8 @@ import org.PiEngine.GameObjects.*;
 import org.PiEngine.Component.*;
 import org.PiEngine.Editor.*;
 import org.PiEngine.Render.*;
+import org.PiEngine.Scripting.CompiledScriptClassLoader;
+import org.PiEngine.Scripting.ScriptLoader;
 
 public class Main
 {
@@ -105,7 +104,7 @@ public class Main
         enemy2.addComponent(new Follower());
         enemy3.addComponent(new Follower());
         holder.addComponent(new SpinComponent());
-        childHolder.addComponent(new SpinComponent());
+        // childHolder.addComponent(new SpinComponent());
         Camera.addComponent(new CameraComponent());
 
 
@@ -161,8 +160,8 @@ public class Main
         // --- Renderer Setup ---
         Shader mainShader = new Shader
         (
-            "src/main/java/org/PiEngine/Shaders/Camera/camera.vert",
-            "src/main/java/org/PiEngine/Shaders/Camera/camera.frag",
+            "src\\main\\resources\\Shaders\\Camera\\camera.vert",
+            "src\\main\\resources\\Shaders\\Camera\\camera.frag",
             null
         );
 
@@ -170,9 +169,9 @@ public class Main
 
         Shader PostShader = new Shader
         (
-            "src\\main\\java\\org\\PiEngine\\Shaders\\CRT\\CRT.vert", 
-            "src\\main\\java\\org\\PiEngine\\Shaders\\CRT\\CRT.frag", 
-        null
+            "src\\main\\resources\\Shaders\\CRT\\CRT.vert", 
+            "src\\main\\resources\\Shaders\\CRT\\CRT.frag", 
+            null    
         );
 
         Renderer SceneRenderer = new Renderer();
@@ -195,6 +194,59 @@ public class Main
         System.out.println("OpenGL Vendor: " + GL11.glGetString(GL11.GL_VENDOR));
         System.out.println("OpenGL Renderer: " + GL11.glGetString(GL11.GL_RENDERER));
         System.out.println("OpenGL Version: " + GL11.glGetString(GL11.GL_VERSION));
+
+
+        ScriptLoader loader = new ScriptLoader("src\\main\\resources\\Scripts", "Compiled", null); 
+        try 
+        {
+            loader.loadAndCompileScripts();        
+        } 
+        catch (Exception e) 
+        {
+        }
+
+        
+        File componentDir = new File("Compiled/org/PiEngine/Component");
+        if (componentDir.exists() && componentDir.isDirectory()) 
+        {
+            
+            File[] classFiles = componentDir.listFiles((dir, name) -> name.endsWith(".class"));
+
+            if (classFiles != null) {
+                for (File file : classFiles) {
+                    String fileName = file.getName();
+                    String className = fileName.substring(0, fileName.length() - 6); // Remove ".class"
+                    String fullClassName = "org.PiEngine.Component." + className;
+
+                    try {
+                    CompiledScriptClassLoader cloader = new CompiledScriptClassLoader("Compiled");
+
+                        Class<?> scriptClass = cloader.loadClass(fullClassName);
+                        if (Component.class.isAssignableFrom(scriptClass)) {
+                            //Component componentInstance = (Component) scriptClass.getDeclaredConstructor().newInstance();
+                            //childHolder.addComponent(componentInstance);
+
+                            // Register with ComponentFactory
+                            ComponentFactory.register(scriptClass.getSimpleName(), () -> {
+                                try {
+                                    return (Component) scriptClass.getDeclaredConstructor().newInstance();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    return null;
+                                }
+                            });
+
+                            System.out.println("Loaded & registered: " + fullClassName);
+                        } else {
+                            System.out.println("Skipped (not a Component): " + fullClassName);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Failed to load class: " + fullClassName);
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 
 
         // --- Main Loop ---

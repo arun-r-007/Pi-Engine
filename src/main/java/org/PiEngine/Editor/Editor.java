@@ -5,6 +5,8 @@ import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+
+
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -23,6 +25,9 @@ public class Editor
 
     private final List<EditorWindow> editorWindows = new ArrayList<>();
     private boolean initialized = false;
+
+    private final List<EditorWindow> windowsToAdd = new ArrayList<>();
+
 
     private Editor() { }
 
@@ -77,6 +82,14 @@ public class Editor
 
     public void update(float deltaTime)
     {
+
+        for (EditorWindow aw : windowsToAdd) 
+        {
+            addWindow(aw);
+        }
+
+        windowsToAdd.clear();
+
         imguiGlfw.newFrame();
         imguiGl3.newFrame();
         ImGui.newFrame();
@@ -100,6 +113,8 @@ public class Editor
             ImGui.renderPlatformWindowsDefault();
             GLFW.glfwMakeContextCurrent(backupWindowPtr);
         }
+
+        
     }
 
     public void addWindow(EditorWindow window)
@@ -111,4 +126,9 @@ public class Editor
     {
         editorWindows.remove(window);
     }
+
+    public void queueAddWindow(EditorWindow window) {
+        windowsToAdd.add(window);
+    }
+    
 }
