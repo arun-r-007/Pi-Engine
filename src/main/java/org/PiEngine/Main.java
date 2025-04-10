@@ -1,6 +1,7 @@
 package org.PiEngine;
 
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -118,11 +119,11 @@ public class Main
 
 
         // Set Layer
-        player.setLayerByName("Layer2", false);
-        enemy.setLayerByName("Layer2", false);
-        enemy1.setLayerByName("Layer2", false);
-        enemy2.setLayerByName("Layer2", false);
-        enemy3.setLayerByName("Layer2", false);
+        player.setLayerByName("Layer1", false);
+        enemy.setLayerByName("Layer1", false);
+        enemy1.setLayerByName("Layer1", false);
+        enemy2.setLayerByName("Layer1", false);
+        enemy3.setLayerByName("Layer1", false);
 
 
 
@@ -158,15 +159,17 @@ public class Main
             null
         );
 
-        Shader mainShader1 = new Shader(
-            "src/main/java/org/PiEngine/Shaders/Camera/camera.vert",
-            "src/main/java/org/PiEngine/Shaders/Camera/camera.frag",
-            null
-        );
         Renderer renderer = new Renderer(width / 2, height / 2, mainShader);
-        Renderer renderer1 = new Renderer(width / 2, height / 2, mainShader1);
+        Renderer renderer1 = new Renderer(width / 2, height / 2, mainShader);
 
-        world.printHierarchy();
+        //world.printHierarchy();
+
+
+        // Drivers
+        
+        System.out.println("OpenGL Vendor: " + GL11.glGetString(GL11.GL_VENDOR));
+        System.out.println("OpenGL Renderer: " + GL11.glGetString(GL11.GL_RENDERER));
+        System.out.println("OpenGL Version: " + GL11.glGetString(GL11.GL_VERSION));
 
 
         // --- Main Loop ---
