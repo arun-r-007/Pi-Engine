@@ -66,14 +66,19 @@ public class HierarchyWindow extends EditorWindow {
     private void renderGameObjectHierarchy(GameObject obj) {
         ImGui.pushID(obj.hashCode());
     
+        boolean isRoot = (obj == root);
         boolean isLeaf = obj.transform.getChildren().isEmpty();
         int flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.DefaultOpen;
         if (isLeaf) flags |= ImGuiTreeNodeFlags.Leaf;
     
         boolean nodeOpen;
     
-        // Handle renaming UI
-        if (renamingObject == obj) {
+        // --- Root is View Only ---
+        if (isRoot) {
+            nodeOpen = ImGui.treeNodeEx(obj.Name + " (Root)", flags);
+        } 
+        // --- Normal Object ---
+        else if (renamingObject == obj) {
             ImGui.setNextItemWidth(200);
             if (ImGui.inputText("##rename", renameBuffer, ImGuiInputTextFlags.EnterReturnsTrue | ImGuiInputTextFlags.AutoSelectAll)) {
                 obj.Name = renameBuffer.get().trim();
@@ -90,7 +95,8 @@ public class HierarchyWindow extends EditorWindow {
             }
     
             nodeOpen = ImGui.treeNodeEx("##hidden", flags, "");
-        } else {
+        } 
+        else {
             nodeOpen = ImGui.treeNodeEx(obj.Name, flags);
     
             // Selection and rename
@@ -104,60 +110,61 @@ public class HierarchyWindow extends EditorWindow {
                 renameFieldFocused = false;
                 renameBuffer.set(obj.Name);
             }
-        }
     
-        // --- DRAG SOURCE ---
-        if (ImGui.beginDragDropSource()) {
-            ImGui.setDragDropPayload("GAME_OBJECT", obj); // Use the GameObject directly
-            ImGui.text("Dragging: " + obj.Name);
-            ImGui.endDragDropSource();
-        }
+            // Drag source
+            if (ImGui.beginDragDropSource()) {
+                ImGui.setDragDropPayload("GAME_OBJECT", obj); // Use the GameObject directly
+                ImGui.text("Dragging: " + obj.Name);
+                ImGui.endDragDropSource();
+            }
     
-        // --- DROP TARGET ---
-        if (ImGui.beginDragDropTarget()) {
-            Object payloadObj = ImGui.acceptDragDropPayload("GAME_OBJECT");
-            if (payloadObj != null && payloadObj instanceof GameObject) {
-                GameObject draggedObj = (GameObject) payloadObj;
-                if (draggedObj != obj) {
-                    draggedObj.reparentTo(obj); // Reparent dragged object to the drop target
+            // Drop target
+            if (ImGui.beginDragDropTarget()) {
+                Object payloadObj = ImGui.acceptDragDropPayload("GAME_OBJECT");
+                if (payloadObj instanceof GameObject) {
+                    GameObject draggedObj = (GameObject) payloadObj;
+                    if (draggedObj != obj) {
+                        draggedObj.reparentTo(obj); // Reparent dragged object to the drop target
+                    }
                 }
+                ImGui.endDragDropTarget();
             }
-            ImGui.endDragDropTarget();
-        }
     
-        // Context menu
-        if (ImGui.beginPopupContextItem(obj.Name)) {
-            if (ImGui.menuItem("Add Object")) {
-                GameObject newChild = new GameObject("NewGameObject");
-                obj.addChild(newChild);
-            }
-            if (ImGui.menuItem("Remove")) {
-                toRemove.add(obj);
-                if (renamingObject == obj) {
-                    renamingObject = null;
-                    renameFieldFocused = false;
+            // Context menu
+            if (ImGui.beginPopupContextItem(obj.Name)) {
+                if (ImGui.menuItem("Property")) {
+                    new InspectorWindow(true);
                 }
+                if (ImGui.menuItem("Add Object")) {
+                    GameObject newChild = new GameObject("NewGameObject");
+                    obj.addChild(newChild);
+                }
+                if (ImGui.menuItem("Remove")) {
+                    toRemove.add(obj);
+                    if (renamingObject == obj) {
+                        renamingObject = null;
+                        renameFieldFocused = false;
+                    }
+                }
+                ImGui.endPopup();
             }
-            ImGui.endPopup();
         }
     
-        // Render children
-        if (!nodeOpen) return;
-
+        // Render children (always)
+        if (!nodeOpen) {
+            ImGui.popID();
+            return;
+        }
+    
         List<Transform> children = obj.transform.getChildren();
-        for (int i = 0; i < children.size(); i++) {
-            Transform child = children.get(i);
+        for (Transform child : children) {
             if (child == null) continue;
-        
             GameObject childObj = child.getGameObject();
             if (childObj == null) continue;
-        
             renderGameObjectHierarchy(childObj);
         }
-        
-        ImGui.treePop();
-
     
+        ImGui.treePop();
         ImGui.popID();
-    }    
+    }
 }
