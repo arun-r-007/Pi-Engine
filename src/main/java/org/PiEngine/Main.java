@@ -160,6 +160,8 @@ public class Main
             null
         );
 
+        
+
         Shader PostShader = new Shader
         (
             "src\\main\\java\\org\\PiEngine\\Shaders\\CRT\\CRT.vert", 
@@ -173,9 +175,10 @@ public class Main
 
 
         Renderer GameRenderer = new Renderer();
-        PostProcessingPass PP = new PostProcessingPass(PostShader, width/2, height/2);
-        GameRenderer.addPass(GP);
-        GameRenderer.addPass(PP);
+        GeometryPass GGP = new GeometryPass(mainShader, width/2, height/2);
+        PostProcessingPass GPP = new PostProcessingPass(PostShader, width/2, height/2);
+        GameRenderer.addPass(GGP);
+        GameRenderer.addPass(GPP);
 
 
         //world.printHierarchy();
