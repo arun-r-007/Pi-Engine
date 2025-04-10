@@ -73,6 +73,7 @@ public class InspectorWindow extends EditorWindow {
      */
     @Override
     public void onRender() {
+        name = !actAsProperty ? "Inspector" : "Property" + propertyObject;
         GameObject current = actAsProperty ? propertyObject : inspectObject;
         ImGui.begin(name);
 
@@ -122,7 +123,7 @@ public class InspectorWindow extends EditorWindow {
             ImGui.inputText("##search", searchBuffer, ImGuiInputTextFlags.None);
             String searchQuery = searchBuffer.get().toLowerCase().trim();
 
-            String[] availableComponents = componentFactory.keySet().toArray(new String[0]);
+            String[] availableComponents = ComponentFactory.getRegisteredComponentNames().toArray(new String[0]);
         
             for (String compName : availableComponents) {
                 if (!searchQuery.isEmpty() && !compName.toLowerCase().contains(searchQuery)) {
@@ -130,12 +131,16 @@ public class InspectorWindow extends EditorWindow {
                 }
             
                 if (ImGui.menuItem(compName)) {
-                    Supplier<Component> constructor = componentFactory.get(compName);
-                    if (constructor != null) {
-                        Component newComponent = constructor.get();
-                        inspectObject.addComponent(newComponent);
+                    Component newComponent = ComponentFactory.create(compName);
+                    if (newComponent != null) {
+                        if (actAsProperty) {
+                            propertyObject.addComponent(newComponent);
+                        } else {
+                            inspectObject.addComponent(newComponent);
+                        }
                     }
                 }
+                
             }
         
             ImGui.endPopup();

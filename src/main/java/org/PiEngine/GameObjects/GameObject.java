@@ -317,7 +317,7 @@ public class GameObject
     @Override
     public String toString()
     {
-        return String.format("GameObject(Name: %s, %s)", Name, transform);
+        return String.format("GameObject(Name: %s)", Name);
     }
 
      /**

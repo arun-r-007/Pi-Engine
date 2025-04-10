@@ -24,6 +24,7 @@ public class HierarchyWindow extends EditorWindow {
     private boolean renameFieldFocused = false;
 
     private final List<GameObject> toRemove = new ArrayList<>();
+    private final List<InspectorWindow> windowsToAdd = new ArrayList<>();
 
 
     public HierarchyWindow(GameObject root) {
@@ -35,27 +36,30 @@ public class HierarchyWindow extends EditorWindow {
         this.root = root;
     }
 
+    public void onUpdate(float deltaTime)
+    {
+        Iterator<InspectorWindow> addIterator = windowsToAdd.iterator();
+        while (addIterator.hasNext())
+        {
+            EditorWindow win = addIterator.next();
+            Editor.get().addWindow(win);
+            addIterator.remove(); // remove from pending list
+        }
+    }
+
     /**
      * Called every frame to render the hierarchy window contents.
      */
     @Override
     public void onRender() {
+
         if (!isOpen || root == null) return;
-    
+        
+
         ImGui.begin("Hierarchy");
         renderGameObjectHierarchy(root);
         ImGui.end();
-    
-        // Safely remove objects from toRemove list
-        Iterator<GameObject> iterator = toRemove.iterator();
-        while (iterator.hasNext()) {
-            GameObject objToRemove = iterator.next();
-            Transform parent = objToRemove.transform.getParent();
-            if (parent != null) {
-                parent.removeChild(objToRemove.transform);
-            }
-            iterator.remove(); // Safely remove the element from the list during iteration
-        }
+
     }
 
 
@@ -135,7 +139,8 @@ public class HierarchyWindow extends EditorWindow {
                 if (ImGui.menuItem("Property")) {
                     InspectorWindow n = new InspectorWindow(true);
                     n.propertyObject = obj;
-                    Editor.get().addWindow(n);
+                    
+                    Editor.get().queueAddWindow(n);
                 }
                 
                 if (ImGui.menuItem("Add Object")) {
