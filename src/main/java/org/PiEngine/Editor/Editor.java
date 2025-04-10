@@ -12,25 +12,44 @@ import java.util.List;
 
 public class Editor
 {
+    private static Editor instance;
+
     private final ImGuiImplGlfw imguiGlfw = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imguiGl3 = new ImGuiImplGl3();
 
     private final String glslVersion = "#version 330 core";
-    private final long windowPtr;
+    private long windowPtr;
+    private boolean enableMultiViewport;
 
     private final List<EditorWindow> editorWindows = new ArrayList<>();
-    private final boolean enableMultiViewport;
+    private boolean initialized = false;
 
+    private Editor() { }
 
-    public Editor(long windowPtr, boolean enableMultiViewport)
+    public static Editor getInstance(long windowPtr, boolean enableMultiViewport)
     {
-        this.windowPtr = windowPtr;
-        this.enableMultiViewport = enableMultiViewport;
+        if (instance == null)
+        {
+            instance = new Editor();
+            instance.windowPtr = windowPtr;
+            instance.enableMultiViewport = enableMultiViewport;
+        }
+        return instance;
     }
 
+    public static Editor get()
+    {
+        if (instance == null)
+        {
+            throw new IllegalStateException("Editor not initialized! Call getInstance(windowPtr, enableMultiViewport) first.");
+        }
+        return instance;
+    }
 
     public void init()
     {
+        if (initialized) return;
+
         ImGui.createContext();
         ImGuiIO io = ImGui.getIO();
 
@@ -42,8 +61,8 @@ public class Editor
         io.getFonts().addFontDefault();
         imguiGlfw.init(windowPtr, false);
         imguiGl3.init(glslVersion);
+        initialized = true;
     }
-
 
     public void destroy()
     {
@@ -58,7 +77,6 @@ public class Editor
 
     public void update(float deltaTime)
     {
-
         imguiGlfw.newFrame();
         imguiGl3.newFrame();
         ImGui.newFrame();
@@ -75,14 +93,6 @@ public class Editor
         ImGui.render();
         imguiGl3.renderDrawData(ImGui.getDrawData());
 
-        // if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable))
-        // {
-        //     final long backupWindowPtr = GLFW.glfwGetCurrentContext();
-        //     ImGui.updatePlatformWindows();
-        //     ImGui.renderPlatformWindowsDefault();
-        //     GLFW.glfwMakeContextCurrent(backupWindowPtr);
-        // }
-
         if (enableMultiViewport)
         {
             final long backupWindowPtr = GLFW.glfwGetCurrentContext();
@@ -90,7 +100,6 @@ public class Editor
             ImGui.renderPlatformWindowsDefault();
             GLFW.glfwMakeContextCurrent(backupWindowPtr);
         }
-
     }
 
     public void addWindow(EditorWindow window)

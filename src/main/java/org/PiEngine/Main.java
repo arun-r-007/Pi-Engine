@@ -4,6 +4,12 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.*;
 
 import imgui.ImGui;
@@ -79,7 +85,7 @@ public class Main
         holder.transform.setLocalPosition(new Vector(4f, 0, 0));
         childHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
         cChildHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
-        Camera.transform.setLocalPosition(new Vector(0, 0, 10));
+        Camera.transform.setLocalPosition(new Vector(0, 0, 20));
 
         world.addChild(player);
         world.addChild(enemy);
@@ -136,7 +142,7 @@ public class Main
 
         // --- Editor Setup ---
         
-        Editor editor = new Editor(window, false);
+        Editor editor = Editor.getInstance(window, false);
         editor.init();
 
         editor.addWindow(new LayerWindow());
