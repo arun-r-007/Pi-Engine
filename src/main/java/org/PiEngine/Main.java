@@ -3,12 +3,6 @@ package org.PiEngine;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.*;
 
 import imgui.ImGui;
@@ -57,21 +51,13 @@ public class Main
         imguiGl3.init("#version 330 core");
 
         // --- Camera Setup ---
-        Camera camera = new Camera((float) width / height, 0.01f, 100.0f);
-        camera.setPosition(new Vector(0, 0, 20.0f));
-        camera.setRotation(new Vector(0, 0, 0));
-        camera.setOrthographic( 8*-2, 8*2, -2 *4.5f, 2*4.5f, 1.0f, 100f);
-        camera.updateProjectionMatrix();
-        camera.updateViewMatrix();
+        Camera Scenecamera = new Camera((float) width / height, 0.01f, 100.0f);
+        Scenecamera.setPosition(new Vector(0, 0, 20.0f));
+        Scenecamera.setRotation(new Vector(0, 0, 0));
+        Scenecamera.setOrthographic( 8*-2, 8*2, -2 *4.5f, 2*4.5f, 1.0f, 100f);
+        Scenecamera.updateProjectionMatrix();
+        Scenecamera.updateViewMatrix();
 
-        camera.setRenderLayerMask(LayerManager.getLayerBit("Layer1") | LayerManager.getLayerBit("Layer2"));
-        
-        
-        Camera camera1 = new Camera((float) 1, 0.01f, 100.0f);
-        camera1.setPosition(new Vector(0, 0, 20.0f));
-        camera1.setPerspective(45.0f, (float) width / height, 0.01f, 100f);
-        camera1.updateProjectionMatrix();
-        camera1.updateViewMatrix();
 
         glEnable(GL_DEPTH_TEST);
 
@@ -85,11 +71,14 @@ public class Main
         GameObject holder = new GameObject("Holder");
         GameObject childHolder = new GameObject("ChildHolder");
         GameObject cChildHolder = new GameObject("CChildHolder");
+        GameObject Camera = new GameObject("Main Camera");
+
 
         player.transform.setLocalPosition(new Vector(0f, 0, 0));
         holder.transform.setLocalPosition(new Vector(4f, 0, 0));
         childHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
         cChildHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
+        Camera.transform.setLocalPosition(new Vector(0, 0, 10));
 
         world.addChild(player);
         world.addChild(enemy);
@@ -99,6 +88,8 @@ public class Main
         world.addChild(holder);
         holder.addChild(childHolder);
         childHolder.addChild(cChildHolder);
+        player.addChild(Camera);
+
 
         // --- Components ---
         player.addComponent(new Movemet());
@@ -108,6 +99,9 @@ public class Main
         enemy3.addComponent(new Follower());
         holder.addComponent(new SpinComponent());
         childHolder.addComponent(new SpinComponent());
+        Camera.addComponent(new CameraComponent());
+
+
 
 
 
@@ -120,6 +114,7 @@ public class Main
         holder.addComponent(new RendererComponent());
         childHolder.addComponent(new RendererComponent());
         cChildHolder.addComponent(new RendererComponent());
+        
 
 
         // Set Layer
@@ -139,25 +134,22 @@ public class Main
         Time.timeScale = 1.0f;
 
         // --- Editor Setup ---
+        
         Editor editor = new Editor(window, false);
         editor.init();
 
+        editor.addWindow(new LayerWindow());
         editor.addWindow(new HierarchyWindow(world));
         editor.addWindow(new InspectorWindow(false));
 
-        InspectorWindow inspector = new InspectorWindow(true);
-        inspector.propertyObject = player;
-        editor.addWindow(inspector);
-
         editor.addWindow(new PerfomanceWindow());
 
-        SceneWindow sceneWindow = new SceneWindow("Orthograpic");
+        SceneWindow sceneWindow = new SceneWindow("Scene");
         editor.addWindow(sceneWindow);
 
-        SceneWindow sceneWindow1 = new SceneWindow("Perspective");
+        SceneWindow sceneWindow1 = new SceneWindow("Game");
         editor.addWindow(sceneWindow1);
 
-        editor.addWindow(new LayerWindow());
 
         // --- Renderer Setup ---
         Shader mainShader = new Shader(
@@ -188,30 +180,31 @@ public class Main
 
             float moveSpeed = 10f * Time.deltaTime;
 
-            if (Input.isKeyDown(GLFW_KEY_UP)) camera.getPosition().y -= moveSpeed;
-            if (Input.isKeyDown(GLFW_KEY_DOWN)) camera.getPosition().y += moveSpeed;
-            if (Input.isKeyDown(GLFW_KEY_LEFT)) camera.getPosition().x -= moveSpeed;
-            if (Input.isKeyDown(GLFW_KEY_RIGHT)) camera.getPosition().x += moveSpeed;
+            if (Input.isKeyDown(GLFW_KEY_UP)) Scenecamera.getPosition().y += moveSpeed;
+            if (Input.isKeyDown(GLFW_KEY_DOWN)) Scenecamera.getPosition().y -= moveSpeed;
+            if (Input.isKeyDown(GLFW_KEY_LEFT)) Scenecamera.getPosition().x -= moveSpeed;
+            if (Input.isKeyDown(GLFW_KEY_RIGHT)) Scenecamera.getPosition().x += moveSpeed;
 
             // --- Game Logic ---
             world.update();
-            camera.updateViewMatrix();
-            camera.applyToShader(mainShader);
+            Scenecamera.updateViewMatrix();
+            Scenecamera.applyToShader(mainShader);
 
             
-            renderer.render(camera, world);
+            renderer.render(Scenecamera, world);
             int outputTex = renderer.getOutputTexture();
             sceneWindow.setid(outputTex);
             
-            
-            
-            
-            camera1.updateViewMatrix();
-            camera1.applyToShader(mainShader1);
-            renderer1.render(camera1, world);
-            int outputTex1 = renderer1.getOutputTexture();
+            int outputTex1 = -1;
+            CameraComponent GameCamear = Camera.getComponent(CameraComponent.class);
+            if(GameCamear != null)
+            {
+                renderer1.render(GameCamear.getCamera(), world);
+                outputTex1 = renderer1.getOutputTexture();
+                
+            }
             sceneWindow1.setid(outputTex1);
-
+            
             // --- Editor Update ---
             editor.update(Time.deltaTime);
 

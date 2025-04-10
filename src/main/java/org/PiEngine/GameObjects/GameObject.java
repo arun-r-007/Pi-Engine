@@ -326,4 +326,9 @@ public class GameObject
     public List<Component> getAllComponents() {
         return new ArrayList<>(components);
     }    
+
+    public void removeComponent(Component cmp)
+    {
+        components.remove(cmp);
+    }
 }
