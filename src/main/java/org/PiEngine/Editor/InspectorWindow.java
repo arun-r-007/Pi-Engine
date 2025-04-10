@@ -1,6 +1,8 @@
 package org.PiEngine.Editor;
 
 import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
+
 import org.PiEngine.GameObjects.*;
 import org.reflections.Reflections;
 import org.PiEngine.Component.*;
@@ -15,6 +17,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import imgui.type.ImInt;
+import imgui.type.ImString;
 
 
 
@@ -22,6 +25,8 @@ public class InspectorWindow extends EditorWindow {
     public static GameObject inspectObject = null;
     public static GameObject root = null;
     public GameObject propertyObject = null;
+    private final ImString searchBuffer = new ImString(64); // or larger size as needed
+
 
     public boolean actAsProperty = false;
 
@@ -107,20 +112,26 @@ public class InspectorWindow extends EditorWindow {
         }
         
         // Now render the popup as usual
-        if (ImGui.beginPopup("AddComponentMenu"))
-        {
+        if (ImGui.beginPopup("AddComponentMenu")) {
             ImGui.text("Add Component:");
             ImGui.separator();
         
+            // Static buffer for search input
+            ImGui.text("Search:");
+            ImGui.sameLine();
+            ImGui.inputText("##search", searchBuffer, ImGuiInputTextFlags.None);
+            String searchQuery = searchBuffer.get().toLowerCase().trim();
+
             String[] availableComponents = componentFactory.keySet().toArray(new String[0]);
         
-            for (String compName : availableComponents)
-            {
-                if (ImGui.menuItem(compName))
-                {
+            for (String compName : availableComponents) {
+                if (!searchQuery.isEmpty() && !compName.toLowerCase().contains(searchQuery)) {
+                    continue;
+                }
+            
+                if (ImGui.menuItem(compName)) {
                     Supplier<Component> constructor = componentFactory.get(compName);
-                    if (constructor != null)
-                    {
+                    if (constructor != null) {
                         Component newComponent = constructor.get();
                         inspectObject.addComponent(newComponent);
                     }
@@ -129,9 +140,6 @@ public class InspectorWindow extends EditorWindow {
         
             ImGui.endPopup();
         }
-        
-        
-
         ImGui.end();
     }
 

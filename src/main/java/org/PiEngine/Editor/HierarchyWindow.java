@@ -8,6 +8,7 @@ import imgui.type.ImString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 import org.PiEngine.GameObjects.GameObject;
 import org.PiEngine.GameObjects.Transform;
@@ -40,105 +41,123 @@ public class HierarchyWindow extends EditorWindow {
     @Override
     public void onRender() {
         if (!isOpen || root == null) return;
-
+    
         ImGui.begin("Hierarchy");
         renderGameObjectHierarchy(root);
         ImGui.end();
-        
-        
-        for (GameObject objToRemove : toRemove)
-        {
+    
+        // Safely remove objects from toRemove list
+        Iterator<GameObject> iterator = toRemove.iterator();
+        while (iterator.hasNext()) {
+            GameObject objToRemove = iterator.next();
             Transform parent = objToRemove.transform.getParent();
-            if (parent != null)
-            {
-                parent.getChildren().remove(objToRemove.transform);
+            if (parent != null) {
+                parent.removeChild(objToRemove.transform);
             }
+            iterator.remove(); // Safely remove the element from the list during iteration
         }
-        toRemove.clear();
     }
+
 
     /**
      * Recursively renders each GameObject in the hierarchy.
      * Handles input for renaming, context menus, and selection.
      */
-        private void renderGameObjectHierarchy(GameObject obj) {
-            ImGui.pushID(obj.hashCode()); // Unique ID per object
-
-            boolean isLeaf = obj.transform.getChildren().isEmpty();
-            int flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.DefaultOpen;
-            if (isLeaf) flags |= ImGuiTreeNodeFlags.Leaf;
-
-            boolean nodeOpen;
-
-            // Handle renaming UI
-            if (renamingObject == obj) {
-                ImGui.setNextItemWidth(200);
-                if (ImGui.inputText("##rename", renameBuffer, ImGuiInputTextFlags.EnterReturnsTrue | ImGuiInputTextFlags.AutoSelectAll)) {
-                    obj.Name = renameBuffer.get().trim();
-                    renamingObject = null;
-                    renameFieldFocused = false;
-                }
-
-                if (ImGui.isItemActive()) {
-                    renameFieldFocused = true;
-                } else if (renameFieldFocused && !ImGui.isItemHovered()) {
-                    obj.Name = renameBuffer.get().trim(); // Commit rename on blur
-                    renamingObject = null;
-                    renameFieldFocused = false;
-                }
-
-                nodeOpen = ImGui.treeNodeEx("##hidden", flags, ""); // Placeholder node
-            } else {
-                nodeOpen = ImGui.treeNodeEx(obj.Name, flags);
-
-                // Select object on click
-                if (ImGui.isItemClicked(ImGuiMouseButton.Left)) {
-                    InspectorWindow.inspectObject = obj;
-                    InspectorWindow.root = this.root;
-                }
-
-                // Rename on double-click
-                if (ImGui.isItemClicked(ImGuiMouseButton.Left) && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
-                    renamingObject = obj;
-                    renameFieldFocused = false;
-                    renameBuffer.set(obj.Name);
-                }
+    private void renderGameObjectHierarchy(GameObject obj) {
+        ImGui.pushID(obj.hashCode());
+    
+        boolean isLeaf = obj.transform.getChildren().isEmpty();
+        int flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.DefaultOpen;
+        if (isLeaf) flags |= ImGuiTreeNodeFlags.Leaf;
+    
+        boolean nodeOpen;
+    
+        // Handle renaming UI
+        if (renamingObject == obj) {
+            ImGui.setNextItemWidth(200);
+            if (ImGui.inputText("##rename", renameBuffer, ImGuiInputTextFlags.EnterReturnsTrue | ImGuiInputTextFlags.AutoSelectAll)) {
+                obj.Name = renameBuffer.get().trim();
+                renamingObject = null;
+                renameFieldFocused = false;
             }
-            
-
-            // Context menu for right-click options
-            if (ImGui.beginPopupContextItem(obj.Name)) {
-                // Add child object
-                if (ImGui.menuItem("Add Object")) {
-                    GameObject newChild = new GameObject("NewGameObject");
-                    obj.addChild(newChild);
-                }
-                // Remove object from hierarchy
-                if (ImGui.menuItem("Remove")) {
-                    toRemove.add(obj); // Just mark for removal
-                    if (renamingObject == obj) {
-                        renamingObject = null;
-                        renameFieldFocused = false;
-                    }
-                }
-
-                ImGui.endPopup();
+    
+            if (ImGui.isItemActive()) {
+                renameFieldFocused = true;
+            } else if (renameFieldFocused && !ImGui.isItemHovered()) {
+                obj.Name = renameBuffer.get().trim(); // Commit rename on blur
+                renamingObject = null;
+                renameFieldFocused = false;
             }
-
-            // Recursively draw children
-            if (nodeOpen) {
-                for (Transform child : obj.transform.getChildren()) {
-                    if(child != null)
-                    {
-                        GameObject childObj = child.getGameObject();
-                        if (childObj != null) {
-                            renderGameObjectHierarchy(childObj);
-                        }
-                    }
-                }
-                ImGui.treePop();
+    
+            nodeOpen = ImGui.treeNodeEx("##hidden", flags, "");
+        } else {
+            nodeOpen = ImGui.treeNodeEx(obj.Name, flags);
+    
+            // Selection and rename
+            if (ImGui.isItemClicked(ImGuiMouseButton.Left)) {
+                InspectorWindow.inspectObject = obj;
+                InspectorWindow.root = this.root;
             }
-
-            ImGui.popID(); // Restore previous ID
+    
+            if (ImGui.isItemClicked(ImGuiMouseButton.Left) && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
+                renamingObject = obj;
+                renameFieldFocused = false;
+                renameBuffer.set(obj.Name);
+            }
         }
-    }
+    
+        // --- DRAG SOURCE ---
+        if (ImGui.beginDragDropSource()) {
+            ImGui.setDragDropPayload("GAME_OBJECT", obj); // Use the GameObject directly
+            ImGui.text("Dragging: " + obj.Name);
+            ImGui.endDragDropSource();
+        }
+    
+        // --- DROP TARGET ---
+        if (ImGui.beginDragDropTarget()) {
+            Object payloadObj = ImGui.acceptDragDropPayload("GAME_OBJECT");
+            if (payloadObj != null && payloadObj instanceof GameObject) {
+                GameObject draggedObj = (GameObject) payloadObj;
+                if (draggedObj != obj) {
+                    draggedObj.reparentTo(obj); // Reparent dragged object to the drop target
+                }
+            }
+            ImGui.endDragDropTarget();
+        }
+    
+        // Context menu
+        if (ImGui.beginPopupContextItem(obj.Name)) {
+            if (ImGui.menuItem("Add Object")) {
+                GameObject newChild = new GameObject("NewGameObject");
+                obj.addChild(newChild);
+            }
+            if (ImGui.menuItem("Remove")) {
+                toRemove.add(obj);
+                if (renamingObject == obj) {
+                    renamingObject = null;
+                    renameFieldFocused = false;
+                }
+            }
+            ImGui.endPopup();
+        }
+    
+        // Render children
+        if (!nodeOpen) return;
+
+        List<Transform> children = obj.transform.getChildren();
+        for (int i = 0; i < children.size(); i++) {
+            Transform child = children.get(i);
+            if (child == null) continue;
+        
+            GameObject childObj = child.getGameObject();
+            if (childObj == null) continue;
+        
+            renderGameObjectHierarchy(childObj);
+        }
+        
+        ImGui.treePop();
+
+    
+        ImGui.popID();
+    }    
+}
