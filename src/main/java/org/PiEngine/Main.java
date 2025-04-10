@@ -153,14 +153,30 @@ public class Main
 
 
         // --- Renderer Setup ---
-        Shader mainShader = new Shader(
+        Shader mainShader = new Shader
+        (
             "src/main/java/org/PiEngine/Shaders/Camera/camera.vert",
             "src/main/java/org/PiEngine/Shaders/Camera/camera.frag",
             null
         );
 
-        Renderer renderer = new Renderer(width / 2, height / 2, mainShader);
-        Renderer renderer1 = new Renderer(width / 2, height / 2, mainShader);
+        Shader PostShader = new Shader
+        (
+            "src\\main\\java\\org\\PiEngine\\Shaders\\CRT\\CRT.vert", 
+            "src\\main\\java\\org\\PiEngine\\Shaders\\CRT\\CRT.frag", 
+        null
+        );
+
+        Renderer SceneRenderer = new Renderer();
+        GeometryPass GP = new GeometryPass(mainShader, width/2, height/2);
+        SceneRenderer.addPass(GP);
+
+
+        Renderer GameRenderer = new Renderer();
+        PostProcessingPass PP = new PostProcessingPass(PostShader, width/2, height/2);
+        GameRenderer.addPass(GP);
+        GameRenderer.addPass(PP);
+
 
         //world.printHierarchy();
 
@@ -194,17 +210,16 @@ public class Main
             Scenecamera.applyToShader(mainShader);
 
             
-            renderer.render(Scenecamera, world);
-            int outputTex = renderer.getOutputTexture();
+            SceneRenderer.renderPipeline(Scenecamera, world);
+            int outputTex = SceneRenderer.getFinalTexture();
             sceneWindow.setid(outputTex);
             
             int outputTex1 = -1;
             CameraComponent GameCamear = Camera.getComponent(CameraComponent.class);
             if(GameCamear != null)
             {
-                renderer1.render(GameCamear.getCamera(), world);
-                outputTex1 = renderer1.getOutputTexture();
-                
+                GameRenderer.renderPipeline(GameCamear.getCamera(), world);
+                outputTex1 = GameRenderer.getFinalTexture();        
             }
             sceneWindow1.setid(outputTex1);
             

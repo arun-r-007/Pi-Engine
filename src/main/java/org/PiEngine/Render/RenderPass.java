@@ -1,33 +1,45 @@
 package org.PiEngine.Render;
 
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL30.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.PiEngine.Core.*;
-import org.PiEngine.GameObjects.*;
-import org.PiEngine.Math.*;
+import org.PiEngine.Core.Camera;
+import org.PiEngine.GameObjects.GameObject;
 
-
-public class RenderPass
+public abstract class RenderPass
 {
-    private Framebuffer framebuffer;
-    private Shader shader;
-    private List<Integer> inputTextures = new ArrayList<>();
-    private int width, height;
+    protected Framebuffer framebuffer;
+    protected Shader shader;
+    protected List<Integer> inputTextures = new ArrayList<>();
+    protected int width, height;
 
     public RenderPass(Shader shader, int width, int height)
     {
         this.shader = shader;
         this.width = width;
         this.height = height;
-        this.framebuffer = new Framebuffer(width, height); // May support MRTs later
+        this.framebuffer = new Framebuffer(width, height);
     }
 
     public void addInputTexture(int textureId)
     {
         inputTextures.add(textureId);
+    }
+
+    public List<Integer> getInputTextures()
+    {
+        return inputTextures;
     }
 
     public void resize(int width, int height)
@@ -37,28 +49,24 @@ public class RenderPass
         framebuffer.resize(width, height);
     }
 
-    public void render(Camera camera, GameObject scene)
+    public void bindAndPrepare()
     {
         framebuffer.bind();
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.use();
-        Matrix4 viewProj = Matrix4.multiply(camera.getProjectionMatrix(), camera.getViewMatrix());
-        shader.setUniformMat4("u_ViewProj", viewProj);
-
-        // Bind input textures
+        glClearColor(0.05f, 0.05f, 0.05f, 1f);
         for (int i = 0; i < inputTextures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, inputTextures.get(i));
-            shader.setUniform1i("u_Texture" + i, i); 
+            shader.setUniform1i("u_Texture" + i, i);
+
         }
-
-        scene.render(camera);
-
-        framebuffer.unbind();
     }
+
+    public abstract void render(Camera camera, GameObject scene);
 
     public int getOutputTexture()
     {
@@ -69,5 +77,12 @@ public class RenderPass
     {
         return framebuffer;
     }
-}
 
+    public void setInputTextures(int... inputTextures)
+    {
+        if(inputTextures != null)
+        {
+            this.inputTextures.add(inputTextures[0]);
+        }
+    }
+}

@@ -16,7 +16,7 @@ public class CameraComponent extends Component
         camera.setOrthographic( 8*-2, 8*2, -2 *4.5f, 2*4.5f, 1.0f, 100f);
         camera.updateProjectionMatrix();
         camera.updateViewMatrix();
-        camera.setRenderLayerMask(LayerManager.getLayerBit(LayerManager.getLayerName(1)));
+        //camera.setRenderLayerMask(LayerManager.getLayerBit(LayerManager.getLayerName(1)));
 
 
     }
