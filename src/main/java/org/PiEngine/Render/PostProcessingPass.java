@@ -1,6 +1,5 @@
 package org.PiEngine.Render;
 
-
 import static org.lwjgl.opengl.GL30.*;
 
 
@@ -9,44 +8,53 @@ import org.PiEngine.GameObjects.GameObject;
 
 public class PostProcessingPass extends RenderPass
 {
-    private int[] inputTextures;
-    int fullscreenVAO;
+    private int fullscreenVAO = -1;
+    private int fullscreenVBO = -1;
 
-    public PostProcessingPass(Shader shader, int width, int height, int... inputTextures)
+    public PostProcessingPass(Shader shader, int width, int height)
     {
         super(shader, width, height);
-        this.inputTextures = inputTextures;
+        setupFullscreenTriangle();
+    }
+
+    private void setupFullscreenTriangle()
+    {
+        float[] triangleVertices = {
+            -1.0f, -1.0f,
+             3.0f, -1.0f,
+            -1.0f,  3.0f
+        };
+
+        fullscreenVAO = glGenVertexArrays();
+        fullscreenVBO = glGenBuffers();
+
+        glBindVertexArray(fullscreenVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, fullscreenVBO);
+        glBufferData(GL_ARRAY_BUFFER, triangleVertices, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
+
+        glBindVertexArray(0);
     }
 
     @Override
     public void render(Camera camera, GameObject scene)
     {
         bindAndPrepare();
-
         shader.use();
-        for (int i = 0; i < inputTextures.length; i++)
-        {
-            glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_2D, inputTextures[i]);
-            shader.setUniform1i("iChannel" + i, i); 
-        }
-
-        if (fullscreenVAO == 0)
-        {
-            fullscreenVAO = glGenVertexArrays(); 
-            glBindVertexArray(fullscreenVAO);
-            glEnableVertexAttribArray(0);
-        }
-        else
-        {
-            glBindVertexArray(fullscreenVAO);
-        }
 
         glBindVertexArray(fullscreenVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3); 
-
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(0);
 
         framebuffer.unbind();
     }
-}
 
+    
+    public void dispose()
+    {
+        if (fullscreenVAO != -1) glDeleteVertexArrays(fullscreenVAO);
+        if (fullscreenVBO != -1) glDeleteBuffers(fullscreenVBO);
+    }
+}
