@@ -3,6 +3,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+*.log
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -22,5 +23,4 @@ out/
 ### Mac OS ###
 .DS_Store
 
-.log
 hs_err_pid11804.log

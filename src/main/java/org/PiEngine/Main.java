@@ -148,7 +148,7 @@ public class Main
         editor.addWindow(new LayerWindow());
         editor.addWindow(new HierarchyWindow(world));
         editor.addWindow(new InspectorWindow(false));
-
+        
         editor.addWindow(new PerfomanceWindow());
 
         SceneWindow sceneWindow = new SceneWindow("Scene");
