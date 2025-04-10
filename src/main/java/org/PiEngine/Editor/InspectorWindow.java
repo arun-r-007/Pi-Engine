@@ -2,12 +2,21 @@ package org.PiEngine.Editor;
 
 import imgui.ImGui;
 import org.PiEngine.GameObjects.*;
+import org.reflections.Reflections;
 import org.PiEngine.Component.*;
+import org.PiEngine.Core.LayerManager;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
+
+import imgui.type.ImInt;
+
+
 
 public class InspectorWindow extends EditorWindow {
     public static GameObject inspectObject = null;
@@ -19,9 +28,29 @@ public class InspectorWindow extends EditorWindow {
     private static final Map<String, Supplier<Component>> componentFactory = new HashMap<>();
 
     static {
-        componentFactory.put("Follower", Follower::new);
-        componentFactory.put("Movement", Movemet::new);
-        componentFactory.put("SpinComponent", SpinComponent::new);
+        Reflections reflections = new Reflections("org.PiEngine.Component");
+
+        Set<Class<? extends Component>> componentClasses = reflections.getSubTypesOf(Component.class);
+
+        for (Class<? extends Component> compClass : componentClasses)
+        {
+            try {
+                // Ensure it has a public no-arg constructor
+                compClass.getConstructor();
+
+                componentFactory.put(compClass.getSimpleName(), () -> {
+                    try {
+                        return compClass.getConstructor().newInstance();
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                });
+
+            } catch (NoSuchMethodException e) {
+                System.out.println("Skipping " + compClass.getSimpleName() + ": No public no-arg constructor.");
+            }
+        }
     }
 
     /**
@@ -51,6 +80,19 @@ public class InspectorWindow extends EditorWindow {
         ImGui.text("Inspecting: " + current.Name);
         ImGui.separator();
 
+
+        ImGui.text("Layer");
+
+        String[] layers = LayerManager.GetLayerNameArray();
+
+        int currentLayer = LayerManager.getIndexFromBitmask(current.getLayerBit()); 
+        ImInt selected = new ImInt(currentLayer);
+
+        if (ImGui.combo("##LayerCombo", selected, layers, layers.length)) {
+            current.setLayerByName(LayerManager.getLayerName(selected.get()), false);
+        }
+        
+
         if (ImGui.collapsingHeader("Transform")) {
             renderTransformEditor(current);
         }
@@ -59,28 +101,36 @@ public class InspectorWindow extends EditorWindow {
             renderComponentEditor(current);
         }
 
-        // Right-click context menu to add components
-        if (ImGui.beginPopupContextItem("AddComponentMenu")) {
+        if (ImGui.button("Add Component")) // This is your button
+        {
+            ImGui.openPopup("AddComponentMenu"); // Open the same popup manually
+        }
+        
+        // Now render the popup as usual
+        if (ImGui.beginPopup("AddComponentMenu"))
+        {
             ImGui.text("Add Component:");
             ImGui.separator();
-
-            String[] availableComponents = {
-                "Follower",
-                "Movement",
-                "SpinComponent"
-            };
-
-            for (String compName : availableComponents) {
-                if (ImGui.menuItem(compName)) {
+        
+            String[] availableComponents = componentFactory.keySet().toArray(new String[0]);
+        
+            for (String compName : availableComponents)
+            {
+                if (ImGui.menuItem(compName))
+                {
                     Supplier<Component> constructor = componentFactory.get(compName);
-                    if (constructor != null) {
+                    if (constructor != null)
+                    {
                         Component newComponent = constructor.get();
                         inspectObject.addComponent(newComponent);
                     }
                 }
             }
+        
             ImGui.endPopup();
         }
+        
+        
 
         ImGui.end();
     }
@@ -150,16 +200,33 @@ public class InspectorWindow extends EditorWindow {
      * Renders editable component data for all components attached to a GameObject.
      */
     private void renderComponentEditor(GameObject obj) {
-        ImGui.text("All Component Properties of " + obj.Name);
-        ImGui.separator();
+    ImGui.text("All Component Properties of " + obj.Name);
+    ImGui.separator();
 
-        List<Component> components = obj.getAllComponents();
-        for (Component c : components) {
-            String compName = c.getClass().getSimpleName();
-            if (ImGui.collapsingHeader(compName)) {
-                ComponentPropertyBlock comp = new ComponentPropertyBlock(compName);
-                comp.drawComponentFields(c, root);
+    List<Component> components = new ArrayList<>(obj.getAllComponents()); // Copy to avoid modification issues
+    for (Component c : components) {
+        String compName = c.getClass().getSimpleName();
+        int compId = System.identityHashCode(c);
+        ImGui.pushID(compId);
+
+        if (ImGui.collapsingHeader(compName)) {
+            // Right-click context menu
+            if (ImGui.beginPopupContextItem("ComponentContext")) {
+                if (ImGui.menuItem("Remove Component")) {
+                    obj.removeComponent(c);
+                    ImGui.endPopup();
+                    ImGui.popID();
+                    break; // Prevents list modification error
+                }
+                ImGui.endPopup();
             }
+
+            ComponentPropertyBlock comp = new ComponentPropertyBlock(compName);
+            comp.drawComponentFields(c, root);
         }
+
+        ImGui.popID();
     }
+}
+
 }

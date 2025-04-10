@@ -2,8 +2,9 @@ package org.PiEngine.GameObjects;
 
 
 import org.PiEngine.Component.Component;
+import org.PiEngine.Core.Camera;
+import org.PiEngine.Core.LayerManager;
 import org.PiEngine.Math.*;
-import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,8 @@ public class GameObject
 {
     public String Name;
     public Transform transform;
+
+    private int layer = LayerManager.getLayerBit("Layer0");
 
     /**
      * Constructs a GameObject with a given name and initializes its Transform.
@@ -126,12 +129,15 @@ public class GameObject
      * Called once every frame after update().
      * Responsible for rendering this GameObject and its children.
      */
-    public void render()
+    public void render(Camera camera)
     {
         // Render all components attached to this GameObject
-        for (Component c : components)
+        if(camera.canRenderLayer(layer))
         {
-            c.render();
+            for (Component c : components)
+            {
+                c.render();
+            }
         }
 
         // Recursively render all child GameObjects
@@ -140,7 +146,7 @@ public class GameObject
             GameObject child = childTransform.getGameObject();
             if (child != null)
             {
-                child.render();
+                child.render(camera);
             }
         }
     }
@@ -151,7 +157,7 @@ public class GameObject
      */
     public void debugRender()
     {
-        debugDrawSquare(transform.getWorldPosition(), 0.4f);
+        //debugDrawSquare(transform.getWorldPosition(), 0.4f);
 
         // Debug render all components
         for (Component c : components)
@@ -182,7 +188,7 @@ public class GameObject
 
     private void printHierarchy(String prefix, boolean isTail)
     {
-        System.out.println(prefix + (isTail ? "└── " : "├── ") + Name + " Position:"+transform.getWorldPosition()); //+ "(" + this + ")");
+        System.out.println(prefix + (isTail ? "└── " : "├── ") + Name + " "+ LayerManager.getLayerNameFromBitmask(layer)); //+ "(" + this + ")");
 
         List<Transform> children = transform.getChildren();
         for (int i = 0; i < children.size(); i++)
@@ -203,29 +209,29 @@ public class GameObject
      * @param size Size of the Plane
      */
 
-    public void debugDrawSquare(Vector position, float size)
-    {
-        float half = size / 2.0f;
-        float x = position.x;
-        float y = position.y;
-        float z = position.z;
+    // public void debugDrawSquare(Vector position, float size)
+    // {
+    //     float half = size / 2.0f;
+    //     float x = position.x;
+    //     float y = position.y;
+    //     float z = position.z;
 
-        //glColor3f(1.0f, 0.0f, 0.0f); // Red color
+    //     //glColor3f(1.0f, 0.0f, 0.0f); // Red color
 
-        glBegin(GL_TRIANGLES);
+    //     glBegin(GL_TRIANGLES);
 
-        // Triangle 1
-        glVertex3f(x - half, y - half, z);
-        glVertex3f(x + half, y - half, z);
-        glVertex3f(x + half, y + half, z);
+    //     // Triangle 1
+    //     glVertex3f(x - half, y - half, z);
+    //     glVertex3f(x + half, y - half, z);
+    //     glVertex3f(x + half, y + half, z);
 
-        // Triangle 2
-        glVertex3f(x - half, y - half, z);
-        glVertex3f(x + half, y + half, z);
-        glVertex3f(x - half, y + half, z);
+    //     // Triangle 2
+    //     glVertex3f(x - half, y - half, z);
+    //     glVertex3f(x + half, y + half, z);
+    //     glVertex3f(x - half, y + half, z);
 
-        glEnd();
-    }
+    //     glEnd();
+    // }
 
 
     /**
@@ -258,6 +264,52 @@ public class GameObject
     }
 
 
+    public int getLayerBit()
+    {
+        return layer;
+    }
+
+    public void setLayer(int newLayer)
+    {
+        this.layer = newLayer;
+    }
+
+    /**
+     * Sets the layer for this object only.
+     */
+    public void setLayerOnly(int newLayer)
+    {
+        this.layer = newLayer;
+    }
+
+    /**
+     * Sets the layer for this object and all its children recursively.
+     */
+    public void setLayerRecursively(int layerBit)
+    {
+        this.layer = layerBit;
+        for (Transform childTransform : transform.getChildren())
+        {
+            childTransform.getGameObject().setLayerRecursively(layerBit);
+        }
+    }
+
+    /**
+     * Sets the layer from layer name (for convenience).
+     */
+    public void setLayerByName(String layerName, boolean recursive)
+    {
+        int bit = LayerManager.getLayerBit(layerName);
+        if (recursive)
+        {
+            setLayerRecursively(bit);
+        }
+        else
+        {
+            setLayerOnly(bit);
+        }
+    }
+
 
     /**
      * Returns a readable string representation of the GameObject.
@@ -274,4 +326,9 @@ public class GameObject
     public List<Component> getAllComponents() {
         return new ArrayList<>(components);
     }    
+
+    public void removeComponent(Component cmp)
+    {
+        components.remove(cmp);
+    }
 }
