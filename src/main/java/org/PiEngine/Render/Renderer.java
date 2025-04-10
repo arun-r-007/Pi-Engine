@@ -19,6 +19,11 @@ public class Renderer
         this.framebuffer = new Framebuffer(width, height);
     }
 
+    public void SetSize(int height, int width)
+    {
+        framebuffer.resize(width, height);
+    }
+
     public void render(Camera camera, GameObject scene)
     {
         framebuffer.bind();
@@ -31,7 +36,7 @@ public class Renderer
         shader.setUniformMat4("u_ViewProj", viewProj);
 
         
-        scene.render();
+        scene.render(camera);
 
         framebuffer.unbind();
     }

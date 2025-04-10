@@ -5,8 +5,8 @@ import org.PiEngine.Render.Mesh;
 
 public class RendererComponent extends Component
 {
-    private Mesh mesh;
-    private float size = 0.5f;
+    public Mesh mesh;
+    public float size = 0.5f;
 
     @Override
     public void start()

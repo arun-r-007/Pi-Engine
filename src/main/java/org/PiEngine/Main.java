@@ -63,6 +63,8 @@ public class Main
         camera.setOrthographic( 8*-2, 8*2, -2 *4.5f, 2*4.5f, 1.0f, 100f);
         camera.updateProjectionMatrix();
         camera.updateViewMatrix();
+
+        camera.setRenderLayerMask(LayerManager.getLayerBit("Layer1") | LayerManager.getLayerBit("Layer2"));
         
         
         Camera camera1 = new Camera((float) 1, 0.01f, 100.0f);
@@ -120,6 +122,15 @@ public class Main
         cChildHolder.addComponent(new RendererComponent());
 
 
+        // Set Layer
+        player.setLayerByName("Layer2", false);
+        enemy.setLayerByName("Layer2", false);
+        enemy1.setLayerByName("Layer2", false);
+        enemy2.setLayerByName("Layer2", false);
+        enemy3.setLayerByName("Layer2", false);
+
+
+
         enemy.getComponent(Follower.class).Target = player;
         enemy1.getComponent(Follower.class).Target = enemy;
         enemy2.getComponent(Follower.class).Target = enemy1;
@@ -146,6 +157,8 @@ public class Main
         SceneWindow sceneWindow1 = new SceneWindow("Perspective");
         editor.addWindow(sceneWindow1);
 
+        editor.addWindow(new LayerWindow());
+
         // --- Renderer Setup ---
         Shader mainShader = new Shader(
             "src/main/java/org/PiEngine/Shaders/Camera/camera.vert",
@@ -161,6 +174,8 @@ public class Main
         Renderer renderer = new Renderer(width / 2, height / 2, mainShader);
         Renderer renderer1 = new Renderer(width / 2, height / 2, mainShader1);
 
+        world.printHierarchy();
+
 
         // --- Main Loop ---
         while (!glfwWindowShouldClose(window))
@@ -170,7 +185,7 @@ public class Main
             Time.update();
             Input.update();
 
-            // --- Input Control ---
+
             float moveSpeed = 10f * Time.deltaTime;
 
             if (Input.isKeyDown(GLFW_KEY_UP)) camera.getPosition().y -= moveSpeed;
@@ -178,17 +193,12 @@ public class Main
             if (Input.isKeyDown(GLFW_KEY_LEFT)) camera.getPosition().x -= moveSpeed;
             if (Input.isKeyDown(GLFW_KEY_RIGHT)) camera.getPosition().x += moveSpeed;
 
-            if (Input.isKeyDown(GLFW_KEY_SPACE)) cChildHolder.reparentTo(world);
-            if (Input.isKeyDown(GLFW_KEY_ENTER)) cChildHolder.reparentTo(childHolder);
-            if (Input.isKeyDown(GLFW_KEY_N)) cChildHolder.reparentTo(player);
-
             // --- Game Logic ---
             world.update();
             camera.updateViewMatrix();
             camera.applyToShader(mainShader);
 
             
-            // --- Render to Texture ---
             renderer.render(camera, world);
             int outputTex = renderer.getOutputTexture();
             sceneWindow.setid(outputTex);

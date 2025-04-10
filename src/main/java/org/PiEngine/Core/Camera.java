@@ -4,7 +4,6 @@ import org.PiEngine.Math.Vector;
 import org.PiEngine.Render.Shader;
 import org.PiEngine.Math.Matrix4;
 
-
 import static org.lwjgl.opengl.GL30.*;
 
 /**
@@ -163,6 +162,50 @@ public class Camera
     public void applyToShader(Shader shader)
     {
 
+    }
+
+
+    // Add this field to filter what layers this camera will render
+    private int renderLayerMask = 0xFFFFFFFF; // Default: all layers visible
+
+    /**
+     * Returns the current render layer bitmask.
+     */
+    public int getRenderLayerMask()
+    {
+        return renderLayerMask;
+    }
+
+    /**
+     * Sets the render layer bitmask. Only GameObjects with matching layers will be rendered.
+     */
+    public void setRenderLayerMask(int mask)
+    {
+        this.renderLayerMask = mask;
+    }
+
+    /**
+     * Enables rendering for the given layer (bitwise OR).
+     */
+    public void addRenderLayer(int layerBit)
+    {
+        this.renderLayerMask |= layerBit;
+    }
+
+    /**
+     * Disables rendering for the given layer (bitwise AND NOT).
+     */
+    public void removeRenderLayer(int layerBit)
+    {
+        this.renderLayerMask &= ~layerBit;
+    }
+
+    /**
+     * Checks whether this camera is set to render the given layer.
+     */
+    public boolean canRenderLayer(int layerBit)
+    {
+        return (renderLayerMask & layerBit) != 0;
     }
 
 }

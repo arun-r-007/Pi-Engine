@@ -65,12 +65,9 @@ public class    Shader
         if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == GL_FALSE)
         {
             String log = glGetShaderInfoLog(shaderId);
-            System.out.println("failed");
             throw new RuntimeException("Shader compilation failed:\n" + log);
 
         }
-
-        System.out.println("done");
 
         return shaderId;
     }
