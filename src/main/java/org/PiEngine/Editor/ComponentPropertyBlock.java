@@ -62,27 +62,38 @@ public class ComponentPropertyBlock {
                     }
 
                 } else if (value instanceof GameObject go) {
-                    // Fetch all child GameObjects from root's Transform
                     List<Transform> children = root.transform.getChildren();
                     String[] names = new String[children.size()];
                     int currentIndex = 0;
-
+                
                     for (int i = 0; i < children.size(); i++) {
                         GameObject childObj = children.get(i).getGameObject();
                         names[i] = (childObj != null) ? childObj.Name : "(null)";
                         if (childObj == go) currentIndex = i;
                     }
-
+                
                     ImInt selected = new ImInt(currentIndex);
-                    ImGui.text(fieldName + ":"); ImGui.sameLine();
-
+                
+                    ImGui.text(fieldName + ":");
+                    ImGui.sameLine();
+                
+                    ImGui.pushID(fieldName); // Important for uniqueness
                     if (ImGui.combo("##" + label + "_" + fieldName, selected, names)) {
                         GameObject selectedObj = children.get(selected.get()).getGameObject();
                         if (selectedObj != null) {
-                            field.set(c, selectedObj); // Apply new selected GameObject
+                            field.set(c, selectedObj);
                         }
                     }
-
+                
+                    // --- Drag-Drop Target for GameObject ---
+                    if (ImGui.beginDragDropTarget()) {
+                        Object payloadObj = ImGui.acceptDragDropPayload("GAME_OBJECT");
+                        if (payloadObj instanceof GameObject droppedObj) {
+                            field.set(c, droppedObj);
+                        }
+                        ImGui.endDragDropTarget();
+                    }
+                    ImGui.popID();
                 } else {
                     ImGui.text(fieldName + ": [Unsupported Type]");
                 }
