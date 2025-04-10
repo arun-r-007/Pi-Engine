@@ -1,8 +1,15 @@
 package org.PiEngine;
 
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.*;
 
 import imgui.ImGui;
@@ -78,7 +85,7 @@ public class Main
         holder.transform.setLocalPosition(new Vector(4f, 0, 0));
         childHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
         cChildHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
-        Camera.transform.setLocalPosition(new Vector(0, 0, 10));
+        Camera.transform.setLocalPosition(new Vector(0, 0, 20));
 
         world.addChild(player);
         world.addChild(enemy);
@@ -118,11 +125,11 @@ public class Main
 
 
         // Set Layer
-        player.setLayerByName("Layer2", false);
-        enemy.setLayerByName("Layer2", false);
-        enemy1.setLayerByName("Layer2", false);
-        enemy2.setLayerByName("Layer2", false);
-        enemy3.setLayerByName("Layer2", false);
+        player.setLayerByName("Layer1", false);
+        enemy.setLayerByName("Layer1", false);
+        enemy1.setLayerByName("Layer1", false);
+        enemy2.setLayerByName("Layer1", false);
+        enemy3.setLayerByName("Layer1", false);
 
 
 
@@ -135,7 +142,7 @@ public class Main
 
         // --- Editor Setup ---
         
-        Editor editor = new Editor(window, false);
+        Editor editor = Editor.getInstance(window, false);
         editor.init();
 
         editor.addWindow(new LayerWindow());
@@ -152,21 +159,42 @@ public class Main
 
 
         // --- Renderer Setup ---
-        Shader mainShader = new Shader(
+        Shader mainShader = new Shader
+        (
             "src/main/java/org/PiEngine/Shaders/Camera/camera.vert",
             "src/main/java/org/PiEngine/Shaders/Camera/camera.frag",
             null
         );
 
-        Shader mainShader1 = new Shader(
-            "src/main/java/org/PiEngine/Shaders/Camera/camera.vert",
-            "src/main/java/org/PiEngine/Shaders/Camera/camera.frag",
-            null
-        );
-        Renderer renderer = new Renderer(width / 2, height / 2, mainShader);
-        Renderer renderer1 = new Renderer(width / 2, height / 2, mainShader1);
+        
 
-        world.printHierarchy();
+        Shader PostShader = new Shader
+        (
+            "src\\main\\java\\org\\PiEngine\\Shaders\\CRT\\CRT.vert", 
+            "src\\main\\java\\org\\PiEngine\\Shaders\\CRT\\CRT.frag", 
+        null
+        );
+
+        Renderer SceneRenderer = new Renderer();
+        GeometryPass GP = new GeometryPass(mainShader, width/2, height/2);
+        SceneRenderer.addPass(GP);
+
+
+        Renderer GameRenderer = new Renderer();
+        GeometryPass GGP = new GeometryPass(mainShader, width/2, height/2);
+        PostProcessingPass GPP = new PostProcessingPass(PostShader, width/2, height/2);
+        GameRenderer.addPass(GGP);
+        GameRenderer.addPass(GPP);
+
+
+        //world.printHierarchy();
+
+
+        // Drivers
+        
+        System.out.println("OpenGL Vendor: " + GL11.glGetString(GL11.GL_VENDOR));
+        System.out.println("OpenGL Renderer: " + GL11.glGetString(GL11.GL_RENDERER));
+        System.out.println("OpenGL Version: " + GL11.glGetString(GL11.GL_VERSION));
 
 
         // --- Main Loop ---
@@ -191,17 +219,16 @@ public class Main
             Scenecamera.applyToShader(mainShader);
 
             
-            renderer.render(Scenecamera, world);
-            int outputTex = renderer.getOutputTexture();
+            SceneRenderer.renderPipeline(Scenecamera, world);
+            int outputTex = SceneRenderer.getFinalTexture();
             sceneWindow.setid(outputTex);
             
             int outputTex1 = -1;
             CameraComponent GameCamear = Camera.getComponent(CameraComponent.class);
             if(GameCamear != null)
             {
-                renderer1.render(GameCamear.getCamera(), world);
-                outputTex1 = renderer1.getOutputTexture();
-                
+                GameRenderer.renderPipeline(GameCamear.getCamera(), world);
+                outputTex1 = GameRenderer.getFinalTexture();        
             }
             sceneWindow1.setid(outputTex1);
             

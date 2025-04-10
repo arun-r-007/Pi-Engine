@@ -13,10 +13,11 @@ public class CameraComponent extends Component
 
     public CameraComponent() {
         this.camera = new Camera(1, Near, Far);
-        camera.setOrthographic( 8*-2, 8*2, -2 *4.5f, 2*4.5f, 1.0f, 100f);
+        //camera.setOrthographic( 8*-2, 8*2, -2 *4.5f, 2*4.5f, 1.0f, 100f);
+        camera.setPerspective(70, (float)1280/720, Near, Far);
         camera.updateProjectionMatrix();
         camera.updateViewMatrix();
-        camera.setRenderLayerMask(LayerManager.getLayerBit(LayerManager.getLayerName(2)));
+        //camera.setRenderLayerMask(LayerManager.getLayerBit(LayerManager.getLayerName(1)));
 
 
     }
@@ -34,6 +35,9 @@ public class CameraComponent extends Component
     public void update() {
         Vector pos = new Vector(gameObject.transform.getWorldPosition());
         camera.setPosition(pos);
-        camera.updateViewMatrix();
+        Vector rot = new Vector(gameObject.transform.getWorldRotation());
+        camera.setRotation(rot);
+
+
     }
 }

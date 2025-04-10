@@ -1,48 +1,43 @@
 package org.PiEngine.Render;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.GameObject;
-import org.PiEngine.Math.Matrix4;
-
-
-import static org.lwjgl.opengl.GL30.*;
-
 
 public class Renderer
 {
-    private Framebuffer framebuffer;
-    private Shader shader;
+    private final List<RenderPass> passes = new ArrayList<>();
+    private int finalTextureId = -1;
 
-    public Renderer(int width, int height, Shader shader)
+
+    public void addPass(RenderPass pass)
     {
-        this.shader = shader;
-        this.framebuffer = new Framebuffer(width, height);
+        passes.add(pass);
     }
 
-    public void SetSize(int height, int width)
+    public void renderPipeline(Camera camera, GameObject scene)
     {
-        framebuffer.resize(width, height);
+        int[] previousOutputs = null;
+
+        for (RenderPass pass : passes)
+        {
+            pass.setInputTextures(previousOutputs);
+            pass.render(camera, scene);        
+            previousOutputs = new int[] { pass.getOutputTexture() };
+            //System.err.println(pass.getOutputTexture() + " " + pass);
+        }
+
+        if (!passes.isEmpty())
+        {
+            finalTextureId = passes.get(passes.size() - 1).getOutputTexture();
+        }
     }
 
-    public void render(Camera camera, GameObject scene)
+
+    public int getFinalTexture()
     {
-        framebuffer.bind();
-        glViewport(0, 0, framebuffer.getWidth(), framebuffer.getHeight());
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        shader.use();
-        glClearColor(0f, 0f, 0f, 1f);
-        Matrix4 viewProj = Matrix4.multiply(camera.getProjectionMatrix(), camera.getViewMatrix());
-        shader.setUniformMat4("u_ViewProj", viewProj);
-
-        
-        scene.render(camera);
-
-        framebuffer.unbind();
-    }
-
-    public int getOutputTexture()
-    {
-        return framebuffer.getTextureId();
+        return finalTextureId;
     }
 }
