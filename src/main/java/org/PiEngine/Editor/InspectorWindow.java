@@ -3,11 +3,15 @@ package org.PiEngine.Editor;
 import imgui.ImGui;
 import org.PiEngine.GameObjects.*;
 import org.PiEngine.Component.*;
+import org.PiEngine.Core.LayerManager;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import imgui.type.ImInt;
+
 
 public class InspectorWindow extends EditorWindow {
     public static GameObject inspectObject = null;
@@ -22,6 +26,8 @@ public class InspectorWindow extends EditorWindow {
         componentFactory.put("Follower", Follower::new);
         componentFactory.put("Movement", Movemet::new);
         componentFactory.put("SpinComponent", SpinComponent::new);
+        componentFactory.put("RendererComponent", RendererComponent::new);
+
     }
 
     /**
@@ -51,6 +57,19 @@ public class InspectorWindow extends EditorWindow {
         ImGui.text("Inspecting: " + current.Name);
         ImGui.separator();
 
+
+        ImGui.text("Layer");
+
+        String[] layers = LayerManager.GetLayerNameArray();
+
+        int currentLayer = LayerManager.getIndexFromBitmask(current.getLayerBit()); 
+        ImInt selected = new ImInt(currentLayer);
+
+        if (ImGui.combo("##LayerCombo", selected, layers, layers.length)) {
+            current.setLayerByName(LayerManager.getLayerName(selected.get()), false);
+        }
+        
+
         if (ImGui.collapsingHeader("Transform")) {
             renderTransformEditor(current);
         }
@@ -67,7 +86,8 @@ public class InspectorWindow extends EditorWindow {
             String[] availableComponents = {
                 "Follower",
                 "Movement",
-                "SpinComponent"
+                "SpinComponent",
+                "RendererComponent"
             };
 
             for (String compName : availableComponents) {
