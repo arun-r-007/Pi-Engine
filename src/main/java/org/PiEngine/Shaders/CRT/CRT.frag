@@ -28,7 +28,7 @@ void main()
     // Chromatic aberration
     vec3 col;
     col.r = texture(u_Texture0, (crtUV - 0.5) * CA_AMT + 0.5).r;
-    col.g = texture(u_Texture0, crtUV).g;
+    col.g = texture(u_Texture0, crtUV).g; 
     col.b = texture(u_Texture0, (crtUV - 0.5) / CA_AMT + 0.5).b;
     col *= edge.x * edge.y;
 
