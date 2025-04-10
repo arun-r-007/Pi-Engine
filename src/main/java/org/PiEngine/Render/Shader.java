@@ -16,19 +16,26 @@ public class    Shader
     {
         try
         {
-            String vertexSource = new String(Files.readAllBytes(Paths.get(vertexPath)), StandardCharsets.UTF_8);
-            String fragmentSource = new String(Files.readAllBytes(Paths.get(fragmentPath)), StandardCharsets.UTF_8);
-
-            
-
-            int vertexId = compileShader(vertexSource, GL_VERTEX_SHADER);
-            int fragmentId = compileShader(fragmentSource, GL_FRAGMENT_SHADER);
+            int vertexId = -1;
+            int fragmentId = -1;
+            int geometryId = -1;
 
             programId = glCreateProgram();
-            glAttachShader(programId, vertexId);
-            glAttachShader(programId, fragmentId);
 
-            int geometryId = -1;
+            if (vertexPath != null && !vertexPath.isEmpty())
+            {
+                String vertexSource = new String(Files.readAllBytes(Paths.get(vertexPath)), StandardCharsets.UTF_8);
+                vertexId = compileShader(vertexSource, GL_VERTEX_SHADER);
+                glAttachShader(programId, vertexId);
+            }
+
+            if (fragmentPath != null && !fragmentPath.isEmpty())
+            {
+                String fragmentSource = new String(Files.readAllBytes(Paths.get(fragmentPath)), StandardCharsets.UTF_8);
+                fragmentId = compileShader(fragmentSource, GL_FRAGMENT_SHADER);
+                glAttachShader(programId, fragmentId);
+            }
+
             if (geometryPath != null && !geometryPath.isEmpty())
             {
                 String geometrySource = new String(Files.readAllBytes(Paths.get(geometryPath)), StandardCharsets.UTF_8);
@@ -44,8 +51,8 @@ public class    Shader
                 throw new RuntimeException("Shader linking failed:\n" + log);
             }
 
-            glDeleteShader(vertexId);
-            glDeleteShader(fragmentId);
+            if (vertexId != -1) glDeleteShader(vertexId);
+            if (fragmentId != -1) glDeleteShader(fragmentId);
             if (geometryId != -1) glDeleteShader(geometryId);
         }
         catch (Exception e)
@@ -54,6 +61,7 @@ public class    Shader
             throw new RuntimeException("Failed to load shader");
         }
     }
+
 
 
     private int compileShader(String source, int type)
