@@ -8,6 +8,6 @@ out vec4 FragColor;
 
 void main()
 {
-    FragColor = vec4(vUV.x, 0, vUV.y ,1.0); 
+    FragColor = vec4(1.0, 1.0, 1.0 ,1.0); 
 
 }
