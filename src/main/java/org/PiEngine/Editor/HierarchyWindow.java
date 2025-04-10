@@ -133,8 +133,11 @@ public class HierarchyWindow extends EditorWindow {
             // Context menu
             if (ImGui.beginPopupContextItem(obj.Name)) {
                 if (ImGui.menuItem("Property")) {
-                    new InspectorWindow(true);
+                    InspectorWindow n = new InspectorWindow(true);
+                    n.propertyObject = obj;
+                    Editor.get().addWindow(n);
                 }
+                
                 if (ImGui.menuItem("Add Object")) {
                     GameObject newChild = new GameObject("NewGameObject");
                     obj.addChild(newChild);
