@@ -174,4 +174,16 @@ public class Vector
         return z;
     }
 
+    public static float Distance(Vector a, Vector b)
+    {
+        float dist = -1.0f;
+        if(a != null && b != null)
+        {
+            Vector disVector = a.sub(b);
+            dist = disVector.magnitude();
+        }
+
+        return dist;
+    }
+
 }

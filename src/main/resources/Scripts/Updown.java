@@ -6,7 +6,7 @@ import org.PiEngine.Core.*;
 import org.PiEngine.Math.*;
 import org.PiEngine.Component.*;
 
-public class MoveLeftRightComponent extends Component
+public class Updown extends Component
 {
 
     @Override
