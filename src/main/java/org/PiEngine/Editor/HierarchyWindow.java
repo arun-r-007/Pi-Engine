@@ -45,6 +45,14 @@ public class HierarchyWindow extends EditorWindow {
             Editor.get().addWindow(win);
             addIterator.remove(); // remove from pending list
         }
+
+
+        Iterator<GameObject> removeCompo = toRemove.iterator();
+        while (removeCompo.hasNext())
+        {
+            GameObject go = removeCompo.next();
+            go.destroy();
+        }
     }
 
     /**
@@ -80,6 +88,13 @@ public class HierarchyWindow extends EditorWindow {
         // --- Root is View Only ---
         if (isRoot) {
             nodeOpen = ImGui.treeNodeEx(obj.Name + " (Root)", flags);
+            if (ImGui.beginPopupContextItem(obj.Name)) {    
+                if (ImGui.menuItem("Add Object")) {
+                    GameObject newChild = new GameObject("NewGameObject");
+                    obj.addChild(newChild);
+                }
+                ImGui.endPopup();
+            }
         } 
         // --- Normal Object ---
         else if (renamingObject == obj) {
