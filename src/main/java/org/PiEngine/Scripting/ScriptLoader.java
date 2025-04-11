@@ -1,83 +1,116 @@
 package org.PiEngine.Scripting;
-import javax.tools.*; 
-import java.io.*; 
-import java.net.*; 
-import java.util.*; 
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+
+import org.PiEngine.Component.Component;
+import org.PiEngine.Component.ComponentFactory;
 
 public class ScriptLoader 
 {
-    private final File scriptFolder;
-    private final File outputFolder;
-    private final File engineJar; // Optional: used for classpath
+    private static ScriptLoader instance;
 
-    public ScriptLoader(String scriptPath, String outputPath, String engineJarPath) {
-        this.scriptFolder = new File(scriptPath);
-        this.outputFolder = new File(outputPath);
-        this.engineJar = engineJarPath != null ? new File(engineJarPath) : null;
+    private final File rootDirectory;
+    private final URLClassLoader urlClassLoader;
 
-        if (!outputFolder.exists()) outputFolder.mkdirs();
-    }
-
-    public List<Object> loadAndCompileScripts() throws Exception 
+    private ScriptLoader(String compiledOutputPath) throws Exception 
     {
-        List<Object> loadedComponents = new ArrayList<>();
-
-        File[] javaFiles = scriptFolder.listFiles((f, name) -> name.endsWith(".java"));
-        if (javaFiles == null || javaFiles.length == 0) return loadedComponents;
-
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        if (compiler == null) throw new IllegalStateException("JDK required! JavaCompiler not available.");
-
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-        Iterable<? extends JavaFileObject> units = fileManager.getJavaFileObjects(javaFiles);
-
-        List<String> options = new ArrayList<>(Arrays.asList("-d", outputFolder.getAbsolutePath()));
-        if (engineJar != null) options.addAll(Arrays.asList("-classpath", engineJar.getAbsolutePath()));
-
-        boolean success = compiler.getTask(null, fileManager, null, options, null, units).call();
-        fileManager.close();
-
-        if (!success) 
+        this.rootDirectory = new File(compiledOutputPath);
+        if (!rootDirectory.exists()) 
         {
-            throw new RuntimeException("Script compilation failed.");
+            throw new IllegalArgumentException("Compiled directory does not exist: " + compiledOutputPath);
         }
 
-        URLClassLoader classLoader = new URLClassLoader(
-        new URL[] 
-        {
-            outputFolder.toURI().toURL(),
-            new File(".").toURI().toURL() 
-        });
+        URL[] urls = new URL[]{ rootDirectory.toURI().toURL() };
+        this.urlClassLoader = new URLClassLoader(urls, getClass().getClassLoader());
+    }
 
-        for (File file : javaFiles) 
+    public static ScriptLoader getInstance() 
+    {
+        if (instance == null) 
         {
-            String className = file.getName().replace(".java", "");
-            Class<?> cls = classLoader.loadClass(className);
-
-            // Check if it extends Component
-            if (isComponent(cls)) 
+            try 
             {
-                Object instance = cls.getDeclaredConstructor().newInstance();
-                loadedComponents.add(instance);
+                instance = new ScriptLoader("Compiled");
+            } 
+            catch (Exception e) 
+            {
+                throw new RuntimeException("Failed to initialize ScriptLoader", e);
             }
         }
-
-        classLoader.close();
-        return loadedComponents;
+        return instance;
     }
 
-    private boolean isComponent(Class<?> cls) 
+    public Class<?> loadClass(String fullyQualifiedName) throws ClassNotFoundException 
+    {
+        return urlClassLoader.loadClass(fullyQualifiedName);
+    }
+
+    public void close() 
     {
         try 
         {
-            Class<?> componentClass = Class.forName("engine.Component"); // Adjust this based on your engine
-            return componentClass.isAssignableFrom(cls);
-        } 
-        catch (ClassNotFoundException e) 
+            urlClassLoader.close();
+        } catch (Exception e) 
         {
-            return false;
+            e.printStackTrace();
         }
     }
-    
+
+    public void loadComponentScripts(String folderPath) 
+    {
+        File componentDir = new File(folderPath);
+        if (!componentDir.exists() || !componentDir.isDirectory()) return;
+
+        File[] classFiles = componentDir.listFiles((dir, name) -> name.endsWith(".class"));
+        if (classFiles == null) return;
+
+        for (File file : classFiles) 
+        {
+            String className = file.getName().replace(".class", "");
+            String fullClassName = "org.PiEngine.Component." + className;
+
+            try 
+            {
+                Class<?> scriptClass = loadClass(fullClassName);
+
+                if (Component.class.isAssignableFrom(scriptClass)) 
+                {
+                    ComponentFactory.register(scriptClass.getSimpleName(), () -> 
+                    {
+                        try 
+                        {
+                            return (Component) scriptClass.getDeclaredConstructor().newInstance();
+                        } 
+                        catch (Exception e) 
+                        {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    });
+                    System.out.println("Loaded & registered component: " + fullClassName);
+                } 
+                else 
+                {
+                    System.out.println("Skipped (not a Component): " + fullClassName);
+                }
+            } 
+            catch (Exception e) 
+            {
+                System.err.println("Failed to load: " + fullClassName);
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void loadSystemScripts(String folderPath) 
+    {
+        // add when System support is needed
+    }
+
+    public void loadBehaviorScripts(String folderPath) 
+    {
+        // add when Behavior support is needed
+    }
 }
