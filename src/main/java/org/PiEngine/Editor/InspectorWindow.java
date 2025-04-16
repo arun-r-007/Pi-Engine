@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 
@@ -75,54 +76,61 @@ public class InspectorWindow extends EditorWindow {
     public void onRender() {
         name = !actAsProperty ? "Inspector" : "Property" + propertyObject;
         GameObject current = actAsProperty ? propertyObject : inspectObject;
-        ImGui.begin(name);
-
+    
+        // Define a boolean to control the window's visibility
+        ImBoolean isOpen = new ImBoolean(true);
+    
+        // Begin the window with a close button if actAsProperty is true
+        if (!ImGui.begin(name, actAsProperty ? isOpen : null)) {
+            ImGui.end();
+            return;
+        }
+    
+        // Check if the window was closed
+        if (!isOpen.get()) {
+            Editor.get().queueRemoveWindow(this);
+        }
+    
         if (current == null) {
             ImGui.text("No GameObject selected.");
             ImGui.end();
             return;
         }
-
+    
         ImGui.text("Inspecting: " + current.Name);
         ImGui.separator();
-
-
+    
         ImGui.text("Layer");
-
+    
         String[] layers = LayerManager.GetLayerNameArray();
-
-        int currentLayer = LayerManager.getIndexFromBitmask(current.getLayerBit()); 
+        int currentLayer = LayerManager.getIndexFromBitmask(current.getLayerBit());
         ImInt selected = new ImInt(currentLayer);
-
+    
         if (ImGui.combo("##LayerCombo", selected, layers, layers.length)) {
             current.setLayerByName(LayerManager.getLayerName(selected.get()), false);
         }
-        
-
+    
         if (ImGui.collapsingHeader("Transform")) {
             renderTransformEditor(current);
         }
-
+    
         if (ImGui.collapsingHeader("Components")) {
             renderComponentEditor(current);
         }
-
-        if (ImGui.button("Add Component")) // This is your button
-        {
-            ImGui.openPopup("AddComponentMenu"); // Open the same popup manually
+    
+        if (ImGui.button("Add Component")) {
+            ImGui.openPopup("AddComponentMenu");
         }
-        
-        // Now render the popup as usual
+    
         if (ImGui.beginPopup("AddComponentMenu")) {
             ImGui.text("Add Component:");
             ImGui.separator();
         
-            // Static buffer for search input
             ImGui.text("Search:");
             ImGui.sameLine();
             ImGui.inputText("##search", searchBuffer, ImGuiInputTextFlags.None);
             String searchQuery = searchBuffer.get().toLowerCase().trim();
-
+        
             String[] availableComponents = ComponentFactory.getRegisteredComponentNames().toArray(new String[0]);
         
             for (String compName : availableComponents) {
@@ -140,11 +148,11 @@ public class InspectorWindow extends EditorWindow {
                         }
                     }
                 }
-                
             }
         
             ImGui.endPopup();
         }
+    
         ImGui.end();
     }
 
