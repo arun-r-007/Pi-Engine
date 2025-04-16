@@ -4,12 +4,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -176,15 +171,30 @@ public class Main
         );
 
         Renderer SceneRenderer = new Renderer();
-        GeometryPass GP = new GeometryPass(mainShader, width/2, height/2);
+        GeometryPass GP = new GeometryPass("SceneGeomtry", mainShader, width/2, height/2);
         SceneRenderer.addPass(GP);
 
 
         Renderer GameRenderer = new Renderer();
-        GeometryPass GGP = new GeometryPass(mainShader, width/2, height/2);
-        PostProcessingPass GPP = new PostProcessingPass(PostShader, width/2, height/2);
+        GeometryPass GGP = new GeometryPass("GameGeomtry",mainShader, width/2, height/2);
+        PostProcessingPass GPP = new PostProcessingPass("GamePP",PostShader, width/2, height/2);
         GameRenderer.addPass(GGP);
         GameRenderer.addPass(GPP);
+
+        RenderGraph graph = new RenderGraph();
+        graph.addPass(GP);  // SceneRenderer
+        graph.addPass(GGP); // GameRenderer
+        graph.addPass(GPP);
+
+        RenderGraphEditorWindow graphWindow = new RenderGraphEditorWindow(graph);
+        editor.addWindow(graphWindow);
+
+
+
+        GameRenderer.connect("GameGeomtry", "GamePP");
+
+        // Set final
+        GameRenderer.setFinalPass("GamePP");
 
 
         //world.printHierarchy();
@@ -212,7 +222,7 @@ public class Main
         loader.loadComponentScripts("Compiled/org/PiEngine/Component");
 
 
-
+        
         // --- Main Loop ---
         while (!glfwWindowShouldClose(window))
         {

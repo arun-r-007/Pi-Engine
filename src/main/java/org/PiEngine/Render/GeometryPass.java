@@ -6,9 +6,9 @@ import org.PiEngine.Math.Matrix4;
 
 public class GeometryPass extends RenderPass
 {
-    public GeometryPass(Shader shader, int width, int height)
+    public GeometryPass(String name, Shader shader, int width, int height)
     {
-        super(shader, width, height);
+        super(name, shader, width, height);
     }
 
     @Override

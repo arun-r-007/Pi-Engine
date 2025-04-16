@@ -2,7 +2,6 @@ package org.PiEngine.Render;
 
 import static org.lwjgl.opengl.GL30.*;
 
-
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.GameObject;
 
@@ -11,9 +10,9 @@ public class PostProcessingPass extends RenderPass
     private int fullscreenVAO = -1;
     private int fullscreenVBO = -1;
 
-    public PostProcessingPass(Shader shader, int width, int height)
+    public PostProcessingPass(String name, Shader shader, int width, int height)
     {
-        super(shader, width, height);
+        super(name, shader, width, height);
         setupFullscreenTriangle();
     }
 
@@ -42,6 +41,7 @@ public class PostProcessingPass extends RenderPass
     public void render(Camera camera, GameObject scene)
     {
         bindAndPrepare();
+
         shader.use();
 
         glBindVertexArray(fullscreenVAO);
@@ -51,7 +51,6 @@ public class PostProcessingPass extends RenderPass
         framebuffer.unbind();
     }
 
-    
     public void dispose()
     {
         if (fullscreenVAO != -1) glDeleteVertexArrays(fullscreenVAO);
