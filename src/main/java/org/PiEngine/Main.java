@@ -29,7 +29,7 @@ public class Main
             throw new IllegalStateException("Unable to initialize GLFW");
         }
 
-        long window = glfwCreateWindow(1280, 720, "Pi-Engine", 0, 0);
+        long window = glfwCreateWindow(1600, 900, "Pi-Engine", 0, 0);
         if (window == 0)
         {
             throw new RuntimeException("Failed to create window");
@@ -163,42 +163,49 @@ public class Main
 
         
 
-        Shader PostShader = new Shader
+        Shader CRTShader = new Shader
         (
-            "src\\main\\resources\\Shaders\\CRT\\CRT.vert", 
-            "src\\main\\resources\\Shaders\\CRT\\CRT.frag", 
+            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert", 
+            "src\\main\\resources\\Shaders\\PostProcess\\CRT.frag", 
             null    
         );
 
+        Shader BloomShader = new Shader
+        (
+            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert", 
+            "src\\main\\resources\\Shaders\\PostProcess\\BLUR.frag", 
+            null    
+        );
+
+        Shader FinalShader = new Shader
+        (
+            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert", 
+            "src\\main\\resources\\Shaders\\PostProcess\\FINAL.frag", 
+            null    
+        );
+        
         Renderer SceneRenderer = new Renderer();
         GeometryPass GP = new GeometryPass("SceneGeomtry", mainShader, width/2, height/2);
         SceneRenderer.addPass(GP);
 
 
         Renderer GameRenderer = new Renderer();
-        GeometryPass GGP = new GeometryPass("GameGeomtry",mainShader, width/2, height/2);
-        PostProcessingPass GPP = new PostProcessingPass("GamePP",PostShader, width/2, height/2);
-        GameRenderer.addPass(GGP);
-        GameRenderer.addPass(GPP);
+        GeometryPass GameGP = new GeometryPass("GameGeomtry",mainShader, width/2, height/2);
+        PostProcessingPass GamePP = new PostProcessingPass("CRT",CRTShader, width/2, height/2);
+        PostProcessingPass GamePP1 = new PostProcessingPass("BLUR",BloomShader, width/2, height/2);
+        PostProcessingPass finalPP = new PostProcessingPass("FINAL",FinalShader, width/2, height/2);
 
-        RenderGraph graph = new RenderGraph();
-        graph.addPass(GP);  // SceneRenderer
-        graph.addPass(GGP); // GameRenderer
-        graph.addPass(GPP);
 
-        RenderGraphEditorWindow graphWindow = new RenderGraphEditorWindow(graph);
+        GameRenderer.addPass(GameGP); 
+        GameRenderer.addPass(GamePP);
+        GameRenderer.addPass(GamePP1);
+        GameRenderer.addPass(finalPP);
+
+        GameRenderer.setFinalPass("FINAL");
+
+
+        RenderGraphEditorWindow graphWindow = new RenderGraphEditorWindow(GameRenderer);
         editor.addWindow(graphWindow);
-
-
-
-        GameRenderer.connect("GameGeomtry", "GamePP");
-
-        // Set final
-        GameRenderer.setFinalPass("GamePP");
-
-
-        //world.printHierarchy();
-
 
         // Drivers
         

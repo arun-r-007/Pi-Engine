@@ -22,7 +22,22 @@ public class Renderer
     public void connect(String fromPassName, String toPassName)
     {
         connections.computeIfAbsent(toPassName, k -> new ArrayList<>()).add(fromPassName);
+        System.out.println(connections);
     }
+
+    public void disconnect(String fromPass, String toPass)
+    {
+        List<String> inputs = connections.get(toPass);
+        if (inputs != null)
+        {
+            inputs.remove(fromPass);
+            if (inputs.isEmpty())
+            {
+                connections.remove(toPass); // 
+            }
+        }
+    }
+
 
     public void setFinalPass(String name)
     {
@@ -31,26 +46,40 @@ public class Renderer
 
     public void renderPipeline(Camera camera, GameObject scene)
     {
-        for (String passName : passes.keySet())
+        for (RenderPass pass : passes.values())
         {
-            RenderPass pass = passes.get(passName);
-            List<String> inputPasses = connections.get(passName);
+            pass.setInputTextures(); // clear inputs
+        }
 
-            if (inputPasses != null)
+        for (RenderPass pass : passes.values())
+        {
+            List<String> inputPassNames = connections.get(pass.getName());
+
+            if (inputPassNames == null || inputPassNames.isEmpty())
             {
-                for (String inputName : inputPasses)
+                // No connections = no input → push invalid texture ID
+                pass.addInputTexture(-1);
+            }
+            else
+            {
+                for (String fromPassName : inputPassNames)
                 {
-                    RenderPass inputPass = passes.get(inputName);
-                    if (inputPass != null)
+                    RenderPass fromPass = passes.get(fromPassName);
+                    if (fromPass != null)
                     {
-                        pass.addInputTexture(inputPass.getOutputTexture());
+                        pass.addInputTexture(fromPass.getOutputTexture());
                     }
                 }
             }
+        }
 
+        for (RenderPass pass : passes.values())
+        {
             pass.render(camera, scene);
         }
     }
+
+
 
     public int getFinalTexture()
     {

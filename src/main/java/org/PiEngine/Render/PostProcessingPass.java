@@ -41,7 +41,7 @@ public class PostProcessingPass extends RenderPass
     public void render(Camera camera, GameObject scene)
     {
         bindAndPrepare();
-
+        
         shader.use();
 
         glBindVertexArray(fullscreenVAO);
