@@ -187,6 +187,7 @@ public class Main
         Renderer SceneRenderer = new Renderer();
         GeometryPass GP = new GeometryPass("SceneGeomtry", mainShader, width/2, height/2);
         SceneRenderer.addPass(GP);
+        SceneRenderer.setFinalPass("SceneGeomtry");
 
 
         Renderer GameRenderer = new Renderer();
