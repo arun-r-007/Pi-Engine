@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.GameObject;
+import org.PiEngine.Math.Vector;
 
 public abstract class RenderPass
 {
@@ -61,16 +62,16 @@ public abstract class RenderPass
         framebuffer.resize(width, height);
     }
 
-    // Binds framebuffer and sets shader/uniforms from inputTextures
     public void bindAndPrepare()
     {
         framebuffer.bind();
         glViewport(0, 0, width, height);
-        glClearColor(0.05f, 0.05f, 0.05f, 1f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1f); // full black clear
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.use();
 
+        // Bind inputs
         for (int i = 0; i < inputTextures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i);
@@ -78,9 +79,9 @@ public abstract class RenderPass
             shader.setUniform1i("u_Texture" + i, i);
         }
 
-        // Clear inputs after binding to prevent reuse
-        inputTextures.clear();
+        shader.setUniformVec2("u_Resolution", new Vector(width, height, 0));
     }
+
 
     // Render the pass: subclasses must implement logic
     public abstract void render(Camera camera, GameObject scene);
