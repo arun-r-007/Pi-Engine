@@ -22,7 +22,6 @@ public class Renderer
     public void connect(String fromPassName, String toPassName)
     {
         connections.computeIfAbsent(toPassName, k -> new ArrayList<>()).add(fromPassName);
-        System.out.println(connections);
     }
 
     public void disconnect(String fromPass, String toPass)
