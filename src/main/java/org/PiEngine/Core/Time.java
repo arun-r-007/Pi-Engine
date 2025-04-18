@@ -38,6 +38,7 @@ public class Time
     /** Index of the current frame in the circular buffer. */
     private static int historyIndex = 0;
 
+    public static float Time;
     /**
      * Initializes the time system.
      * Should be called once before the game loop starts.
@@ -45,6 +46,7 @@ public class Time
     public static void init()
     {
         lastTime = glfwGetTime();
+        Time = 0.0f;
     }
 
     /**
@@ -59,6 +61,8 @@ public class Time
         lastTime = currentTime;
 
         fixedTime += deltaTime;
+        Time += unscaledDeltaTime;
+
 
         // Store the unscaled delta time in a circular buffer for graphing
         deltaHistory[historyIndex] = unscaledDeltaTime;

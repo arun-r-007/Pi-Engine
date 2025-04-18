@@ -2,6 +2,7 @@ package org.PiEngine.Render;
 
 import static org.lwjgl.opengl.GL30.*;
 
+
 public class Mesh
 {
     private int vao;
@@ -42,9 +43,9 @@ public class Mesh
         glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
-
+    
     public void render()
-    {
+    {        
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         glBindVertexArray(0);

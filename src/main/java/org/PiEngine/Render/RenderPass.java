@@ -1,5 +1,6 @@
 package org.PiEngine.Render;
 
+
 import static org.lwjgl.opengl.GL30.*;
 
 import java.util.ArrayList;
@@ -7,7 +8,6 @@ import java.util.List;
 
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.GameObject;
-import org.PiEngine.Math.Vector;
 
 public abstract class RenderPass
 {
@@ -29,13 +29,12 @@ public abstract class RenderPass
         this.framebuffer = new Framebuffer(width, height);
     }
 
-    // Add single input texture
     public void addInputTexture(int textureId)
     {
         inputTextures.add(textureId);
     }
 
-    // Add multiple input textures
+    
     public void setInputTextures(int... textures)
     {
         inputTextures.clear();
@@ -48,13 +47,11 @@ public abstract class RenderPass
         }
     }
 
-    // Returns input textures (for debugging or graph use)
     public List<Integer> getInputTextures()
     {
         return inputTextures;
     }
 
-    // Resize framebuffer and internal state
     public void resize(int width, int height)
     {
         this.width = width;
@@ -66,27 +63,26 @@ public abstract class RenderPass
     {
         framebuffer.bind();
         glViewport(0, 0, width, height);
-        glClearColor(0.0f, 0.0f, 0.0f, 1f); // full black clear
+        glClearColor(0.0f, 0.0f, 0.0f, 1f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        shader.use();
 
-        // Bind inputs
-        for (int i = 0; i < inputTextures.size(); i++)
+         for (int i = 0; i < inputTextures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, inputTextures.get(i));
             shader.setUniform1i("u_Texture" + i, i);
         }
 
-        shader.setUniformVec2("u_Resolution", new Vector(width, height, 0));
+        // Clear inputs after binding to prevent reuse
+        inputTextures.clear();
     }
 
 
-    // Render the pass: subclasses must implement logic
+    
     public abstract void render(Camera camera, GameObject scene);
 
-    // Output texture from this pass
+    
     public int getOutputTexture()
     {
         return framebuffer.getTextureId();
@@ -97,7 +93,6 @@ public abstract class RenderPass
         return framebuffer;
     }
 
-    // Layer mask getter/setter
     public int getLayerMask()
     {
         return layerMask;

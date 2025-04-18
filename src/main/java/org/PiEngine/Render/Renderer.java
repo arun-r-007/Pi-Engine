@@ -32,7 +32,7 @@ public class Renderer
             inputs.remove(fromPass);
             if (inputs.isEmpty())
             {
-                connections.remove(toPass); // 
+                connections.remove(toPass);
             }
         }
     }
@@ -47,7 +47,7 @@ public class Renderer
     {
         for (RenderPass pass : passes.values())
         {
-            pass.setInputTextures(); // clear inputs
+            pass.setInputTextures();
         }
 
         for (RenderPass pass : passes.values())

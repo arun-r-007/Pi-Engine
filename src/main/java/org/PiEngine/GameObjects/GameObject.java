@@ -136,7 +136,7 @@ public class GameObject
         {
             for (Component c : components)
             {
-                c.render();
+                c.render(camera);
             }
         }
 

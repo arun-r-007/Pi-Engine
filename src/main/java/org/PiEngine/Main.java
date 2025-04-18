@@ -154,10 +154,10 @@ public class Main
 
 
         // --- Renderer Setup ---
-        Shader mainShader = new Shader
+        Shader DefaultShader = new Shader
         (
-            "src\\main\\resources\\Shaders\\Camera\\camera.vert",
-            "src\\main\\resources\\Shaders\\Camera\\camera.frag",
+            "src\\main\\resources\\Shaders\\Camera\\Default.vert",
+            "src\\main\\resources\\Shaders\\Camera\\Default.frag",
             null
         );
 
@@ -185,13 +185,13 @@ public class Main
         );
         
         Renderer SceneRenderer = new Renderer();
-        GeometryPass GP = new GeometryPass("SceneGeomtry", mainShader, width/2, height/2);
+        GeometryPass GP = new GeometryPass("SceneGeomtry", DefaultShader, width/2, height/2);
         SceneRenderer.addPass(GP);
         SceneRenderer.setFinalPass("SceneGeomtry");
 
 
         Renderer GameRenderer = new Renderer();
-        GeometryPass GameGP = new GeometryPass("GameGeomtry",mainShader, width/2, height/2);
+        GeometryPass GameGP = new GeometryPass("GameGeomtry",DefaultShader, width/2, height/2);
         PostProcessingPass GamePP = new PostProcessingPass("CRT",CRTShader, width/2, height/2);
         PostProcessingPass GamePP1 = new PostProcessingPass("BLUR",BloomShader, width/2, height/2);
         PostProcessingPass finalPP = new PostProcessingPass("FINAL",FinalShader, width/2, height/2);
@@ -203,6 +203,7 @@ public class Main
         GameRenderer.addPass(finalPP);
 
         GameRenderer.setFinalPass("FINAL");
+        GameRenderer.connect("GameGeomtry", "FINAL");
 
 
         RenderGraphEditorWindow graphWindow = new RenderGraphEditorWindow(GameRenderer);
@@ -238,7 +239,7 @@ public class Main
 
             Time.update();
             Input.update();
-
+            
 
             float moveSpeed = 10f * Time.deltaTime;
 
@@ -250,7 +251,6 @@ public class Main
             // --- Game Logic ---
             world.update();
             Scenecamera.updateViewMatrix();
-            Scenecamera.applyToShader(mainShader);
 
             
             SceneRenderer.renderPipeline(Scenecamera, world);
