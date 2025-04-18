@@ -1,6 +1,5 @@
 package org.PiEngine.Render;
 
-
 import static org.lwjgl.opengl.GL30.*;
 
 import java.util.ArrayList;
@@ -8,6 +7,7 @@ import java.util.List;
 
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.GameObject;
+import org.lwjgl.opengl.GL11;
 
 public abstract class RenderPass
 {
@@ -65,6 +65,8 @@ public abstract class RenderPass
         glViewport(0, 0, width, height);
         glClearColor(0.0f, 0.0f, 0.0f, 1f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 
          for (int i = 0; i < inputTextures.size(); i++)
@@ -74,7 +76,6 @@ public abstract class RenderPass
             shader.setUniform1i("u_Texture" + i, i);
         }
 
-        // Clear inputs after binding to prevent reuse
         inputTextures.clear();
     }
 
