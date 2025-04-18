@@ -1,16 +1,18 @@
 package org.PiEngine.Component;
 
-
 import org.PiEngine.Core.*;
+import org.PiEngine.IO.TextureLoader;
 import org.PiEngine.Math.*;
 import org.PiEngine.Render.*;
+import org.lwjgl.opengl.GL11;
 
 public class RendererComponent extends Component
 {
     public Mesh mesh;
-    public float size = 0.5f;
+    public float size = 2.5f;
     Shader shader;
     public Vector Color;
+    Texture texture;
 
     @Override
     public void start()
@@ -20,9 +22,11 @@ public class RendererComponent extends Component
         shader = new Shader
         (
             "src\\main\\resources\\Shaders\\Camera\\Default.vert",
-            "src\\main\\resources\\Shaders\\Camera\\Default.frag",
+            "src\\main\\resources\\Shaders\\Camera\\Sprite.frag",
             null
         );
+
+        texture = TextureLoader.loadTexture("src\\main\\resources\\Sprites\\ALLCOVER.png", GL11.GL_NEAREST, GL11.GL_NEAREST); //GL_LINEAR GL_NEAREST
     }
 
     @Override
@@ -61,6 +65,8 @@ public class RendererComponent extends Component
     @Override
     public void render(Camera camera)
     {
+
+        texture.bind();
         shader.use();
         Matrix4 viewProj = Matrix4.multiply(camera.getProjectionMatrix(), camera.getViewMatrix());
         Matrix4 modelMatrix = transform.getWorldMatrix();
@@ -68,6 +74,8 @@ public class RendererComponent extends Component
         shader.setUniformMat4("u_ModelMatrix", modelMatrix, false);
         shader.setUniformVec3("u_Color", Color);
         shader.setUniform1f("u_Time", Time.Time);
+        shader.setUniform1f("u_Texture", texture.getTextureID());
+
 
 
         mesh.render();

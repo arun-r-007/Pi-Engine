@@ -2,45 +2,46 @@ plugins {
     id 'java'
 }
 
-project.ext.lwjglVersion = "3.2.3"
-project.ext.lwjglNatives = "natives-windows"
-project.ext.jomlVersion = "1.10.0"
-project.ext.jomlPrimVersion = "1.10.0"
-
-
 group = 'org.example'
 version = '1.0'
+
+ext {
+    lwjglVersion = "3.3.3"
+    lwjglNatives = "natives-windows" // Change to "natives-linux" or "natives-macos" for other OS
+    jomlVersion = "1.10.0"
+    jomlPrimVersion = "1.10.0"
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // LWJGL BOM for consistent versioning
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
-
-    implementation "org.joml:joml:${jomlVersion}"
-    implementation "org.joml:joml-primitives:${jomlPrimVersion}"
-
-
+    // LWJGL core
     implementation "org.lwjgl:lwjgl"
-
     implementation "org.lwjgl:lwjgl-glfw"
-
     implementation "org.lwjgl:lwjgl-opengl"
     implementation "org.lwjgl:lwjgl-opengles"
+    implementation "org.lwjgl:lwjgl-stb"
 
+    // LWJGL natives
+    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-opengles::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+
+    // Other libraries
+    implementation "org.joml:joml:$jomlVersion"
+    implementation "org.joml:joml-primitives:$jomlPrimVersion"
     implementation 'org.reflections:reflections:0.10.2'
     implementation 'org.slf4j:slf4j-nop:2.0.9'
 
+    // ImGui
     implementation "io.github.spair:imgui-java-app:1.89.0"
-    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
-
-    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-opengles::$lwjglNatives"
-
-
 }
 
 test {
@@ -50,7 +51,7 @@ test {
 jar {
     manifest {
         attributes(
-            'Main-Class': 'org.PiEngine.Main' // Change this to your main class
+            'Main-Class': 'org.PiEngine.Main'
         )
     }
 
