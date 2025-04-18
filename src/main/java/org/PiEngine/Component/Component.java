@@ -1,5 +1,6 @@
 package org.PiEngine.Component;
 
+import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.*;
 
 /**
@@ -41,7 +42,7 @@ public abstract class Component
      * Called every frame for rendering-related behavior.
      * Override if your component needs to draw visuals using OpenGL or other rendering logic.
      */
-    public void render() {}
+    public void render(Camera camera) {}
 
     /**
      * Called every frame after rendering, mainly for development tools or debugging purposes.

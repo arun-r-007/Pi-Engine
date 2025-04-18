@@ -10,8 +10,9 @@ public class SpinComponent extends Component
     @Override
     public void update()
     {
-        Vector rotation = gameObject.transform.getLocalRotation();
+        Vector rotation = transform.getLocalRotation();
         rotation.z += speed * Time.deltaTime;
-        gameObject.transform.setLocalRotation(rotation);
+        transform.setLocalRotation(rotation);
+        // System.out.println(transform.getWorldMatrix());
     }
 }
