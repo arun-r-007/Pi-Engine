@@ -237,7 +237,7 @@ public class Main
             
             SceneRenderer.renderPipeline(Scenecamera, world);
             int outputTex = SceneRenderer.getFinalTexture();
-            // sceneWindow.setid(outputTex);
+             sceneWindow.setid(outputTex);
             
             int outputTex1 = -1;
             CameraComponent GameCamear = Camera.getComponent(CameraComponent.class);
@@ -246,7 +246,7 @@ public class Main
                 GameRenderer.renderPipeline(GameCamear.getCamera(), world);
                 outputTex1 = GameRenderer.getFinalTexture();        
             }
-            // sceneWindow1.setid(outputTex1);
+             sceneWindow1.setid(outputTex1);
             
             // --- Editor Update ---
             editor.update(Time.deltaTime);
