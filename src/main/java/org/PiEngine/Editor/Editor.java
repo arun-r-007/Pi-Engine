@@ -2,6 +2,11 @@ package org.PiEngine.Editor;
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
+import imgui.ImGuiStyle;
+//import imgui.ImGuiColor;
+
+import imgui.ImVec4;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
@@ -53,24 +58,23 @@ public class Editor
         return instance;
     }
 
-    public void init()
-    {
+    public void init() {
         if (initialized) return;
-
+    
         ImGui.createContext();
         ImGuiIO io = ImGui.getIO();
-
-        if (enableMultiViewport)
-        {
+    
+        if (enableMultiViewport) {
             io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         }
-
+    
         io.getFonts().addFontDefault();
         imguiGlfw.init(windowPtr, false);
-        imguiGl3.init(glslVersion);
+
+        imguiGl3.init(glslVersion);    
         initialized = true;
     }
-
+    
     public void destroy()
     {
         for (EditorWindow window : editorWindows)
@@ -118,7 +122,6 @@ public class Editor
             GLFW.glfwMakeContextCurrent(backupWindowPtr);
         }
     }
-    
 
     public void addWindow(EditorWindow window)
     {

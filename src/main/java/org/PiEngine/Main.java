@@ -147,7 +147,7 @@ public class Main
 
         editor.addWindow(new LayerWindow());
         editor.addWindow(new HierarchyWindow(world));
-        editor.addWindow(new InspectorWindow(false));
+        editor.addWindow(new InspectorWindow(false)); 
         
         editor.addWindow(new PerfomanceWindow());
 
@@ -157,6 +157,7 @@ public class Main
         SceneWindow sceneWindow1 = new SceneWindow("Game");
         editor.addWindow(sceneWindow1);
 
+        editor.addWindow(new DockingWindow("Docking"));
 
         // --- Renderer Setup ---
         Shader mainShader = new Shader
@@ -187,8 +188,7 @@ public class Main
         GameRenderer.addPass(GPP);
 
 
-        //world.printHierarchy();
-
+        //world.printHierarchy();    
 
         // Drivers
         
@@ -237,7 +237,7 @@ public class Main
             
             SceneRenderer.renderPipeline(Scenecamera, world);
             int outputTex = SceneRenderer.getFinalTexture();
-            sceneWindow.setid(outputTex);
+            // sceneWindow.setid(outputTex);
             
             int outputTex1 = -1;
             CameraComponent GameCamear = Camera.getComponent(CameraComponent.class);
@@ -246,7 +246,7 @@ public class Main
                 GameRenderer.renderPipeline(GameCamear.getCamera(), world);
                 outputTex1 = GameRenderer.getFinalTexture();        
             }
-            sceneWindow1.setid(outputTex1);
+            // sceneWindow1.setid(outputTex1);
             
             // --- Editor Update ---
             editor.update(Time.deltaTime);
