@@ -2,15 +2,12 @@ package org.PiEngine.Editor;
 
 import imgui.ImGui;
 import imgui.type.ImFloat;
-import imgui.type.ImInt;
 
 import org.PiEngine.Component.Component;
 import org.PiEngine.GameObjects.GameObject;
-import org.PiEngine.GameObjects.Transform;
 import org.PiEngine.Math.Vector;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**

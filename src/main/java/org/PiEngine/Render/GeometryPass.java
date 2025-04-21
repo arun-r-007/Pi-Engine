@@ -14,7 +14,7 @@ public class GeometryPass extends RenderPass
     public void render(Camera camera, GameObject scene)
     {
         bindAndPrepare();
-        scene.render(camera);
+        scene.render(camera, layerMask);
         framebuffer.unbind();
     }
 }

@@ -69,7 +69,7 @@ public class ScriptLoader
         for (File file : classFiles) 
         {
             String className = file.getName().replace(".class", "");
-            String fullClassName = "org.PiEngine.Component." + className;
+            String fullClassName = "Scripts." + className;
 
             try 
             {

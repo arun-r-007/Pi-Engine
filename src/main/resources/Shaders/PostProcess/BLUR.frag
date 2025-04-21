@@ -1,8 +1,8 @@
 #version 330 core
 out vec4 FragColor;
 
-uniform sampler2D u_Texture;
-uniform vec2 u_Resolution; // The texture size (width, height)
+uniform sampler2D u_Texture0;
+uniform vec2 u_Resolution;
 in vec2 v_UV;
 
 // Gaussian weights for a 3x3 kernel
@@ -16,7 +16,7 @@ void main()
     vec2 texOffset = 1.0 / u_Resolution; 
 
     // Applying the 3x3 Gaussian kernel
-    vec4 color = texture(u_Texture, v_UV) * kernel[4]; // Center pixel
+    vec4 color = texture(u_Texture0, v_UV) * kernel[4]; // Center pixel
 
     // Sample surrounding pixels and apply weights
     int index = 0;
@@ -27,7 +27,7 @@ void main()
             if (x == 0 && y == 0) continue; // Skip the center pixel, it's already sampled
 
             vec2 offset = vec2(x, y) * texOffset;
-            color += texture(u_Texture, v_UV + offset) * kernel[index++];
+            color += texture(u_Texture0, v_UV + offset) * kernel[index++];
         }
     }
 

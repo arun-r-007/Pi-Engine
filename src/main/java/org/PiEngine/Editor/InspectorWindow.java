@@ -2,6 +2,7 @@ package org.PiEngine.Editor;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiTreeNodeFlags;
 
 import org.PiEngine.GameObjects.*;
 import org.reflections.Reflections;
@@ -110,11 +111,11 @@ public class InspectorWindow extends EditorWindow {
             current.setLayerByName(LayerManager.getLayerName(selected.get()), false);
         }
     
-        if (ImGui.collapsingHeader("Transform")) {
+        if (ImGui.collapsingHeader("Transform", ImGuiTreeNodeFlags.DefaultOpen)) {
             renderTransformEditor(current);
         }
     
-        if (ImGui.collapsingHeader("Components")) {
+        if (ImGui.collapsingHeader("Components", ImGuiTreeNodeFlags.DefaultOpen)) {
             renderComponentEditor(current);
         }
     
@@ -230,7 +231,7 @@ public class InspectorWindow extends EditorWindow {
         int compId = System.identityHashCode(c);
         ImGui.pushID(compId);
 
-        if (ImGui.collapsingHeader(compName)) {
+        if (ImGui.collapsingHeader(compName, ImGuiTreeNodeFlags.DefaultOpen)) {
             // Right-click context menu
             if (ImGui.beginPopupContextItem("ComponentContext")) {
                 if (ImGui.menuItem("Remove Component")) {
