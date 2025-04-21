@@ -11,7 +11,7 @@ import org.PiEngine.GameObjects.GameObject;
 public class Renderer
 {
     private final Map<String, RenderPass> passes = new HashMap<>();
-    private final Map<String, List<String>> connections = new HashMap<>(); // passName → inputPassNames
+    private final Map<String, List<String>> connections = new HashMap<>(); 
     private String finalPassName = null;
 
     public void addPass(RenderPass pass)
@@ -22,6 +22,7 @@ public class Renderer
     public void connect(String fromPassName, String toPassName)
     {
         connections.computeIfAbsent(toPassName, k -> new ArrayList<>()).add(fromPassName);
+        //System.out.println(fromPassName + " " + toPassName);
     }
 
     public void disconnect(String fromPass, String toPass)
@@ -56,7 +57,6 @@ public class Renderer
 
             if (inputPassNames == null || inputPassNames.isEmpty())
             {
-                // No connections = no input → push invalid texture ID
                 pass.addInputTexture(-1);
             }
             else

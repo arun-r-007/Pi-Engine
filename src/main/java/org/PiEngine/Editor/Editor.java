@@ -2,11 +2,9 @@ package org.PiEngine.Editor;
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
-import imgui.ImGuiStyle;
 //import imgui.ImGuiColor;
 
-import imgui.ImVec4;
-import imgui.flag.ImGuiCol;
+
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;

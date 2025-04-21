@@ -22,9 +22,9 @@ public class DockingWindow extends EditorWindow {
     @Override
     public void onCreate() {
         // Make DockingWindow fullscreen
-        ImGuiIO io = ImGui.getIO();
-        float screenWidth = 1280;
-        float screenHeight = 720;
+        //ImGuiIO io = ImGui.getIO();
+        float screenWidth = 1600;
+        float screenHeight = 900;
 
         this.setPosition(0, 0);
         this.setSize(screenWidth, screenHeight);

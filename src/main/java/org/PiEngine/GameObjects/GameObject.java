@@ -129,14 +129,17 @@ public class GameObject
      * Called once every frame after update().
      * Responsible for rendering this GameObject and its children.
      */
-    public void render(Camera camera)
+    public void render(Camera camera, int layerMask)
     {
         // Render all components attached to this GameObject
         if(camera.canRenderLayer(layer))
         {
             for (Component c : components)
             {
-                c.render(camera);
+                if((layer & layerMask) > 0)
+                {
+                    c.render(camera);
+                }
             }
         }
 
@@ -146,7 +149,7 @@ public class GameObject
             GameObject child = childTransform.getGameObject();
             if (child != null)
             {
-                child.render(camera);
+                child.render(camera, layerMask);
             }
         }
     }

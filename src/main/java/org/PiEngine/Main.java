@@ -192,12 +192,18 @@ public class Main
 
         Renderer GameRenderer = new Renderer();
         GeometryPass GameGP = new GeometryPass("GameGeomtry",DefaultShader, width/2, height/2);
+        GeometryPass GameGP1 = new GeometryPass("GameGeomtry1",DefaultShader, width/2, height/2);
+
+        GameGP1.setLayerMask(0xF0000000);
+
         PostProcessingPass GamePP = new PostProcessingPass("CRT",CRTShader, width/2, height/2);
         PostProcessingPass GamePP1 = new PostProcessingPass("BLUR",BloomShader, width/2, height/2);
         PostProcessingPass finalPP = new PostProcessingPass("FINAL",FinalShader, width/2, height/2);
 
 
         GameRenderer.addPass(GameGP); 
+        GameRenderer.addPass(GameGP1); 
+
         GameRenderer.addPass(GamePP);
         GameRenderer.addPass(GamePP1);
         GameRenderer.addPass(finalPP);

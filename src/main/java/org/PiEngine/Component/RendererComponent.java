@@ -26,7 +26,7 @@ public class RendererComponent extends Component
             null
         );
 
-        texture = TextureLoader.loadTexture("src\\main\\resources\\Sprites\\ALLCOVER.png", GL11.GL_NEAREST, GL11.GL_NEAREST); //GL_LINEAR GL_NEAREST
+        texture = TextureLoader.loadTexture("src\\main\\resources\\Sprites\\Box.png", GL11.GL_NEAREST, GL11.GL_NEAREST); //GL_LINEAR GL_NEAREST
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.PiEngine.Render;
 
+
 import static org.lwjgl.opengl.GL30.*;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.GameObject;
+import org.PiEngine.Math.Vector;
 import org.lwjgl.opengl.GL11;
 
 public abstract class RenderPass
@@ -68,8 +70,11 @@ public abstract class RenderPass
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-
-         for (int i = 0; i < inputTextures.size(); i++)
+        glEnable(GL_DEPTH_TEST);     // optional, only if you rely on depth for draw order
+        glDepthMask(false); 
+        shader.use();
+        shader.setUniformVec2("u_Resolution", new Vector(framebuffer.getWidth(), framebuffer.getHeight(),0) );
+        for (int i = 0; i < inputTextures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, inputTextures.get(i));
