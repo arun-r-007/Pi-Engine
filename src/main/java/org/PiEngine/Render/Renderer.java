@@ -57,7 +57,6 @@ public class Renderer
 
             if (inputPassNames == null || inputPassNames.isEmpty())
             {
-                // No connections = no input → push invalid texture ID
                 pass.addInputTexture(-1);
             }
             else

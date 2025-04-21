@@ -1,34 +1,39 @@
 #version 330 core
 out vec4 FragColor;
 
-uniform sampler2D u_Texture0;
-uniform vec2 u_Resolution;
 in vec2 v_UV;
 
-// Gaussian weights for a 3x3 kernel
-const float kernel[9] = float[](0.0751136, 0.123841, 0.0751136,
-                                0.123841, 0.20418,  0.123841,
-                                0.0751136, 0.123841, 0.0751136);
+uniform sampler2D u_Texture0;
+
+// Assume texel size in UV space (tweak this to control blur size)
+const float offset = 1.0 / 10.0; // smaller = sharper, larger = blurrier
+
+// Gaussian weights
+const float kernel[9] = float[](
+    0.0751136, 0.123841, 0.0751136,
+    0.123841,  0.20418,  0.123841,
+    0.0751136, 0.123841, 0.0751136
+);
 
 void main()
 {
-    // Offset for the neighboring pixels (pixel size)
-    vec2 texOffset = 1.0 / u_Resolution; 
+    vec2 offsets[9] = vec2[](
+        vec2(-offset,  offset), // top-left
+        vec2( 0.0f,    offset), // top-center
+        vec2( offset,  offset), // top-right
+        vec2(-offset,  0.0f),   // center-left
+        vec2( 0.0f,    0.0f),   // center
+        vec2( offset,  0.0f),   // center-right
+        vec2(-offset, -offset), // bottom-left
+        vec2( 0.0f,   -offset), // bottom-center
+        vec2( offset, -offset)  // bottom-right
+    );
 
-    // Applying the 3x3 Gaussian kernel
-    vec4 color = texture(u_Texture0, v_UV) * kernel[4]; // Center pixel
-
-    // Sample surrounding pixels and apply weights
-    int index = 0;
-    for (int x = -1; x <= 1; x++)
+    vec4 color = vec4(0.0);
+    for (int i = 0; i < 9; i++)
     {
-        for (int y = -1; y <= 1; y++)
-        {
-            if (x == 0 && y == 0) continue; // Skip the center pixel, it's already sampled
-
-            vec2 offset = vec2(x, y) * texOffset;
-            color += texture(u_Texture0, v_UV + offset) * kernel[index++];
-        }
+        vec4 sample = texture(u_Texture0, v_UV + offsets[i]);
+        color += sample * kernel[i];
     }
 
     FragColor = color;
