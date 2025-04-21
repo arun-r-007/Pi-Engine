@@ -119,7 +119,7 @@ public class Transform
     public void setLocalRotation(Vector rot)
     {
         this.rotation = new Vector(rot);
-        this.rotation.z = ((this.rotation.z % 360) + 360) % 360;
+        this.rotation.z = (this.rotation.z % 360);
     }
 
     /**

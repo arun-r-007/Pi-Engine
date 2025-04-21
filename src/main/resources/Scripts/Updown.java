@@ -1,7 +1,5 @@
-package org.PiEngine.Component;
+package Scripts;
 
-import org.PiEngine.Core.*;
-import org.PiEngine.Core.*;
 import org.PiEngine.Core.*;
 import org.PiEngine.Math.*;
 import org.PiEngine.Component.*;

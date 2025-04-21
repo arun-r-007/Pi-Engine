@@ -114,10 +114,10 @@ public class    Shader
     }
 
     // For matrix (JOML)
-    public void setUniformMat4(String name, Matrix4 mat)
+    public void setUniformMat4(String name, Matrix4 mat, boolean transpose)
     {
         int location = glGetUniformLocation(programId, name);
-        glUniformMatrix4fv(location, false, mat.toFloatBuffer());
+        glUniformMatrix4fv(location, transpose, mat.toFloatBuffer());
     }
 
     public void setUniformVec2(String name, Vector vec2)

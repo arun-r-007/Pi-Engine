@@ -7,16 +7,22 @@ import java.util.List;
 
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.GameObject;
+import org.lwjgl.opengl.GL11;
 
 public abstract class RenderPass
 {
-    protected Framebuffer framebuffer;
+    protected String name;
     protected Shader shader;
+    protected Framebuffer framebuffer;
+
     protected List<Integer> inputTextures = new ArrayList<>();
     protected int width, height;
 
-    public RenderPass(Shader shader, int width, int height)
+    protected int layerMask = 0xFFFFFFFF; // Default: all layers enabled
+
+    public RenderPass(String name, Shader shader, int width, int height)
     {
+        this.name = name;
         this.shader = shader;
         this.width = width;
         this.height = height;
@@ -26,6 +32,19 @@ public abstract class RenderPass
     public void addInputTexture(int textureId)
     {
         inputTextures.add(textureId);
+    }
+
+    
+    public void setInputTextures(int... textures)
+    {
+        inputTextures.clear();
+        if (textures != null)
+        {
+            for (int tex : textures)
+            {
+                inputTextures.add(tex);
+            }
+        }
     }
 
     public List<Integer> getInputTextures()
@@ -44,21 +63,27 @@ public abstract class RenderPass
     {
         framebuffer.bind();
         glViewport(0, 0, width, height);
+        glClearColor(0.0f, 0.0f, 0.0f, 1f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        shader.use();
-        glClearColor(0.05f, 0.05f, 0.05f, 1f);
-        for (int i = 0; i < inputTextures.size(); i++)
+
+         for (int i = 0; i < inputTextures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, inputTextures.get(i));
             shader.setUniform1i("u_Texture" + i, i);
         }
+
         inputTextures.clear();
     }
 
+
+    
     public abstract void render(Camera camera, GameObject scene);
 
+    
     public int getOutputTexture()
     {
         return framebuffer.getTextureId();
@@ -69,11 +94,23 @@ public abstract class RenderPass
         return framebuffer;
     }
 
-    public void setInputTextures(int... inputTextures)
+    public int getLayerMask()
     {
-        if(inputTextures != null)
-        {
-            this.inputTextures.add(inputTextures[0]);
-        }
+        return layerMask;
+    }
+
+    public void setLayerMask(int mask)
+    {
+        this.layerMask = mask;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 }

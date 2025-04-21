@@ -23,7 +23,7 @@ public class GameObject
     {
         this.Name = name;
         this.transform = new Transform();
-        this.transform.setGameObject(this); // ← Important line
+        this.transform.setGameObject(this);
     }
 
 
@@ -136,7 +136,7 @@ public class GameObject
         {
             for (Component c : components)
             {
-                c.render();
+                c.render(camera);
             }
         }
 
@@ -331,4 +331,35 @@ public class GameObject
     {
         components.remove(cmp);
     }
+
+    public void destroy()
+    {
+        for (Transform childTransform : new ArrayList<>(transform.getChildren()))
+        {
+            GameObject child = childTransform.getGameObject();
+            if (child != null)
+            {
+                child.destroy(); 
+            }
+        }
+
+        
+        transform.getChildren().clear();
+        components.clear();
+
+        Transform parent = transform.getParent();
+        if (parent != null)
+        {
+            parent.getChildren().remove(transform);
+        }
+
+        transform.setGameObject(null);
+    }
+
+    @Override
+    protected void finalize() throws Throwable
+    {
+        System.out.println("Removed: " + this.Name);
+    }
+
 }

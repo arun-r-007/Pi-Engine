@@ -4,12 +4,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -34,7 +29,7 @@ public class Main
             throw new IllegalStateException("Unable to initialize GLFW");
         }
 
-        long window = glfwCreateWindow(1280, 720, "Pi-Engine", 0, 0);
+        long window = glfwCreateWindow(1600, 900, "Pi-Engine", 0, 0);
         if (window == 0)
         {
             throw new RuntimeException("Failed to create window");
@@ -147,7 +142,7 @@ public class Main
 
         editor.addWindow(new LayerWindow());
         editor.addWindow(new HierarchyWindow(world));
-        editor.addWindow(new InspectorWindow(false)); 
+        editor.addWindow(new InspectorWindow(false));
         
         editor.addWindow(new PerfomanceWindow());
 
@@ -157,38 +152,62 @@ public class Main
         SceneWindow sceneWindow1 = new SceneWindow("Game");
         editor.addWindow(sceneWindow1);
 
-        editor.addWindow(new DockingWindow("Docking"));
 
         // --- Renderer Setup ---
-        Shader mainShader = new Shader
+        Shader DefaultShader = new Shader
         (
-            "src\\main\\resources\\Shaders\\Camera\\camera.vert",
-            "src\\main\\resources\\Shaders\\Camera\\camera.frag",
+            "src\\main\\resources\\Shaders\\Camera\\Default.vert",
+            "src\\main\\resources\\Shaders\\Camera\\Default.frag",
             null
         );
 
         
 
-        Shader PostShader = new Shader
+        Shader CRTShader = new Shader
         (
-            "src\\main\\resources\\Shaders\\CRT\\CRT.vert", 
-            "src\\main\\resources\\Shaders\\CRT\\CRT.frag", 
+            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert", 
+            "src\\main\\resources\\Shaders\\PostProcess\\CRT.frag", 
             null    
         );
 
+        Shader BloomShader = new Shader
+        (
+            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert", 
+            "src\\main\\resources\\Shaders\\PostProcess\\BLUR.frag", 
+            null    
+        );
+
+        Shader FinalShader = new Shader
+        (
+            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert", 
+            "src\\main\\resources\\Shaders\\PostProcess\\FINAL.frag", 
+            null    
+        );
+        
         Renderer SceneRenderer = new Renderer();
-        GeometryPass GP = new GeometryPass(mainShader, width/2, height/2);
+        GeometryPass GP = new GeometryPass("SceneGeomtry", DefaultShader, width/2, height/2);
         SceneRenderer.addPass(GP);
+        SceneRenderer.setFinalPass("SceneGeomtry");
 
 
         Renderer GameRenderer = new Renderer();
-        GeometryPass GGP = new GeometryPass(mainShader, width/2, height/2);
-        PostProcessingPass GPP = new PostProcessingPass(PostShader, width/2, height/2);
-        GameRenderer.addPass(GGP);
-        GameRenderer.addPass(GPP);
+        GeometryPass GameGP = new GeometryPass("GameGeomtry",DefaultShader, width/2, height/2);
+        PostProcessingPass GamePP = new PostProcessingPass("CRT",CRTShader, width/2, height/2);
+        PostProcessingPass GamePP1 = new PostProcessingPass("BLUR",BloomShader, width/2, height/2);
+        PostProcessingPass finalPP = new PostProcessingPass("FINAL",FinalShader, width/2, height/2);
 
 
-        //world.printHierarchy();    
+        GameRenderer.addPass(GameGP); 
+        GameRenderer.addPass(GamePP);
+        GameRenderer.addPass(GamePP1);
+        GameRenderer.addPass(finalPP);
+
+        GameRenderer.setFinalPass("FINAL");
+        GameRenderer.connect("GameGeomtry", "FINAL");
+
+
+        RenderGraphEditorWindow graphWindow = new RenderGraphEditorWindow(GameRenderer);
+        editor.addWindow(graphWindow);
 
         // Drivers
         
@@ -212,7 +231,7 @@ public class Main
         loader.loadComponentScripts("Compiled/org/PiEngine/Component");
 
 
-
+        
         // --- Main Loop ---
         while (!glfwWindowShouldClose(window))
         {
@@ -220,7 +239,7 @@ public class Main
 
             Time.update();
             Input.update();
-
+            
 
             float moveSpeed = 10f * Time.deltaTime;
 
@@ -232,12 +251,11 @@ public class Main
             // --- Game Logic ---
             world.update();
             Scenecamera.updateViewMatrix();
-            Scenecamera.applyToShader(mainShader);
 
             
             SceneRenderer.renderPipeline(Scenecamera, world);
             int outputTex = SceneRenderer.getFinalTexture();
-             sceneWindow.setid(outputTex);
+            sceneWindow.setid(outputTex);
             
             int outputTex1 = -1;
             CameraComponent GameCamear = Camera.getComponent(CameraComponent.class);
@@ -246,7 +264,7 @@ public class Main
                 GameRenderer.renderPipeline(GameCamear.getCamera(), world);
                 outputTex1 = GameRenderer.getFinalTexture();        
             }
-             sceneWindow1.setid(outputTex1);
+            sceneWindow1.setid(outputTex1);
             
             // --- Editor Update ---
             editor.update(Time.deltaTime);
