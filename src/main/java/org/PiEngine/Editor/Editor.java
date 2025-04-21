@@ -2,6 +2,11 @@ package org.PiEngine.Editor;
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
+import imgui.ImGuiStyle;
+//import imgui.ImGuiColor;
+
+import imgui.ImVec4;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
@@ -27,6 +32,8 @@ public class Editor
     private boolean initialized = false;
 
     private final List<EditorWindow> windowsToAdd = new ArrayList<>();
+    private final List<EditorWindow> windowsToRemove = new ArrayList<>();
+
 
 
     private Editor() { }
@@ -51,24 +58,23 @@ public class Editor
         return instance;
     }
 
-    public void init()
-    {
+    public void init() {
         if (initialized) return;
-
+    
         ImGui.createContext();
         ImGuiIO io = ImGui.getIO();
-
-        if (enableMultiViewport)
-        {
+    
+        if (enableMultiViewport) {
             io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         }
-
+    
         io.getFonts().addFontDefault();
         imguiGlfw.init(windowPtr, false);
-        imguiGl3.init(glslVersion);
+
+        imguiGl3.init(glslVersion);    
         initialized = true;
     }
-
+    
     public void destroy()
     {
         for (EditorWindow window : editorWindows)
@@ -80,41 +86,41 @@ public class Editor
         GLFW.glfwTerminate();
     }
 
-    public void update(float deltaTime)
-    {
-
-        for (EditorWindow aw : windowsToAdd) 
-        {
+    public void update(float deltaTime) {
+        // Add new windows
+        for (EditorWindow aw : windowsToAdd) {
             addWindow(aw);
         }
-
         windowsToAdd.clear();
-
+    
+        // Render windows
         imguiGlfw.newFrame();
         imguiGl3.newFrame();
         ImGui.newFrame();
-
-        for (EditorWindow window : editorWindows)
-        {
-            if (window.isOpen())
-            {
+    
+        for (EditorWindow window : editorWindows) {
+            if (window.isOpen()) {
                 window.onUpdate(deltaTime);
                 window.onRender();
             }
         }
-
+    
+        // Remove queued windows
+        for (EditorWindow window : windowsToRemove) {
+            removeWindow(window);
+        }
+        windowsToRemove.clear();
+    
+        // Finalize rendering
         ImGui.render();
         imguiGl3.renderDrawData(ImGui.getDrawData());
-
-        if (enableMultiViewport)
-        {
+    
+        if (enableMultiViewport) {
             final long backupWindowPtr = GLFW.glfwGetCurrentContext();
             ImGui.updatePlatformWindows();
             ImGui.renderPlatformWindowsDefault();
             GLFW.glfwMakeContextCurrent(backupWindowPtr);
         }
-
-        
     }
 
     public void addWindow(EditorWindow window)
@@ -130,5 +136,10 @@ public class Editor
     public void queueAddWindow(EditorWindow window) {
         windowsToAdd.add(window);
     }
+
+    public void queueRemoveWindow(EditorWindow window) {
+        windowsToRemove.add(window);
+    }
+    
     
 }

@@ -1,6 +1,9 @@
 package org.PiEngine.Editor;
 
 import imgui.ImGui;
+import imgui.ImGuiStyle;
+import imgui.ImVec4;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiTreeNodeFlags;
@@ -38,6 +41,7 @@ public class HierarchyWindow extends EditorWindow {
 
     public void onUpdate(float deltaTime)
     {
+        setCustomTheme();
         Iterator<InspectorWindow> addIterator = windowsToAdd.iterator();
         while (addIterator.hasNext())
         {
@@ -189,5 +193,22 @@ public class HierarchyWindow extends EditorWindow {
     
         ImGui.treePop();
         ImGui.popID();
+    }
+
+    @Override
+    public void setCustomTheme() {
+        ImGuiStyle style = ImGui.getStyle();
+        ImVec4[] colors = style.getColors();
+        //ImGui.styleColorsLight();
+
+        colors[ImGuiCol.Text].set(0.30f, 5.0f, 0.30f, 0.50f);
+        colors[ImGuiCol.WindowBg].set(0.13f, 0.14f, 0.15f, 1.0f);
+        colors[ImGuiCol.Button].set(0.2f, 0.3f, 0.4f, 1.0f);
+        colors[ImGuiCol.ButtonHovered].set(0.3f, 0.4f, 0.5f, 1.0f);
+        colors[ImGuiCol.ButtonActive].set(0.4f, 0.5f, 0.6f, 1.0f);        
+
+        style.setWindowRounding(.3f);
+        style.setFrameRounding(.3f);
+        style.setPopupRounding(2.3f);
     }
 }

@@ -62,27 +62,30 @@ public abstract class EditorWindow
     {
     }
 
+    public void setCustomTheme()
+    {
+    }
+
     public void onUpdate(float deltaTime)
     {
     }
 
-    public void renderBase()
-    {
+    public void renderBase() {
         if (!isOpen)
             return;
-
-        if (useCustomSizeAndPos)
-        {
+    
+        if (useCustomSizeAndPos) {
             ImGui.setNextWindowPos(x, y);
             ImGui.setNextWindowSize(width, height);
         }
-
-        if (ImGui.begin(name, new ImBoolean(isOpen)))
-        {
+    
+        boolean windowVisible = ImGui.begin(name, new ImBoolean(isOpen));
+        if (windowVisible) {
             onRender();
-            ImGui.end();
         }
+        ImGui.end(); // Always call end, regardless of begin()'s return
     }
+    
 
     public abstract void onRender();
 

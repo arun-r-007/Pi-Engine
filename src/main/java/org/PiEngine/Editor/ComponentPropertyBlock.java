@@ -62,30 +62,16 @@ public class ComponentPropertyBlock {
                     }
 
                 } else if (value instanceof GameObject go) {
-                    List<Transform> children = root.transform.getChildren();
-                    String[] names = new String[children.size()];
-                    int currentIndex = 0;
-                
-                    for (int i = 0; i < children.size(); i++) {
-                        GameObject childObj = children.get(i).getGameObject();
-                        names[i] = (childObj != null) ? childObj.Name : "(null)";
-                        if (childObj == go) currentIndex = i;
-                    }
-                
-                    ImInt selected = new ImInt(currentIndex);
-                
                     ImGui.text(fieldName + ":");
                     ImGui.sameLine();
                 
-                    ImGui.pushID(fieldName); // Important for uniqueness
-                    if (ImGui.combo("##" + label + "_" + fieldName, selected, names)) {
-                        GameObject selectedObj = children.get(selected.get()).getGameObject();
-                        if (selectedObj != null) {
-                            field.set(c, selectedObj);
-                        }
-                    }
+                    ImGui.pushID(fieldName); // Unique ID to isolate drag/drop slots
                 
-                    // --- Drag-Drop Target for GameObject ---
+                    // Display current object's name or fallback label
+                    String displayName = (go != null && go.Name != null) ? go.Name : "(None)";
+                    ImGui.button(displayName); // Display as button-like label
+                
+                    // Accept Drag-and-Drop
                     if (ImGui.beginDragDropTarget()) {
                         Object payloadObj = ImGui.acceptDragDropPayload("GAME_OBJECT");
                         if (payloadObj instanceof GameObject droppedObj) {
@@ -93,7 +79,8 @@ public class ComponentPropertyBlock {
                         }
                         ImGui.endDragDropTarget();
                     }
-                    ImGui.popID();
+                
+                    ImGui.popID();                
                 } else {
                     ImGui.text(fieldName + ": [Unsupported Type]");
                 }
