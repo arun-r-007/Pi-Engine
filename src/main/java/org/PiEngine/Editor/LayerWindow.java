@@ -4,16 +4,14 @@ import imgui.ImGui;
 import imgui.type.ImString;
 import org.PiEngine.Core.LayerManager;
 
-public class LayerWindow extends EditorWindow
-{
+public class LayerWindow extends EditorWindow {
     private static final int MAX_LAYERS = LayerManager.noOfLayers();
 
     private final ImString[] editableNames = new ImString[MAX_LAYERS];
     private final String[] originalNames = new String[MAX_LAYERS];
     private final boolean[] showErrorPopup = new boolean[MAX_LAYERS]; // control per-layer popup logic
 
-    public LayerWindow()
-    {
+    public LayerWindow() {
         super("LayerWindow");
 
         String[] currentNames = LayerManager.GetLayerNameArray();
@@ -25,12 +23,15 @@ public class LayerWindow extends EditorWindow
     }
 
     @Override
-    public void onRender()
-    {
+    public void onRender() {
         ImGui.begin("Layers");
 
+        // Set up the scrollable region with a fixed height
+        final float windowHeight = 400.0f; // Set your desired height here
+        ImGui.beginChild("LayerList", -1, windowHeight, true);  // -1 for auto width, fixed height, scrolling enabled
+
         for (int i = 0; i < MAX_LAYERS; i++) {
-            ImGui.text("Layer" + i);
+            ImGui.text("Layer " + i);
             ImGui.sameLine();
 
             ImGui.inputText("##layerName" + i, editableNames[i]);
@@ -65,6 +66,9 @@ public class LayerWindow extends EditorWindow
                 ImGui.endPopup();
             }
         }
+
+        // End the scrollable child window
+        ImGui.endChild();
 
         ImGui.end();
     }
