@@ -22,18 +22,21 @@ public class Renderer
     public void connect(String fromPassName, String toPassName)
     {
         connections.computeIfAbsent(toPassName, k -> new ArrayList<>()).add(fromPassName);
-        //System.out.println(fromPassName + " " + toPassName);
+        System.out.println(" connected :" +  fromPassName + " " + toPassName);
     }
 
     public void disconnect(String fromPass, String toPass)
     {
+        
         List<String> inputs = connections.get(toPass);
         if (inputs != null)
         {
             inputs.remove(fromPass);
             if (inputs.isEmpty())
             {
+                System.out.println(" disconnected :" +  fromPass + " " + toPass);
                 connections.remove(toPass);
+                System.out.println(connections);
             }
         }
     }
@@ -48,7 +51,7 @@ public class Renderer
     {
         for (RenderPass pass : passes.values())
         {
-            pass.setInputTextures();
+            pass.inputTextures.clear();
         }
 
         for (RenderPass pass : passes.values())
