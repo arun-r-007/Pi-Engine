@@ -99,6 +99,18 @@ public class HierarchyWindow extends EditorWindow {
                 }
                 ImGui.endPopup();
             }
+
+            if (ImGui.beginDragDropTarget()) {
+                Object payloadObj = ImGui.acceptDragDropPayload("GAME_OBJECT");
+                if (payloadObj instanceof GameObject) {
+                    GameObject draggedObj = (GameObject) payloadObj;
+                    if (draggedObj != obj) {
+                        draggedObj.reparentTo(obj); // Reparent dragged object to the drop target
+                    }
+                }
+                ImGui.endDragDropTarget();
+            }
+
         } 
         // --- Normal Object ---
         else if (renamingObject == obj) {
