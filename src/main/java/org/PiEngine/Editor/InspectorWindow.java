@@ -33,6 +33,8 @@ public class InspectorWindow extends EditorWindow {
     public boolean actAsProperty = false;
 
     private static final Map<String, Supplier<Component>> componentFactory = new HashMap<>();
+    private final Map<String, VectorPropertyBlock> transformBlocks = new HashMap<>();
+
 
     static {
         Reflections reflections = new Reflections("org.PiEngine.Component");
@@ -168,52 +170,42 @@ public class InspectorWindow extends EditorWindow {
         ImGui.text("GLOBAL");
         ImGui.separator();
 
-        VectorPropertyBlock worldPosBlock = new VectorPropertyBlock("worldPos");
-        worldPosBlock.set(obj.transform.getWorldPosition());
+        String id = obj.Name; // Make sure GameObject has unique ID
+
+        VectorPropertyBlock worldPosBlock = transformBlocks.computeIfAbsent(id + "_worldPos", k -> new VectorPropertyBlock("worldPos"));
+        if (!ImGui.isAnyItemActive()) worldPosBlock.set(obj.transform.getWorldPosition());
         worldPosBlock.draw("Position  ");
-        if (!ImGui.isAnyItemActive()) {
-            obj.transform.setWorldPosition(worldPosBlock.get());
-        }
+        if (!ImGui.isAnyItemActive()) obj.transform.setWorldPosition(worldPosBlock.get());
 
-        VectorPropertyBlock worldRotBlock = new VectorPropertyBlock("worldRot");
-        worldRotBlock.set(obj.transform.getWorldRotation());
+        VectorPropertyBlock worldRotBlock = transformBlocks.computeIfAbsent(id + "_worldRot", k -> new VectorPropertyBlock("worldRot"));
+        if (!ImGui.isAnyItemActive()) worldRotBlock.set(obj.transform.getWorldRotation());
         worldRotBlock.draw("Rotation  ");
-        if (!ImGui.isAnyItemActive()) {
-            obj.transform.setWorldRotation(worldRotBlock.get());
-        }
+        if (!ImGui.isAnyItemActive()) obj.transform.setWorldRotation(worldRotBlock.get());
 
-        VectorPropertyBlock worldScaleBlock = new VectorPropertyBlock("worldScale");
-        worldScaleBlock.set(obj.transform.getWorldScale());
+        VectorPropertyBlock worldScaleBlock = transformBlocks.computeIfAbsent(id + "_worldScale", k -> new VectorPropertyBlock("worldScale"));
+        if (!ImGui.isAnyItemActive()) worldScaleBlock.set(obj.transform.getWorldScale());
         worldScaleBlock.draw("Size      ");
-        if (!ImGui.isAnyItemActive()) {
-            obj.transform.setWorldScale(worldScaleBlock.get());
-        }
+        if (!ImGui.isAnyItemActive()) obj.transform.setWorldScale(worldScaleBlock.get());
 
         ImGui.separator();
 
         ImGui.text("LOCAL");
         ImGui.separator();
 
-        VectorPropertyBlock localPosBlock = new VectorPropertyBlock("localPos");
-        localPosBlock.set(obj.transform.getLocalPosition());
+        VectorPropertyBlock localPosBlock = transformBlocks.computeIfAbsent(id + "_localPos", k -> new VectorPropertyBlock("localPos"));
+        if (!ImGui.isAnyItemActive()) localPosBlock.set(obj.transform.getLocalPosition());
         localPosBlock.draw("Position  ");
-        if (!ImGui.isAnyItemActive()) {
-            obj.transform.setLocalPosition(localPosBlock.get());
-        }
+        if (!ImGui.isAnyItemActive()) obj.transform.setLocalPosition(localPosBlock.get());
 
-        VectorPropertyBlock localRotBlock = new VectorPropertyBlock("localRot");
-        localRotBlock.set(obj.transform.getLocalRotation());
+        VectorPropertyBlock localRotBlock = transformBlocks.computeIfAbsent(id + "_localRot", k -> new VectorPropertyBlock("localRot"));
+        if (!ImGui.isAnyItemActive()) localRotBlock.set(obj.transform.getLocalRotation());
         localRotBlock.draw("Rotation  ");
-        if (!ImGui.isAnyItemActive()) {
-            obj.transform.setLocalRotation(localRotBlock.get());
-        }
+        if (!ImGui.isAnyItemActive()) obj.transform.setLocalRotation(localRotBlock.get());
 
-        VectorPropertyBlock localScaleBlock = new VectorPropertyBlock("localScale");
-        localScaleBlock.set(obj.transform.getLocalScale());
+        VectorPropertyBlock localScaleBlock = transformBlocks.computeIfAbsent(id + "_localScale", k -> new VectorPropertyBlock("localScale"));
+        if (!ImGui.isAnyItemActive()) localScaleBlock.set(obj.transform.getLocalScale());
         localScaleBlock.draw("Size      ");
-        if (!ImGui.isAnyItemActive()) {
-            obj.transform.setLocalScale(localScaleBlock.get());
-        }
+        if (!ImGui.isAnyItemActive()) obj.transform.setLocalScale(localScaleBlock.get());
 
         ImGui.separator();
     }

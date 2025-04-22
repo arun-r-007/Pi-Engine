@@ -1,13 +1,12 @@
 package org.PiEngine.Editor;
 
 import imgui.ImGui;
-import imgui.type.ImFloat;
 import org.PiEngine.Math.Vector;
 
 public class VectorPropertyBlock {
-    private final ImFloat x = new ImFloat();
-    private final ImFloat y = new ImFloat();
-    private final ImFloat z = new ImFloat();
+    private final float[] x = {0.0f};
+    private final float[] y = {0.0f};
+    private final float[] z = {0.0f};
 
     private final String label;
 
@@ -16,24 +15,24 @@ public class VectorPropertyBlock {
     }
 
     public void set(Vector initial) {
-        x.set(initial.x);
-        y.set(initial.y);
-        z.set(initial.z);
+        x[0] = initial.x;
+        y[0] = initial.y;
+        z[0] = initial.z;
     }
 
     public Vector get() {
-        return new Vector(x.get(), y.get(), z.get());
+        return new Vector(x[0], y[0], z[0]);
     }
 
     public void draw(String vectorLabel) {
         ImGui.text(vectorLabel);
         ImGui.sameLine();
         ImGui.pushItemWidth(80);
-        ImGui.inputFloat("##" + label + "_x", x);
+        ImGui.dragFloat("##" + label + "_x", x, 0.1f);
         ImGui.sameLine();
-        ImGui.inputFloat("##" + label + "_y", y);
+        ImGui.dragFloat("##" + label + "_y", y, 0.1f);
         ImGui.sameLine();
-        ImGui.inputFloat("##" + label + "_z", z);
+        ImGui.dragFloat("##" + label + "_z", z, 0.1f);
         ImGui.popItemWidth();
     }
 }
