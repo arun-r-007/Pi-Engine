@@ -5,6 +5,7 @@ import imgui.ImGuiStyle;
 import imgui.ImVec4;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiKey;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.type.ImString;
@@ -155,10 +156,26 @@ public class HierarchyWindow extends EditorWindow {
                 InspectorWindow.root = this.root;
             }
     
-            if (ImGui.isItemClicked(ImGuiMouseButton.Left) && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
+            // F2 Shortcut
+            if ((ImGui.isItemHovered() && ImGui.isKeyPressed(ImGuiKey.F2))) {
                 renamingObject = obj;
                 renameFieldFocused = false;
                 renameBuffer.set(obj.Name);
+            }
+
+            // DELETE Shortcut
+            if ((ImGui.isItemHovered() && ImGui.isKeyPressed(ImGuiKey.F2))) {
+                renamingObject = obj;
+                renameFieldFocused = false;
+                renameBuffer.set(obj.Name);
+            }
+
+            if ((ImGui.isItemHovered() && ImGui.isKeyPressed(ImGuiKey.Delete) )) {
+                toRemove.add(obj);
+                if (renamingObject == obj) {
+                    renamingObject = null;
+                    renameFieldFocused = false;
+                }
             }
     
             // Drag source
