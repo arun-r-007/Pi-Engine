@@ -2,6 +2,7 @@ package org.PiEngine;
 
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL43;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -237,7 +238,10 @@ public class Main
         ScriptLoader loader = ScriptLoader.getInstance();
         loader.loadComponentScripts("Compiled/org/PiEngine/Component");
 
-
+        // GL43.glEnable(GL43.GL_DEBUG_OUTPUT);
+        // GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
+        //     System.err.println("GL DEBUG: " + org.lwjgl.opengl.GLDebugMessageCallback.getMessage(length, message));
+        // }, 0);
         
         // --- Main Loop ---
         while (!glfwWindowShouldClose(window))
