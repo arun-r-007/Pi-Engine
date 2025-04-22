@@ -5,11 +5,13 @@ import imgui.ImGuiStyle;
 import imgui.ImVec4;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiKey;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.type.ImString;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Iterator;
 
@@ -28,7 +30,7 @@ public class HierarchyWindow extends EditorWindow {
 
     private final List<GameObject> toRemove = new ArrayList<>();
     private final List<InspectorWindow> windowsToAdd = new ArrayList<>();
-
+    private final List<List<GameObject>> toReparent = new ArrayList<>();
 
     public HierarchyWindow(GameObject root) {
         super("Hierarchy");
@@ -42,6 +44,20 @@ public class HierarchyWindow extends EditorWindow {
     public void onUpdate(float deltaTime)
     {
         setCustomTheme();
+
+        Iterator<List<GameObject>> reparentIterator = toReparent.iterator();
+        while (reparentIterator.hasNext())
+        {
+            List<GameObject> pair = reparentIterator.next();
+            if (pair.size() == 2)
+            {
+                GameObject child = pair.get(0);
+                GameObject parent = pair.get(1);
+                child.reparentTo(parent);
+            }
+            reparentIterator.remove(); // clear after processing
+        }
+        
         Iterator<InspectorWindow> addIterator = windowsToAdd.iterator();
         while (addIterator.hasNext())
         {
@@ -105,7 +121,7 @@ public class HierarchyWindow extends EditorWindow {
                 if (payloadObj instanceof GameObject) {
                     GameObject draggedObj = (GameObject) payloadObj;
                     if (draggedObj != obj) {
-                        draggedObj.reparentTo(obj); // Reparent dragged object to the drop target
+                        toReparent.add(Arrays.asList(draggedObj, obj)); // Reparent dragged object to the drop target
                     }
                 }
                 ImGui.endDragDropTarget();
@@ -140,10 +156,26 @@ public class HierarchyWindow extends EditorWindow {
                 InspectorWindow.root = this.root;
             }
     
-            if (ImGui.isItemClicked(ImGuiMouseButton.Left) && ImGui.isMouseDoubleClicked(ImGuiMouseButton.Left)) {
+            // F2 Shortcut
+            if ((ImGui.isItemHovered() && ImGui.isKeyPressed(ImGuiKey.F2))) {
                 renamingObject = obj;
                 renameFieldFocused = false;
                 renameBuffer.set(obj.Name);
+            }
+
+            // DELETE Shortcut
+            if ((ImGui.isItemHovered() && ImGui.isKeyPressed(ImGuiKey.F2))) {
+                renamingObject = obj;
+                renameFieldFocused = false;
+                renameBuffer.set(obj.Name);
+            }
+
+            if ((ImGui.isItemHovered() && ImGui.isKeyPressed(ImGuiKey.Delete) )) {
+                toRemove.add(obj);
+                if (renamingObject == obj) {
+                    renamingObject = null;
+                    renameFieldFocused = false;
+                }
             }
     
             // Drag source
@@ -159,7 +191,7 @@ public class HierarchyWindow extends EditorWindow {
                 if (payloadObj instanceof GameObject) {
                     GameObject draggedObj = (GameObject) payloadObj;
                     if (draggedObj != obj) {
-                        draggedObj.reparentTo(obj); // Reparent dragged object to the drop target
+                        toReparent.add(Arrays.asList(draggedObj, obj)); // Reparent dragged object to the drop target
                     }
                 }
                 ImGui.endDragDropTarget();
