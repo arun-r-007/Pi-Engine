@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class LayerManager
 {
-    private static final int MAX_LAYERS = 32;
+    private static final int MAX_LAYERS = 31;
     private static final String[] layerNames = new String[MAX_LAYERS];
     private static final Map<String, Integer> nameToIndex = new HashMap<>();
 

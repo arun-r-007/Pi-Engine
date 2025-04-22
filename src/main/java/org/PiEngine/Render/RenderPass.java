@@ -1,10 +1,6 @@
 package org.PiEngine.Render;
 
-
 import static org.lwjgl.opengl.GL30.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.GameObject;
@@ -15,43 +11,60 @@ public abstract class RenderPass
 {
     protected String name;
     protected Shader shader;
-    protected Framebuffer framebuffer;
+    public Framebuffer framebuffer;
 
-    protected List<Integer> inputTextures = new ArrayList<>();
+    protected int[] inputTextures;
+    protected int inputCount; // defined by each subclass
+
     protected int width, height;
+    protected int layerMask = 0xFFFFFFFF;
 
-    protected int layerMask = 0xFFFFFFFF; // Default: all layers enabled
-
-    public RenderPass(String name, Shader shader, int width, int height)
+    public RenderPass(String name, Shader shader, int width, int height, int inputCount)
     {
         this.name = name;
         this.shader = shader;
         this.width = width;
         this.height = height;
+        this.inputCount = inputCount;
+        this.inputTextures = new int[inputCount];
+
+        // Initialize all textures as "unset"
+        for (int i = 0; i < inputCount; i++)
+        {
+            inputTextures[i] = 0;
+        }
+
         this.framebuffer = new Framebuffer(width, height);
     }
 
-    public void addInputTexture(int textureId)
+    public void setInputTexture(int index, int textureId)
     {
-        inputTextures.add(textureId);
-    }
-
-    
-    public void setInputTextures(int... textures)
-    {
-        inputTextures.clear();
-        if (textures != null)
+        if (index >= 0 && index < inputCount)
         {
-            for (int tex : textures)
-            {
-                inputTextures.add(tex);
-            }
+            inputTextures[index] = textureId;
         }
     }
 
-    public List<Integer> getInputTextures()
+    public int getInputTexture(int index)
     {
-        return inputTextures;
+        if (index >= 0 && index < inputCount)
+        {
+            return inputTextures[index];
+        }
+        return 0;
+    }
+
+    public void clearInputTexture(int index)
+    {
+        if (index >= 0 && index < inputCount)
+        {
+            inputTextures[index] = 0;
+        }
+    }
+
+    public int getInputCount()
+    {
+        return inputCount;
     }
 
     public void resize(int width, int height)
@@ -70,25 +83,34 @@ public abstract class RenderPass
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        glEnable(GL_DEPTH_TEST);     // optional, only if you rely on depth for draw order
-        glDepthMask(false); 
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(false);
+
         shader.use();
-        shader.setUniformVec2("u_Resolution", new Vector(framebuffer.getWidth(), framebuffer.getHeight(),0) );
-        for (int i = 0; i < inputTextures.size(); i++)
+        shader.setUniformVec2("u_Resolution", new Vector(framebuffer.getWidth(), framebuffer.getHeight(), 0));
+
+        for (int i = 0; i < inputCount; i++)
         {
             glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_2D, inputTextures.get(i));
+            glBindTexture(GL_TEXTURE_2D, inputTextures[i]);
             shader.setUniform1i("u_Texture" + i, i);
+            //System.out.println(name + " Input[" + i +"] :" +  inputTextures[i]);
+
         }
 
-        inputTextures.clear();
+        for (int i = 0; i < inputCount; i++)
+        {
+            inputTextures[i] = 0;
+        }
     }
 
+    public void unbindFramebuffer()
+    {
+        framebuffer.unbind();
+    }
 
-    
     public abstract void render(Camera camera, GameObject scene);
 
-    
     public int getOutputTexture()
     {
         return framebuffer.getTextureId();

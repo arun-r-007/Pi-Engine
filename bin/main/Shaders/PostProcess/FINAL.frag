@@ -2,6 +2,7 @@
 out vec4 FragColor;
 
 uniform sampler2D u_Texture0;
+uniform sampler2D u_Texture1;
 
 uniform vec2 u_Resolution;
 

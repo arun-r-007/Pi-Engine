@@ -192,26 +192,27 @@ public class Main
 
         Renderer GameRenderer = new Renderer();
         GeometryPass GameGP = new GeometryPass("GameGeomtry",DefaultShader, width/2, height/2);
-        //GeometryPass GameGP1 = new GeometryPass("GameGeomtry1",DefaultShader, width/2, height/2);
+        GeometryPass GameGP1 = new GeometryPass("GameGeomtry1",DefaultShader, width/2, height/2);
 
-        //GameGP1.setLayerMask(0xF0000000);
+        GameGP1.setLayerMask(LayerManager.getLayerBit(LayerManager.getLayerName(30)));
 
-        PostProcessingPass GamePP = new PostProcessingPass("CRT",CRTShader, width/2, height/2);
-        PostProcessingPass GamePP1 = new PostProcessingPass("BLUR",BloomShader, width/2, height/2);
-        PostProcessingPass finalPP = new PostProcessingPass("FINAL",FinalShader, width/2, height/2);
+        PostProcessingPass GamePP = new PostProcessingPass("CRT",CRTShader, width/2, height/2, 2);
+        PostProcessingPass GamePP1 = new PostProcessingPass("BLUR",BloomShader, width/2, height/2, 1);
+        PostProcessingPass finalPP = new PostProcessingPass("FINAL",FinalShader, width/2, height/2, 1);
 
 
         GameRenderer.addPass(GameGP); 
-        //GameRenderer.addPass(GameGP1); 
+        GameRenderer.addPass(GameGP1); 
 
         GameRenderer.addPass(GamePP);
         GameRenderer.addPass(GamePP1);
         GameRenderer.addPass(finalPP);
 
         GameRenderer.setFinalPass("FINAL");
-        GameRenderer.connect("GameGeomtry", "FINAL");
+        GameRenderer.connect("GameGeomtry", "FINAL", 0);
+       // GameRenderer.connect("GameGeomtry", "CRT", 0);
 
-
+       
         RenderGraphEditorWindow graphWindow = new RenderGraphEditorWindow(GameRenderer);
         editor.addWindow(graphWindow);
 
@@ -277,6 +278,13 @@ public class Main
 
             glfwSwapBuffers(window);
             glfwPollEvents();
+
+            // System.out.println("input GP OP:" + GameGP.getOutputTexture());
+            // System.out.println("input BLUR:" + GamePP.getInputTexture(0));
+            // System.out.println("input CRT:" + GamePP1.getInputTexture(0));
+            // System.out.println("input FINAL[0] :" + finalPP.getInputTexture(0));
+            // System.out.println("input FINAL[1] :" + finalPP.getInputTexture(1));
+
         }
 
         // --- Cleanup ---
