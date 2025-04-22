@@ -10,9 +10,9 @@ public class PostProcessingPass extends RenderPass
     private int fullscreenVAO = -1;
     private int fullscreenVBO = -1;
 
-    public PostProcessingPass(String name, Shader shader, int width, int height)
+    public PostProcessingPass(String name, Shader shader, int width, int height, int itextures)
     {
-        super(name, shader, width, height);
+        super(name, shader, width, height, itextures);
         setupFullscreenTriangle();
     }
 

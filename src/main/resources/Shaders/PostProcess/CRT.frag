@@ -4,6 +4,9 @@
 #define BLUR 0.001
 #define CA_AMT 1.015
 
+uniform sampler2D u_Texture1;
+
+
 
 uniform sampler2D u_Texture0;
 uniform vec2 u_Resolution;
@@ -40,5 +43,5 @@ void main()
     else
         col *= 1.2;
 
-    fragColor = vec4(col, 1.0);
+    fragColor = vec4(col, 1.0) + vec4(texture(u_Texture1, v_UV).x, 0.0, 0.0, 1.0);
 }

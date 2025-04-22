@@ -8,6 +8,7 @@ import imgui.type.ImInt;
 import imgui.extension.imnodes.ImNodes;
 
 import org.PiEngine.Render.Renderer;
+import org.PiEngine.Render.RenderPass;
 
 import java.util.*;
 
@@ -17,7 +18,7 @@ public class RenderGraphEditorWindow extends EditorWindow
 
     // Stable ID maps
     private final Map<String, Integer> nodeIds      = new HashMap<>();
-    private final Map<String, Integer> inputPinIds  = new HashMap<>();
+    private final Map<String, List<Integer>> inputPinIds = new HashMap<>();
     private final Map<String, Integer> outputPinIds = new HashMap<>();
 
     // Holds link → (from, to) so we can delete later
@@ -28,7 +29,14 @@ public class RenderGraphEditorWindow extends EditorWindow
     private static class LinkInfo
     {
         final String from, to;
-        LinkInfo(String from, String to) { this.from = from; this.to = to; }
+        final int inputIndex;
+
+        LinkInfo(String from, String to, int inputIndex)
+        {
+            this.from = from;
+            this.to = to;
+            this.inputIndex = inputIndex;
+        }
     }
 
     public RenderGraphEditorWindow(Renderer renderer)
@@ -57,18 +65,26 @@ public class RenderGraphEditorWindow extends EditorWindow
 
     private void registerPass(String name)
     {
-        // Allocate 3 consecutive IDs: nodeId, inputPinId, outputPinId
-        nodeIds.put(name,      nextId);
-        inputPinIds.put(name,  nextId + 1);
-        outputPinIds.put(name, nextId + 2);
-        nextId += 3;
+        RenderPass pass = renderer.getPasses().get(name);
+        int inputCount = pass.getInputCount();
+
+        nodeIds.put(name, nextId++);
+
+        List<Integer> pinIds = new ArrayList<>();
+        for (int i = 0; i < inputCount; i++)
+        {
+            pinIds.add(nextId++);
+        }
+        inputPinIds.put(name, pinIds);
+
+        outputPinIds.put(name, nextId++);
     }
 
     private String findPassByInputId(int id)
     {
         return inputPinIds.entrySet()
                           .stream()
-                          .filter(e -> e.getValue() == id)
+                          .filter(e -> e.getValue().contains(id))
                           .map(Map.Entry::getKey)
                           .findFirst()
                           .orElse(null);
@@ -84,113 +100,136 @@ public class RenderGraphEditorWindow extends EditorWindow
                            .orElse(null);
     }
 
+    private int getInputIndex(String passName, int pinId)
+    {
+        List<Integer> inputs = inputPinIds.get(passName);
+        if (inputs != null)
+        {
+            for (int i = 0; i < inputs.size(); i++)
+            {
+                if (inputs.get(i) == pinId)
+                    return i;
+            }
+        }
+        return -1;
+    }
+
     @Override
     public void onRender()
     {
         ImGui.begin(getName());
         ImNodes.beginNodeEditor();
 
-        
         for (String passName : renderer.getPasses().keySet())
         {
-            int nodeId   = nodeIds.get(passName);
-            int inputId  = inputPinIds.get(passName);
+            int nodeId = nodeIds.get(passName);
+            List<Integer> inputs = inputPinIds.get(passName);
             int outputId = outputPinIds.get(passName);
-        
+
             long previewTex = renderer.getPasses().get(passName).getOutputTexture();
-        
+
             ImNodes.beginNode(nodeId);
-        
+
             // Title bar
             ImNodes.beginNodeTitleBar();
                 ImGui.text(passName);
             ImNodes.endNodeTitleBar();
-        
-            // Input on left
-            ImNodes.beginInputAttribute(inputId);
-                ImGui.text("Input");
-            ImNodes.endInputAttribute();
-        
-    
-            ImGui.sameLine();
-        
+
+            // Input pins on the left
+            for (int i = 0; i < inputs.size(); i++)
+            {
+                ImNodes.beginInputAttribute(inputs.get(i));
+                    ImGui.text("Input " + i);
+                ImNodes.endInputAttribute();
+            }
+
+            
             // Move cursor to far right (based on region width minus text width)
+            if(inputs.size()<= 0)
+            {
+            }
+            else
+            {
+                ImGui.sameLine();
+
+            }
             float labelWidth = ImGui.calcTextSize("Output").x;
             float fullWidth = 150;
             ImGui.setCursorPosX(ImGui.getCursorPosX() + fullWidth - labelWidth);
-        
+
+            // Output pin
             ImNodes.beginOutputAttribute(outputId);
                 ImGui.text("Output");
             ImNodes.endOutputAttribute();
-        
+
+            // Display texture preview
             ImGui.image(
                 previewTex,
                 new ImVec2(192, 108),
                 new ImVec2(0, 1),
                 new ImVec2(1, 0),
-                new ImVec4(1, 1, 1, 1), // White tint
-                new ImVec4(0, 0, 0, 0)  // Transparent border
+                new ImVec4(1, 1, 1, 1),
+                new ImVec4(0, 0, 0, 0)
             );
 
-        
             ImNodes.endNode();
         }
-        
 
-
+        // Handle link creation and rendering
         linkMap.clear();
-        renderer.getConnections().forEach((toPass, fromList) -> {
-            int toInput = inputPinIds.get(toPass);
-            for (String fromPass : fromList)
-            {
+        renderer.getConnections().forEach((toPass, inputMap) -> {
+            inputMap.forEach((inputIndex, fromPass) -> {
                 int fromOutput = outputPinIds.get(fromPass);
+                int toInput = inputPinIds.get(toPass).get(inputIndex);
                 int linkId = Objects.hash(fromOutput, toInput);
-                
 
                 ImNodes.link(linkId, fromOutput, toInput);
-                linkMap.put(linkId, new LinkInfo(fromPass, toPass));
-
-                
-
-            }
+                linkMap.put(linkId, new LinkInfo(fromPass, toPass, inputIndex));
+            });
         });
-        
-        // Check if a link is hovered or clicked
 
-
-        
         ImNodes.endNodeEditor();
         ImGui.end();
-        
+        // Check for link creation
         ImInt startAttr = new ImInt();
         ImInt endAttr   = new ImInt();
         if (ImNodes.isLinkCreated(startAttr, endAttr))
         {
             String from = findPassByOutputId(startAttr.get());
-            String to   = findPassByInputId(endAttr.get());
+            String to = null;
+            int index = -1;
+
+            // Find corresponding input pin
+            for (Map.Entry<String, List<Integer>> entry : inputPinIds.entrySet())
+            {
+                index = getInputIndex(entry.getKey(), endAttr.get());
+                if (index != -1)
+                {
+                    to = entry.getKey();
+                    break;
+                }
+            }
+
             if (from != null && to != null)
             {
-                renderer.connect(from, to);
+                renderer.connect(from, to, index);
             }
         }
 
-
+        // Handle link hover and deletion
         ImInt selectedLinkId = new ImInt();
-        if (ImNodes.isLinkHovered(selectedLinkId)) {
-            // If the link is hovered, it can be marked as selected.
-            int linkId = selectedLinkId.get();
-            
-            // Check if the Delete key is pressed
-            if (ImGui.isKeyPressed(ImGuiKey.Delete)) {
-                // Remove the link from your link map
-                LinkInfo info = linkMap.remove(linkId);
-                
-                // If the link was found, disconnect it
-                if (info != null) {
-                    renderer.disconnect(info.from, info.to);
+        if (ImNodes.isLinkHovered(selectedLinkId))
+        {
+            if (ImGui.isKeyPressed(ImGuiKey.Delete))
+            {
+                LinkInfo info = linkMap.remove(selectedLinkId.get());
+                if (info != null)
+                {
+                    renderer.disconnect(info.to, info.inputIndex);
                 }
             }
         }
+
 
     }
 }

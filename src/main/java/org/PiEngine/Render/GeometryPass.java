@@ -7,7 +7,7 @@ public class GeometryPass extends RenderPass
 {
     public GeometryPass(String name, Shader shader, int width, int height)
     {
-        super(name, shader, width, height);
+        super(name, shader, width, height, 0);
     }
 
     @Override

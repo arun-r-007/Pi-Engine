@@ -25,9 +25,9 @@ public class SceneWindow extends EditorWindow
         ImGui.begin(name);
 
         ImGui.image(
-        outputTex,                                 // texture ID
-        new ImVec2(1280/2, 720/2),                          // size (adjust to your framebuffer size or resize dynamically)
-        new ImVec2(0, 1), new ImVec2(1, 0)                 // UV coords: flip vertically because OpenGL and ImGui have different Y origin
+        outputTex,                                 
+        new ImVec2(1280/2, 720/2),                          
+        new ImVec2(0, 1), new ImVec2(1, 0)                 
         );
 
         ImGui.end();
