@@ -84,7 +84,7 @@ public abstract class RenderPass
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         glEnable(GL_DEPTH_TEST);
-        glDepthMask(false);
+        
 
         shader.use();
         shader.setUniformVec2("u_Resolution", new Vector(framebuffer.getWidth(), framebuffer.getHeight(), 0));
