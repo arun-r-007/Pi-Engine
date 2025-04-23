@@ -144,25 +144,20 @@ public class RenderGraphEditorWindow extends EditorWindow
             }
 
             
-            // Move cursor to far right (based on region width minus text width)
-            if(inputs.size()<= 0)
-            {
-            }
-            else
+            float fullWidth = 190;
+            if(!(inputs.size()<= 0))
             {
                 ImGui.sameLine();
-
+                fullWidth = 130;
             }
+           
             float labelWidth = ImGui.calcTextSize("Output").x;
-            float fullWidth = 150;
             ImGui.setCursorPosX(ImGui.getCursorPosX() + fullWidth - labelWidth);
 
-            // Output pin
             ImNodes.beginOutputAttribute(outputId);
                 ImGui.text("Output");
             ImNodes.endOutputAttribute();
 
-            // Display texture preview
             ImGui.image(
                 previewTex,
                 new ImVec2(192, 108),

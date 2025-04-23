@@ -278,7 +278,7 @@ public class GameObject
     }
 
     /**
-     * Sets the layer for this object only.
+     * Sets the layer(bit) for this object only.
      */
     public void setLayerOnly(int newLayer)
     {
@@ -286,7 +286,7 @@ public class GameObject
     }
 
     /**
-     * Sets the layer for this object and all its children recursively.
+     * Sets the layer(bit) for this object and all its children recursively.
      */
     public void setLayerRecursively(int layerBit)
     {
@@ -298,7 +298,7 @@ public class GameObject
     }
 
     /**
-     * Sets the layer from layer name (for convenience).
+     * Sets the layer from layer(bit) name (for convenience).
      */
     public void setLayerByName(String layerName, boolean recursive)
     {

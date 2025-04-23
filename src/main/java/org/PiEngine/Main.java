@@ -1,11 +1,22 @@
 package org.PiEngine;
 
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL43;
+import org.lwjgl.opengl.GL30;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_RENDERER;
+import static org.lwjgl.opengl.GL11.GL_VENDOR;
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glGetString;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
+import static org.lwjgl.opengl.GL30.*;
+
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -83,6 +94,8 @@ public class Main
         cChildHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
         Camera.transform.setLocalPosition(new Vector(0, 0, 20));
 
+        cChildHolder.setLayer(LayerManager.getLayerBit("Layer30"));
+
         world.addChild(player);
         world.addChild(enemy);
         world.addChild(enemy1);
@@ -101,7 +114,7 @@ public class Main
         enemy2.addComponent(new Follower());
         enemy3.addComponent(new Follower());
         holder.addComponent(new SpinComponent());
-        // childHolder.addComponent(new SpinComponent());
+        childHolder.addComponent(new SpinComponent());
         Camera.addComponent(new CameraComponent());
 
 
@@ -219,9 +232,11 @@ public class Main
 
         // Drivers
         
-        System.out.println("OpenGL Vendor: " + GL11.glGetString(GL11.GL_VENDOR));
-        System.out.println("OpenGL Renderer: " + GL11.glGetString(GL11.GL_RENDERER));
-        System.out.println("OpenGL Version: " + GL11.glGetString(GL11.GL_VERSION));
+        System.out.println("OpenGL Vendor: " + glGetString(GL_VENDOR));
+        System.out.println("OpenGL Renderer: " + glGetString(GL_RENDERER));
+        System.out.println("OpenGL Version: " + glGetString(GL_VERSION));
+        System.out.println("OpenGL version: " + glGetString(GL_VERSION));
+        System.out.println("GLSL version: " + glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 
         try 

@@ -24,7 +24,7 @@ public class Renderer
             .computeIfAbsent(toPassName, k -> new HashMap<>())
             .put(inputIndex, fromPassName);
 
-        System.out.println("connected: " + fromPassName + " -> " + toPassName + "[" + inputIndex + "]");
+       // System.out.println("connected: " + fromPassName + " -> " + toPassName + "[" + inputIndex + "]");
     }
 
     // Disconnect a pass from a specific input index
@@ -34,7 +34,7 @@ public class Renderer
         if (inputMap != null && inputMap.containsKey(inputIndex))
         {
             String removed = inputMap.remove(inputIndex);
-            System.out.println("disconnected: " + removed + " -/> " + toPassName + "[" + inputIndex + "]");
+            // System.out.println("disconnected: " + removed + " -/> " + toPassName + "[" + inputIndex + "]");
 
             if (inputMap.isEmpty())
             {
