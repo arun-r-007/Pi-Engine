@@ -114,7 +114,7 @@ public class Main
         enemy2.addComponent(new Follower());
         enemy3.addComponent(new Follower());
         holder.addComponent(new SpinComponent());
-        childHolder.addComponent(new SpinComponent());
+        //childHolder.addComponent(new SpinComponent());
         Camera.addComponent(new CameraComponent());
 
 
@@ -142,7 +142,7 @@ public class Main
 
 
 
-        enemy.getComponent(Follower.class).Target = player;
+        enemy.getComponent(Follower.class).Target = cChildHolder;
         enemy1.getComponent(Follower.class).Target = enemy;
         enemy2.getComponent(Follower.class).Target = enemy1;
         enemy3.getComponent(Follower.class).Target = enemy2;
@@ -223,7 +223,13 @@ public class Main
         GameRenderer.addPass(finalPP);
 
         GameRenderer.setFinalPass("FINAL");
-        GameRenderer.connect("GameGeomtry", "FINAL", 0);
+        GameRenderer.connect("GameGeomtry", "CRT", 0);
+        GameRenderer.connect("GameGeomtry1", "BLUR", 0);
+        GameRenderer.connect("BLUR", "CRT", 1);
+        GameRenderer.connect("CRT", "FINAL", 0);
+
+
+
        // GameRenderer.connect("GameGeomtry", "CRT", 0);
 
        
@@ -251,7 +257,7 @@ public class Main
 
 
         ScriptLoader loader = ScriptLoader.getInstance();
-        loader.loadComponentScripts("Compiled/org/PiEngine/Component");
+        loader.loadComponentScripts("Compiled/Scripts");
 
         // GL43.glEnable(GL43.GL_DEBUG_OUTPUT);
         // GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {

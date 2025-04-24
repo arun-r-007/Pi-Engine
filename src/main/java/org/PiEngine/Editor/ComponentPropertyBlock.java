@@ -1,7 +1,9 @@
 package org.PiEngine.Editor;
 
 import imgui.ImGui;
+import imgui.flag.*;
 import imgui.type.ImFloat;
+import imgui.type.ImString;
 
 import org.PiEngine.Component.Component;
 import org.PiEngine.GameObjects.GameObject;
@@ -26,7 +28,7 @@ public class ComponentPropertyBlock {
      * Skips internal fields like 'gameObject' or 'transform'.
      * Supports editing float, Vector, and GameObject references.
      */
-    public void drawComponentFields(Component c, GameObject root) {
+    public void drawComponentFields(Component c) {
         Field[] fields = c.getClass().getFields(); // Only public fields
 
         for (Field field : fields) {
@@ -58,17 +60,17 @@ public class ComponentPropertyBlock {
                         field.set(c, vecBlock.get());
                     }
 
-                } else if (value instanceof GameObject go) {
+                } else if (field.getType() == GameObject.class) {
+                    GameObject go = (GameObject) value;
+                
                     ImGui.text(fieldName + ":");
                     ImGui.sameLine();
                 
-                    ImGui.pushID(fieldName); // Unique ID to isolate drag/drop slots
+                    ImGui.pushID(fieldName); // Unique ID for isolation
                 
-                    // Display current object's name or fallback label
-                    String displayName = (go != null && go.Name != null) ? go.Name : "(None)";
-                    ImGui.button(displayName); // Display as button-like label
+                    String displayName = (go != null && go.Name != null) ? go.Name : "NULL";
+                    ImGui.inputText("", new ImString(displayName), ImGuiInputTextFlags.ReadOnly); 
                 
-                    // Accept Drag-and-Drop
                     if (ImGui.beginDragDropTarget()) {
                         Object payloadObj = ImGui.acceptDragDropPayload("GAME_OBJECT");
                         if (payloadObj instanceof GameObject droppedObj) {
@@ -77,7 +79,7 @@ public class ComponentPropertyBlock {
                         ImGui.endDragDropTarget();
                     }
                 
-                    ImGui.popID();                
+                    ImGui.popID();
                 } else {
                     ImGui.text(fieldName + ": [Unsupported Type]");
                 }

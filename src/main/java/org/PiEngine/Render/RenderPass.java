@@ -78,7 +78,7 @@ public abstract class RenderPass
     {
         framebuffer.bind();
         glViewport(0, 0, width, height);
-        glClearColor(0.0f, 0.0f, 0.0f, 1f);
+        glClearColor(0.0f, 0.0f, 0.0f, 0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

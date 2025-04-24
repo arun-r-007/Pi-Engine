@@ -170,6 +170,7 @@ public class RenderGraphEditorWindow extends EditorWindow
             ImNodes.endNode();
         }
 
+        
         // Handle link creation and rendering
         linkMap.clear();
         renderer.getConnections().forEach((toPass, inputMap) -> {
