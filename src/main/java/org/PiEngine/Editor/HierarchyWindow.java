@@ -151,7 +151,11 @@ public class HierarchyWindow extends EditorWindow {
             nodeOpen = ImGui.treeNodeEx(obj.Name, flags);
     
             // Selection and rename
-            if (ImGui.isItemClicked(ImGuiMouseButton.Left)) {
+            boolean hovered = ImGui.isItemHovered();
+            boolean released = ImGui.isMouseReleased(ImGuiMouseButton.Left);
+
+            if (hovered && released && !ImGui.beginDragDropSource()) {
+                // Click-and-release on item, no drag
                 InspectorWindow.inspectObject = obj;
                 InspectorWindow.root = this.root;
             }

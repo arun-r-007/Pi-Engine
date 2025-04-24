@@ -119,7 +119,6 @@ public class Transform
     public void setLocalRotation(Vector rot)
     {
         this.rotation = new Vector(rot);
-        this.rotation.z = (this.rotation.z % 360);
     }
 
     /**
@@ -137,12 +136,29 @@ public class Transform
     /**
      * Returns the transformation matrix built from position, rotation, and scale.
      */
-    public Matrix4 getLocalMatrix()
+    public Matrix4 getLocalMatrix() 
     {
+        // Normalize rotation values to range [-360, 360]
+        
+        rotation = wrapRotation(rotation);
+        // Translation matrix
+        Vector normalizedRotation = new Vector(
+            wrapAngle(rotation.x),
+            wrapAngle(rotation.y),
+            wrapAngle(rotation.z)
+        );
         Matrix4 translation = Matrix4.translate(position);
-        Matrix4 rotationMatrix = Matrix4.rotate(rotation.z, new Vector(0, 0, 1));
+    
+        // Rotation matrices for each axis
+        Matrix4 rotationX = Matrix4.rotate(normalizedRotation.x, new Vector(1, 0, 0));
+        Matrix4 rotationY = Matrix4.rotate(normalizedRotation.y, new Vector(0, 1, 0));
+        Matrix4 rotationZ = Matrix4.rotate(normalizedRotation.z, new Vector(0, 0, 1));
+    
+        // Scale matrix
         Matrix4 scaleMatrix = Matrix4.scale(scale);
-
+    
+        // Combine translation, rotation, and scale
+        Matrix4 rotationMatrix = Matrix4.multiply(rotationZ, Matrix4.multiply(rotationY, rotationX));
         return Matrix4.multiply(translation, Matrix4.multiply(rotationMatrix, scaleMatrix));
     }
 
@@ -234,7 +250,6 @@ public class Transform
             Vector parentWorldRot = parent.getWorldRotation();
             this.rotation = worldRot.sub(parentWorldRot);
         }
-        this.rotation.z = ((this.rotation.z % 360) + 360) % 360;
     }
 
     /**
@@ -304,6 +319,26 @@ public class Transform
     // ----------------------------
     // Debug and Utility
     // ----------------------------
+
+
+    public static Vector wrapRotation(Vector rotation)
+    {
+        return new Vector(
+            wrapAngle(rotation.x),
+            wrapAngle(rotation.y),
+            wrapAngle(rotation.z)
+        );
+    }
+
+    private static float wrapAngle(float angle)
+    {
+        angle = angle % 360.0f;
+        if (angle < 0)
+        {
+            angle += 360.0f;
+        }
+        return angle;
+    }
 
     /**
      * Returns a readable string representation of the Transform.

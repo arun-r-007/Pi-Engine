@@ -230,13 +230,13 @@ public class InspectorWindow extends EditorWindow {
                     obj.removeComponent(c);
                     ImGui.endPopup();
                     ImGui.popID();
-                    break; // Prevents list modification error
+                    break;
                 }
                 ImGui.endPopup();
             }
 
             ComponentPropertyBlock comp = new ComponentPropertyBlock(compName);
-            comp.drawComponentFields(c, root);
+            comp.drawComponentFields(c);
         }
 
         ImGui.popID();

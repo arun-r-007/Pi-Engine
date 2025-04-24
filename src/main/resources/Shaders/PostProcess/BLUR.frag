@@ -5,10 +5,8 @@ in vec2 v_UV;
 
 uniform sampler2D u_Texture0;
 
-// Assume texel size in UV space (tweak this to control blur size)
-const float offset = 1.0 / 10.0; // smaller = sharper, larger = blurrier
-
-// Gaussian weights
+// Gaussian blur parameters
+const float offset = 1.0 / 10.0;
 const float kernel[9] = float[](
     0.0751136, 0.123841, 0.0751136,
     0.123841,  0.20418,  0.123841,
@@ -29,12 +27,19 @@ void main()
         vec2( offset, -offset)  // bottom-right
     );
 
-    vec4 color = vec4(0.0);
-    for (int i = 0; i < 9; i++)
+    vec3 accumColor = vec3(0.0);
+    float accumAlpha = 0.0;
+
+    for (int i = 0; i < 9; ++i)
     {
         vec4 sample = texture(u_Texture0, v_UV + offsets[i]);
-        color += sample * kernel[i];
+        accumColor += sample.rgb * sample.a * kernel[i]; // Premultiply
+        accumAlpha += sample.a * kernel[i];
     }
 
-    FragColor = color;
+    // Avoid division by zero
+    if (accumAlpha > 0.0)
+        accumColor /= accumAlpha;
+
+    FragColor = vec4(accumColor, accumAlpha);
 }

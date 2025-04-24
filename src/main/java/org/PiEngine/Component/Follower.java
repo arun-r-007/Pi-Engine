@@ -12,12 +12,18 @@ public class Follower extends Component
     public float MinumDist = 1.25f;
 
     @Override
+    public void start()
+    {
+    }
+
+    @Override
     public void update() 
     {
+        if (Target == null) return;
         if (Vector.Distance(Target.transform.getWorldPosition(), transform.getWorldPosition()) > MinumDist)
         {
-            Vector newPos = Vector.lerp(transform.getLocalPosition(), Target.transform.getLocalPosition(), speed*Time.deltaTime);
-            transform.setLocalPosition(newPos);
+            Vector newPos = Vector.lerp(transform.getWorldPosition(), Target.transform.getWorldPosition(), speed*Time.deltaTime);
+            transform.setWorldPosition(newPos);
         }
 
     }
