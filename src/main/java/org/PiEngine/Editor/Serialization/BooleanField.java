@@ -12,9 +12,8 @@ public class BooleanField extends SerializeField<Boolean> {
     public BooleanField(String name, String label) {
         super(name, label);
     }
-    
-    public void set(Boolean initialValue)
-    {
+
+    public void set(Boolean initialValue) {
         this.value = initialValue;
     }
 
@@ -25,17 +24,35 @@ public class BooleanField extends SerializeField<Boolean> {
 
     public void handle() {
         if (getter != null && setter != null) {
-            if (!ImGui.isAnyItemActive()) value = getter.get();
-            draw();
-            if (!ImGui.isAnyItemActive()) setter.accept(value);
+            if (!ImGui.isAnyItemActive()) {
+                value = getter.get();
+            }
+
+            boolean temp = value ;
+            ImGui.text(name);
+            ImGui.sameLine();
+
+            ImGui.pushID(label);
+            boolean changed = ImGui.checkbox("###checkbox", temp);
+            ImGui.popID();
+
+            if (changed) {
+                value = temp;
+                setter.accept(value);
+            }
         } else {
             draw();
         }
     }
 
+    @Override
     public void draw() {
         ImGui.text(name);
         ImGui.sameLine();
-        ImGui.checkbox("###" + label, value);
+
+        boolean temp = value;
+        ImGui.pushID(label);
+        ImGui.checkbox("###checkbox", temp);
+        ImGui.popID();
     }
 }

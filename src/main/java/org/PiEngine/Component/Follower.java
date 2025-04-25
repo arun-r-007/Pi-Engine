@@ -16,7 +16,6 @@ public class Follower extends Component
     @Override
     public void start()
     {
-        Target = new GameObject(null);
     }
 
     @Override

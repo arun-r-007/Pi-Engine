@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class FloatField extends SerializeField<Float> {
-    private float value[] = {0.0f};
+    private final float[] value = {0.0f};
     private Supplier<Float> getter;
     private Consumer<Float> setter;
 
@@ -13,32 +13,43 @@ public class FloatField extends SerializeField<Float> {
         super(name, label);
     }
 
-    
-    public void set(Float initialValue)
-    {
-        this.value[0] = initialValue;  // Convert double to float
+    public void set(Float initialValue) {
+        this.value[0] = initialValue;
     }
-    
+
     public void syncWith(Supplier<Float> getter, Consumer<Float> setter) {
         this.getter = getter;
         this.setter = setter;
     }
 
-    
     public void handle() {
         if (getter != null && setter != null) {
-            if (!ImGui.isItemActivated()) value[0] = getter.get();
-            draw();
-            if (!ImGui.isAnyItemActive()) setter.accept(value[0]);
+            if (!ImGui.isAnyItemActive()) {
+                set(getter.get());
+            }
+
+            ImGui.text(name);
+            ImGui.sameLine();
+
+            ImGui.pushID(label);
+            boolean edited = ImGui.dragFloat("###input", value, 0.1f);
+            ImGui.popID();
+
+            if (edited) {
+                setter.accept(value[0]);
+            }
         } else {
             draw();
         }
     }
 
-    
+    @Override
     public void draw() {
         ImGui.text(name);
         ImGui.sameLine();
-        ImGui.dragFloat("###" + label, value, 0.01f);
+
+        ImGui.pushID(label);
+        ImGui.dragFloat("###input", value, 0.1f);
+        ImGui.popID();
     }
 }

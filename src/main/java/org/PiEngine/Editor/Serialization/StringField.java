@@ -11,15 +11,17 @@ public class StringField extends SerializeField<String> {
     private Supplier<String> getter;
     private Consumer<String> setter;
 
+    private final ImString buffer = new ImString(256); // You can adjust buffer size as needed
+
     public StringField(String name, String label) {
         super(name, label);
     }
 
-    public void set(String initialValue)
-    {
+    public void set(String initialValue) {
         this.value = initialValue;
+        buffer.set(initialValue);
     }
-    
+
     public void syncWith(Supplier<String> getter, Consumer<String> setter) {
         this.getter = getter;
         this.setter = setter;
@@ -27,17 +29,33 @@ public class StringField extends SerializeField<String> {
 
     public void handle() {
         if (getter != null && setter != null) {
-            if (!ImGui.isAnyItemActive()) value = getter.get();
-            draw();
-            if (!ImGui.isAnyItemActive()) setter.accept(value);
+            if (!ImGui.isAnyItemActive()) {
+                set(getter.get());
+            }
+
+            ImGui.text(name);
+            ImGui.sameLine();
+
+            ImGui.pushID(label);
+            boolean edited = ImGui.inputText("###input", buffer);
+            ImGui.popID();
+
+            if (edited) {
+                value = buffer.get();
+                setter.accept(value);
+            }
         } else {
             draw();
         }
     }
 
+    @Override
     public void draw() {
         ImGui.text(name);
         ImGui.sameLine();
-        ImGui.inputText("###" + label, new ImString(value));
+
+        ImGui.pushID(label);
+        ImGui.inputText("###input", buffer);
+        ImGui.popID();
     }
 }

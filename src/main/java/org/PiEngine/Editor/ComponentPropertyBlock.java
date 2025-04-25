@@ -52,6 +52,7 @@ public class ComponentPropertyBlock {
 
         for (Field field : fields) {
             String fieldName = field.getName();
+            Class<?> fieldType = field.getType();
 
             // Skip non-editable or internal references
             if (fieldName.equals("gameObject") || fieldName.equals("transform")) {
@@ -67,8 +68,7 @@ public class ComponentPropertyBlock {
                     Object value = field.get(c); 
                     
                     if (handlerClass.isInstance(value)) {
-                        Object fieldHandler = FieldClass.getConstructor(String.class, String.class)
-                                                        .newInstance(field.getName(), field.getName());
+                        Object fieldHandler = FieldClass.getConstructor(String.class, String.class).newInstance(field.getName(), field.getName());
                         
 
                         Supplier<Object> supplier = () -> {
@@ -98,6 +98,26 @@ public class ComponentPropertyBlock {
 
                         Method handleMethod = FieldClass.getMethod("handle");
                         handleMethod.invoke(fieldHandler);
+                    }
+                    else if(fieldType == handlerClass)
+                    {
+                        Object fieldHandler = FieldClass.getConstructor(String.class, String.class).newInstance(field.getName(), field.getName());
+                        Method syncWithMethod;
+
+                        Consumer<Object> consumer = newVal -> {
+                            try {
+                                field.set(c, newVal);
+                            } catch (IllegalAccessException e) {
+                                ImGui.text("Cannot modify: " + field.getName());
+                            }
+                        };
+
+                        syncWithMethod = FieldClass.getMethod("syncWith", Supplier.class, Consumer.class);
+                        syncWithMethod.invoke(fieldHandler, null, consumer);
+
+                        Method draMethod = FieldClass.getMethod("draw");;
+                        draMethod.invoke(fieldHandler);
+                        
                     }
                 } catch (Exception e) {
                     e.printStackTrace(); 

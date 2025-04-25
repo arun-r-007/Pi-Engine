@@ -5,17 +5,16 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class DoubleField extends SerializeField<Double> {
-    private float[] value = {0.0f};  // Use a float array for compatibility with ImGui
+    private final float[] value = {0.0f};  // Use a float array for compatibility with ImGui
     private Supplier<Double> getter;
     private Consumer<Double> setter;
 
     public DoubleField(String name, String label) {
         super(name, label);
     }
-    
-    public void set(Double initialValue)
-    {
-        this.value[0] = initialValue.floatValue();  // Convert double to float
+
+    public void set(Double initialValue) {
+        this.value[0] = initialValue.floatValue();  // Convert Double to float for ImGui compatibility
     }
 
     public void syncWith(Supplier<Double> getter, Consumer<Double> setter) {
@@ -28,8 +27,16 @@ public class DoubleField extends SerializeField<Double> {
             if (!ImGui.isAnyItemActive()) {
                 value[0] = getter.get().floatValue();  // Convert Double to float explicitly
             }
-            draw();
-            if (!ImGui.isAnyItemActive()) {
+
+            boolean changed = false;
+            ImGui.text(name);
+            ImGui.sameLine();
+
+            ImGui.pushID(label);
+            changed = ImGui.dragFloat("###drag", value, 0.1f);  // Use float[] for ImGui compatibility
+            ImGui.popID();
+
+            if (changed) {
                 setter.accept((double) value[0]);  // Convert float back to Double explicitly
             }
         } else {
@@ -37,9 +44,13 @@ public class DoubleField extends SerializeField<Double> {
         }
     }
 
+    @Override
     public void draw() {
         ImGui.text(name);
         ImGui.sameLine();
-        ImGui.dragFloat("###" + label, value, 0.01f);  // Pass the float[] value
+
+        ImGui.pushID(label);
+        ImGui.dragFloat("###drag", value, 0.1f);
+        ImGui.popID();
     }
 }

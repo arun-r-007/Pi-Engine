@@ -5,16 +5,15 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class IntField extends SerializeField<Integer> {
-    private int value[] = {0};
+    private final int[] value = {0};
     private Supplier<Integer> getter;
     private Consumer<Integer> setter;
 
     public IntField(String name, String label) {
         super(name, label);
     }
-    
-    public void set(Integer initialValue)
-    {
+
+    public void set(Integer initialValue) {
         this.value[0] = initialValue;
     }
 
@@ -22,21 +21,35 @@ public class IntField extends SerializeField<Integer> {
         this.getter = getter;
         this.setter = setter;
     }
-    
 
     public void handle() {
         if (getter != null && setter != null) {
-            if (!ImGui.isAnyItemActive()) value[0] = getter.get();
-            draw();
-            if (!ImGui.isAnyItemActive()) setter.accept(value[0]);
+            if (!ImGui.isAnyItemActive()) {
+                set(getter.get());
+            }
+
+            ImGui.text(name);
+            ImGui.sameLine();
+
+            ImGui.pushID(label);
+            boolean edited = ImGui.dragInt("###input", value);
+            ImGui.popID();
+
+            if (edited) {
+                setter.accept(value[0]);
+            }
         } else {
             draw();
         }
     }
 
+    @Override
     public void draw() {
         ImGui.text(name);
         ImGui.sameLine();
-        ImGui.dragInt("###" + label, value);
+
+        ImGui.pushID(label);
+        ImGui.dragInt("###input", value);
+        ImGui.popID();
     }
 }

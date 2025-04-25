@@ -47,16 +47,31 @@ public class VectorField extends SerializeField<Vector>
                 set(getter.get());
             }
 
-            draw();
+            // Draw and detect changes
+            ImGui.text(name);
+            ImGui.sameLine();
+            ImGui.pushItemWidth(70);
+            ImGui.pushID(label); // make sure IDs are scoped correctly
 
-            if (!ImGui.isAnyItemActive())
+            boolean edited = false;
+
+            edited |= ImGui.dragFloat("##X", x, 0.1f);
+            ImGui.sameLine();
+            edited |= ImGui.dragFloat("##Y", y, 0.1f);
+            ImGui.sameLine();
+            edited |= ImGui.dragFloat("##Z", z, 0.1f);
+
+            ImGui.popID();
+            ImGui.popItemWidth();
+
+            if (edited)
             {
                 setter.accept(get());
             }
         }
         else
         {
-            draw();
+            draw(); // fallback if not synced
         }
     }
 
@@ -66,11 +81,15 @@ public class VectorField extends SerializeField<Vector>
         ImGui.text(name);
         ImGui.sameLine();
         ImGui.pushItemWidth(70);
-        ImGui.dragFloat("##" + label + "_x", x, 0.01f);
+
+        ImGui.pushID(label);
+        ImGui.dragFloat("##X", x, 0.1f);
         ImGui.sameLine();
-        ImGui.dragFloat("##" + label + "_y", y, 0.01f);
+        ImGui.dragFloat("##Y", y, 0.1f);
         ImGui.sameLine();
-        ImGui.dragFloat("##" + label + "_z", z, 0.01f);
+        ImGui.dragFloat("##Z", z, 0.1f);
+        ImGui.popID();
+
         ImGui.popItemWidth();
     }
 }
