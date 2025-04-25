@@ -7,7 +7,12 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Movemet extends Component
 {
-    public float speed = 10.0f;
+    public Float speed = 10.0f;
+    public Boolean bools = false;
+    public Vector vec = new Vector();
+    public Integer inte = 0;
+    public String str = "ds";
+
 
     @Override
     public void update() 

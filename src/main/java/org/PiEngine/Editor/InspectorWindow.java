@@ -5,9 +5,11 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTreeNodeFlags;
 
 import org.PiEngine.GameObjects.*;
+import org.PiEngine.Math.Vector;
 import org.reflections.Reflections;
 import org.PiEngine.Component.*;
 import org.PiEngine.Core.LayerManager;
+import org.PiEngine.Editor.Serialization.VectorField;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import imgui.type.ImBoolean;
@@ -33,7 +36,7 @@ public class InspectorWindow extends EditorWindow {
     public boolean actAsProperty = false;
 
     private static final Map<String, Supplier<Component>> componentFactory = new HashMap<>();
-    private final Map<String, VectorPropertyBlock> transformBlocks = new HashMap<>();
+    
 
 
     static {
@@ -163,84 +166,97 @@ public class InspectorWindow extends EditorWindow {
      * Renders the editable Transform data for the given GameObject.
      * Allows editing of both local and global transform values.
      */
-    private void renderTransformEditor(GameObject obj) {
+    private final Map<String, VectorField> transformBlocks = new HashMap<>();
+    private void renderTransformEditor(GameObject obj)
+    {
         ImGui.text("All Transform Properties of " + obj.Name);
         ImGui.separator();
 
         ImGui.text("GLOBAL");
         ImGui.separator();
 
-        String id = obj.Name; // Make sure GameObject has unique ID
+        String id = obj.Name;
 
-        VectorPropertyBlock worldPosBlock = transformBlocks.computeIfAbsent(id + "_worldPos", k -> new VectorPropertyBlock("worldPos"));
-        if (!ImGui.isAnyItemActive()) worldPosBlock.set(obj.transform.getWorldPosition());
-        worldPosBlock.draw("Position  ");
-        if (!ImGui.isAnyItemActive()) obj.transform.setWorldPosition(worldPosBlock.get());
+        transformBlocks.computeIfAbsent(id + "_worldPos", k -> new VectorField("Position  ", "worldPos"))
+            .syncWith(obj.transform::getWorldPosition, obj.transform::setWorldPosition);
+        transformBlocks.get(id + "_worldPos").handle();
 
-        VectorPropertyBlock worldRotBlock = transformBlocks.computeIfAbsent(id + "_worldRot", k -> new VectorPropertyBlock("worldRot"));
-        if (!ImGui.isAnyItemActive()) worldRotBlock.set(obj.transform.getWorldRotation());
-        worldRotBlock.draw("Rotation  ");
-        if (!ImGui.isAnyItemActive()) obj.transform.setWorldRotation(worldRotBlock.get());
+        transformBlocks.computeIfAbsent(id + "_worldRot", k -> new VectorField("Rotation  ", "worldRot"))
+            .syncWith(obj.transform::getWorldRotation, obj.transform::setWorldRotation);
+        transformBlocks.get(id + "_worldRot").handle();
 
-        VectorPropertyBlock worldScaleBlock = transformBlocks.computeIfAbsent(id + "_worldScale", k -> new VectorPropertyBlock("worldScale"));
-        if (!ImGui.isAnyItemActive()) worldScaleBlock.set(obj.transform.getWorldScale());
-        worldScaleBlock.draw("Size      ");
-        if (!ImGui.isAnyItemActive()) obj.transform.setWorldScale(worldScaleBlock.get());
+        transformBlocks.computeIfAbsent(id + "_worldScale", k -> new VectorField("Size      ", "worldScale"))
+            .syncWith(obj.transform::getWorldScale, obj.transform::setWorldScale);
+        transformBlocks.get(id + "_worldScale").handle();
 
         ImGui.separator();
-
         ImGui.text("LOCAL");
         ImGui.separator();
 
-        VectorPropertyBlock localPosBlock = transformBlocks.computeIfAbsent(id + "_localPos", k -> new VectorPropertyBlock("localPos"));
-        if (!ImGui.isAnyItemActive()) localPosBlock.set(obj.transform.getLocalPosition());
-        localPosBlock.draw("Position  ");
-        if (!ImGui.isAnyItemActive()) obj.transform.setLocalPosition(localPosBlock.get());
+        transformBlocks.computeIfAbsent(id + "_localPos", k -> new VectorField("Position  ", "localPos"))
+            .syncWith(obj.transform::getLocalPosition, obj.transform::setLocalPosition);
+        transformBlocks.get(id + "_localPos").handle();
 
-        VectorPropertyBlock localRotBlock = transformBlocks.computeIfAbsent(id + "_localRot", k -> new VectorPropertyBlock("localRot"));
-        if (!ImGui.isAnyItemActive()) localRotBlock.set(obj.transform.getLocalRotation());
-        localRotBlock.draw("Rotation  ");
-        if (!ImGui.isAnyItemActive()) obj.transform.setLocalRotation(localRotBlock.get());
+        transformBlocks.computeIfAbsent(id + "_localRot", k -> new VectorField("Rotation  ", "localRot"))
+            .syncWith(obj.transform::getLocalRotation, obj.transform::setLocalRotation);
+        transformBlocks.get(id + "_localRot").handle();
 
-        VectorPropertyBlock localScaleBlock = transformBlocks.computeIfAbsent(id + "_localScale", k -> new VectorPropertyBlock("localScale"));
-        if (!ImGui.isAnyItemActive()) localScaleBlock.set(obj.transform.getLocalScale());
-        localScaleBlock.draw("Size      ");
-        if (!ImGui.isAnyItemActive()) obj.transform.setLocalScale(localScaleBlock.get());
+        transformBlocks.computeIfAbsent(id + "_localScale", k -> new VectorField("Size      ", "localScale"))
+            .syncWith(obj.transform::getLocalScale, obj.transform::setLocalScale);
+        transformBlocks.get(id + "_localScale").handle();
 
         ImGui.separator();
+    }
+
+    private void handleVectorField(String key, String name, String label, Vector current, Consumer<Vector> setter)
+    {
+        VectorField field = transformBlocks.computeIfAbsent(key, k -> new VectorField(name, label));
+
+        if (!ImGui.isAnyItemActive())
+        {
+            field.set(current);
+        }
+
+        field.draw();
+
+        if (ImGui.isAnyItemActive())
+        {
+            setter.accept(field.get());
+        }
     }
 
     /**
      * Renders editable component data for all components attached to a GameObject.
      */
-    private void renderComponentEditor(GameObject obj) {
-    ImGui.text("All Component Properties of " + obj.Name);
-    ImGui.separator();
+    private void renderComponentEditor(GameObject obj) 
+    {
+        ImGui.text("All Component Properties of " + obj.Name);
+        ImGui.separator();
 
-    List<Component> components = new ArrayList<>(obj.getAllComponents()); // Copy to avoid modification issues
-    for (Component c : components) {
-        String compName = c.getClass().getSimpleName();
-        int compId = System.identityHashCode(c);
-        ImGui.pushID(compId);
+        List<Component> components = new ArrayList<>(obj.getAllComponents()); // Copy to avoid modification issues
+        for (Component c : components) {
+            String compName = c.getClass().getSimpleName();
+            int compId = System.identityHashCode(c);
+            ImGui.pushID(compId);
 
-        if (ImGui.collapsingHeader(compName, ImGuiTreeNodeFlags.DefaultOpen)) {
-            // Right-click context menu
-            if (ImGui.beginPopupContextItem("ComponentContext")) {
-                if (ImGui.menuItem("Remove Component")) {
-                    obj.removeComponent(c);
+            if (ImGui.collapsingHeader(compName, ImGuiTreeNodeFlags.DefaultOpen)) {
+                // Right-click context menu
+                if (ImGui.beginPopupContextItem("ComponentContext")) {
+                    if (ImGui.menuItem("Remove Component")) {
+                        obj.removeComponent(c);
+                        ImGui.endPopup();
+                        ImGui.popID();
+                        break;
+                    }
                     ImGui.endPopup();
-                    ImGui.popID();
-                    break;
                 }
-                ImGui.endPopup();
+
+                ComponentPropertyBlock comp = new ComponentPropertyBlock(compName);
+                comp.drawComponentFields(c);
             }
 
-            ComponentPropertyBlock comp = new ComponentPropertyBlock(compName);
-            comp.drawComponentFields(c);
+            ImGui.popID();
         }
-
-        ImGui.popID();
     }
-}
 
 }

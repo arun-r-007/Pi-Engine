@@ -5,8 +5,8 @@ import org.PiEngine.Math.*;
 
 public class SpinComponent extends Component
 {
-    public float speed = 100.0f;
-    public float dir = 1.0f;
+    public Float speed = 100.0f;
+    public Float dir = 1.0f;
 
     @Override
     public void update()

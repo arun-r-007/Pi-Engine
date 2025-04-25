@@ -8,12 +8,15 @@ import org.PiEngine.Core.*;
 public class Follower extends Component
 {
     public GameObject Target;
-    public float speed = 5.0f;
-    public float MinumDist = 1.25f;
+    public Float speed = 5.0f;
+    public Float MinumDist = 1.25f;
+    public Float zindex = 0.0f;
+
 
     @Override
     public void start()
     {
+        Target = new GameObject(null);
     }
 
     @Override
@@ -23,6 +26,7 @@ public class Follower extends Component
         if (Vector.Distance(Target.transform.getWorldPosition(), transform.getWorldPosition()) > MinumDist)
         {
             Vector newPos = Vector.lerp(transform.getWorldPosition(), Target.transform.getWorldPosition(), speed*Time.deltaTime);
+            newPos.z = zindex;
             transform.setWorldPosition(newPos);
         }
 

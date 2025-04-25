@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 public class RendererComponent extends Component
 {
     public Mesh mesh;
-    public float size = 2.5f;
+    public Float size = 2.5f;
     Shader shader;
     public Vector Color;
     Texture texture;

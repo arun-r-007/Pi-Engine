@@ -6,8 +6,8 @@ import org.PiEngine.Math.Vector;
 public class CameraComponent extends Component
 {
 
-    public float Near = 0.01f;
-    public float Far = 100.0f;
+    public Float Near = 0.01f;
+    public Float Far = 100.0f;
 
     private Camera camera;
 
