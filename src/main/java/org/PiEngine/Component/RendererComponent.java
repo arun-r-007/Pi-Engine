@@ -12,7 +12,7 @@ public class RendererComponent extends Component
     public Float size = 2.5f;
     Shader shader;
     public Vector Color;
-    Texture texture;
+    public Texture texture;
 
     @Override
     public void start()

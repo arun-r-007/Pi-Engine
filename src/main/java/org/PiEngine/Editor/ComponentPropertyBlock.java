@@ -6,6 +6,7 @@ import org.PiEngine.Component.Component;
 import org.PiEngine.Editor.Serialization.*;
 import org.PiEngine.GameObjects.GameObject;
 import org.PiEngine.Math.Vector;
+import org.PiEngine.Render.Texture;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -34,6 +35,8 @@ public class ComponentPropertyBlock {
         fieldTypeMap.put(Integer.class, IntField.class);
         fieldTypeMap.put(Boolean.class, BooleanField.class);
         fieldTypeMap.put(String.class, StringField.class);
+        fieldTypeMap.put(Texture.class, TextureField.class);
+
 
         // Add other mappings as needed (e.g., String.class -> StringField.class)
     }
@@ -125,6 +128,7 @@ public class ComponentPropertyBlock {
                 }
             }
         }
+        ImGui.separator();
     }
 
 }
