@@ -362,7 +362,7 @@ public class GameObject
     @Override
     protected void finalize() throws Throwable
     {
-        System.out.println("Removed: " + this.Name);
+        // System.out.println("Removed: " + this.Name);
     }
 
 }

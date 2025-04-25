@@ -144,6 +144,13 @@ public class Vector
         return "Vector(" + x + ", " + y + ", " + z + ")";
     }
 
+    public void SetVector(Vector v)
+    {
+        x = v.x;
+        y = v.y;
+        z = v.z;
+    }
+
     public void setX(float x) 
     {
         this.x = x;

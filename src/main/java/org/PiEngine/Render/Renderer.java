@@ -33,7 +33,8 @@ public class Renderer
         Map<Integer, String> inputMap = connections.get(toPassName);
         if (inputMap != null && inputMap.containsKey(inputIndex))
         {
-            String removed = inputMap.remove(inputIndex);
+            //String removed = inputMap.remove(inputIndex);
+            inputMap.remove(inputIndex);
             // System.out.println("disconnected: " + removed + " -/> " + toPassName + "[" + inputIndex + "]");
 
             if (inputMap.isEmpty())

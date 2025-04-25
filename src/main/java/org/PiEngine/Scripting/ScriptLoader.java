@@ -106,11 +106,9 @@ public class ScriptLoader
 
     public void loadSystemScripts(String folderPath) 
     {
-        // add when System support is needed
     }
 
     public void loadBehaviorScripts(String folderPath) 
     {
-        // add when Behavior support is needed
     }
 }

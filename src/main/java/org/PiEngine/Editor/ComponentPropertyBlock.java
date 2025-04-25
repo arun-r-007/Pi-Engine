@@ -1,16 +1,20 @@
 package org.PiEngine.Editor;
 
 import imgui.ImGui;
-import imgui.flag.*;
-import imgui.type.ImFloat;
-import imgui.type.ImString;
 
 import org.PiEngine.Component.Component;
+import org.PiEngine.Editor.Serialization.*;
 import org.PiEngine.GameObjects.GameObject;
 import org.PiEngine.Math.Vector;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+
 
 /**
  * ComponentPropertyBlock is responsible for rendering UI controls
@@ -18,6 +22,21 @@ import java.util.function.Consumer;
  */
 public class ComponentPropertyBlock {
     private final String label;
+
+
+     private static final Map<Class<?>, Class<?>> fieldTypeMap = new HashMap<>();
+
+    static {
+        // Populate the map with field types and corresponding field classes
+        fieldTypeMap.put(Float.class, FloatField.class);
+        fieldTypeMap.put(Vector.class, VectorField.class);
+        fieldTypeMap.put(GameObject.class, GameObjectField.class);
+        fieldTypeMap.put(Integer.class, IntField.class);
+        fieldTypeMap.put(Boolean.class, BooleanField.class);
+        fieldTypeMap.put(String.class, StringField.class);
+
+        // Add other mappings as needed (e.g., String.class -> StringField.class)
+    }
 
     public ComponentPropertyBlock(String label) {
         this.label = label;
@@ -33,75 +52,79 @@ public class ComponentPropertyBlock {
 
         for (Field field : fields) {
             String fieldName = field.getName();
+            Class<?> fieldType = field.getType();
 
             // Skip non-editable or internal references
             if (fieldName.equals("gameObject") || fieldName.equals("transform")) {
                 continue;
             }
 
-            try {
-                Object value = field.get(c);
+            for (Map.Entry<Class<?>, Class<?>> entry : fieldTypeMap.entrySet()) {
+                // Get the value and the handler class
+                Class<?> handlerClass = entry.getKey();
+                Class<?> FieldClass = entry.getValue();
+                
+                try {
+                    Object value = field.get(c); 
+                    
+                    if (handlerClass.isInstance(value)) {
+                        Object fieldHandler = FieldClass.getConstructor(String.class, String.class).newInstance(field.getName(), field.getName());
+                        
 
-                if (value instanceof Float f) {
-                    drawFloatField(fieldName, f, newVal -> {
-                        try {
-                            field.set(c, newVal);
-                        } catch (IllegalAccessException e) {
-                            ImGui.text("Cannot modify: " + fieldName);
-                        }
-                    });
+                        Supplier<Object> supplier = () -> {
+                            try {
+                                return field.get(c);
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                                return null;
+                            }
+                        };
+                        
+                        Consumer<Object> consumer = newVal -> {
+                            try {
+                                field.set(c, newVal);
+                            } catch (IllegalAccessException e) {
+                                ImGui.text("Cannot modify: " + field.getName());
+                            }
+                        };
 
-                } else if (value instanceof Vector v) {
-                    VectorPropertyBlock vecBlock = new VectorPropertyBlock(fieldName);
-                    vecBlock.set(v);
-                    vecBlock.draw(fieldName);
+                        Method syncWithMethod = FieldClass.getMethod("syncWith", Supplier.class, Consumer.class);
+                        syncWithMethod.invoke(fieldHandler, supplier, consumer);
 
-                    if (!ImGui.isAnyItemActive()) {
-                        field.set(c, vecBlock.get());
+                        Method setMethod = FieldClass.getMethod("set", value.getClass());
+                        
+                        
+                        setMethod.invoke(fieldHandler, value); 
+
+                        Method handleMethod = FieldClass.getMethod("handle");
+                        handleMethod.invoke(fieldHandler);
                     }
+                    else if(fieldType == handlerClass)
+                    {
+                        Object fieldHandler = FieldClass.getConstructor(String.class, String.class).newInstance(field.getName(), field.getName());
+                        Method syncWithMethod;
 
-                } else if (field.getType() == GameObject.class) {
-                    GameObject go = (GameObject) value;
-                
-                    ImGui.text(fieldName + ":");
-                    ImGui.sameLine();
-                
-                    ImGui.pushID(fieldName); // Unique ID for isolation
-                
-                    String displayName = (go != null && go.Name != null) ? go.Name : "NULL";
-                    ImGui.inputText("", new ImString(displayName), ImGuiInputTextFlags.ReadOnly); 
-                
-                    if (ImGui.beginDragDropTarget()) {
-                        Object payloadObj = ImGui.acceptDragDropPayload("GAME_OBJECT");
-                        if (payloadObj instanceof GameObject droppedObj) {
-                            field.set(c, droppedObj);
-                        }
-                        ImGui.endDragDropTarget();
+                        Consumer<Object> consumer = newVal -> {
+                            try {
+                                field.set(c, newVal);
+                            } catch (IllegalAccessException e) {
+                                ImGui.text("Cannot modify: " + field.getName());
+                            }
+                        };
+
+                        syncWithMethod = FieldClass.getMethod("syncWith", Supplier.class, Consumer.class);
+                        syncWithMethod.invoke(fieldHandler, null, consumer);
+
+                        Method draMethod = FieldClass.getMethod("draw");;
+                        draMethod.invoke(fieldHandler);
+                        
                     }
-                
-                    ImGui.popID();
-                } else {
-                    ImGui.text(fieldName + ": [Unsupported Type]");
+                } catch (Exception e) {
+                    e.printStackTrace(); 
+                    ImGui.text("Failed to access: " + fieldName);
                 }
-
-            } catch (IllegalAccessException e) {
-                ImGui.text("Failed to access: " + fieldName);
             }
         }
     }
 
-    /**
-     * Draws an editable float input field.
-     * Calls the setter once the value is no longer being edited.
-     */
-    private void drawFloatField(String name, float value, Consumer<Float> setter) {
-        ImFloat val = new ImFloat(value);
-        ImGui.pushItemWidth(100);
-        ImGui.text(name + ":"); ImGui.sameLine();
-        ImGui.inputFloat("##" + label + "_" + name, val);
-
-        if (!ImGui.isItemActive()) {
-            setter.accept(val.get());
-        }
-    }
 }
