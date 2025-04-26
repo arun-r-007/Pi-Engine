@@ -6,6 +6,8 @@ import java.net.URLClassLoader;
 
 import org.PiEngine.Component.Component;
 import org.PiEngine.Component.ComponentFactory;
+import org.PiEngine.Engine.Console;
+
 
 public class ScriptLoader 
 {
@@ -89,17 +91,16 @@ public class ScriptLoader
                             return null;
                         }
                     });
-                    System.out.println("Loaded & registered component: " + fullClassName);
+                    Console.log("Loaded & registered component: " + fullClassName);
                 } 
                 else 
                 {
-                    System.out.println("Skipped (not a Component): " + fullClassName);
+                    Console.warning("Skipped (not a Component): " + fullClassName);
                 }
             } 
             catch (Exception e) 
             {
-                System.err.println("Failed to load: " + fullClassName);
-                e.printStackTrace();
+                Console.error("Failed to load: " + fullClassName);
             }
         }
     }

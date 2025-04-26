@@ -3,8 +3,9 @@ package org.PiEngine.Editor;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 //import imgui.ImGuiColor;
-
-
+import imgui.ImGuiStyle;
+import imgui.ImVec4;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
@@ -60,18 +61,45 @@ public class Editor
         if (initialized) return;
     
         ImGui.createContext();
+        // setTheme();
+        
         ImGuiIO io = ImGui.getIO();
-    
+     
         if (enableMultiViewport) {
             io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         }
     
+        
         io.getFonts().addFontDefault();
         imguiGlfw.init(windowPtr, false);
 
         imguiGl3.init(glslVersion);    
         initialized = true;
     }
+
+    public static void setTheme() {
+
+        ImGui.pushStyleColor(ImGuiCol.WindowBg, ImGui.colorConvertFloat4ToU32(0.12f, 0.12f, 0.12f, 1.00f));
+    
+        // Push other UI colors
+        ImGui.pushStyleColor(ImGuiCol.Text, ImGui.colorConvertFloat4ToU32(1.00f, 1.00f, 1.00f, 1.00f)); // Text color
+        ImGui.pushStyleColor(ImGuiCol.ChildBg, ImGui.colorConvertFloat4ToU32(0.10f, 0.10f, 0.10f, 1.00f)); // Child window background
+        ImGui.pushStyleColor(ImGuiCol.PopupBg, ImGui.colorConvertFloat4ToU32(0.12f, 0.12f, 0.12f, 1.00f)); // Popup background
+        ImGui.pushStyleColor(ImGuiCol.Border, ImGui.colorConvertFloat4ToU32(0.20f, 0.20f, 0.20f, 0.70f)); // Border color
+        ImGui.pushStyleColor(ImGuiCol.FrameBg, ImGui.colorConvertFloat4ToU32(0.25f, 0.25f, 0.25f, 1.00f)); // Frame background
+        ImGui.pushStyleColor(ImGuiCol.Button, ImGui.colorConvertFloat4ToU32(0.30f, 0.50f, 0.80f, 1.00f)); // Button color (blue)
+        ImGui.pushStyleColor(ImGuiCol.ButtonHovered, ImGui.colorConvertFloat4ToU32(0.40f, 0.60f, 1.00f, 1.00f)); // Hovered button (lighter blue)
+        ImGui.pushStyleColor(ImGuiCol.ButtonActive, ImGui.colorConvertFloat4ToU32(0.20f, 0.40f, 0.80f, 1.00f)); // Active button (darker blue)
+        ImGui.pushStyleColor(ImGuiCol.Header, ImGui.colorConvertFloat4ToU32(0.80f, 0.30f, 0.30f, 0.80f)); // Header (light red)
+        ImGui.pushStyleColor(ImGuiCol.HeaderHovered, ImGui.colorConvertFloat4ToU32(0.90f, 0.40f, 0.40f, 1.00f)); // Hovered header (bright red)
+        ImGui.pushStyleColor(ImGuiCol.HeaderActive, ImGui.colorConvertFloat4ToU32(0.70f, 0.20f, 0.20f, 1.00f)); // Active header (dark red)
+        ImGui.pushStyleColor(ImGuiCol.Tab, ImGui.colorConvertFloat4ToU32(0.10f, 0.10f, 0.10f, 1.00f)); // Tab background
+        ImGui.pushStyleColor(ImGuiCol.TabHovered, ImGui.colorConvertFloat4ToU32(0.30f, 0.30f, 0.50f, 1.00f)); // Hovered tab (purple)
+        ImGui.pushStyleColor(ImGuiCol.TabActive, ImGui.colorConvertFloat4ToU32(0.40f, 0.40f, 0.70f, 1.00f)); // Active tab (blue)
+        ImGui.pushStyleColor(ImGuiCol.TextSelectedBg, ImGui.colorConvertFloat4ToU32(0.20f, 0.50f, 0.30f, 0.70f)); // Selected text background (green)
+    }
+    
+
     
     public void destroy()
     {
@@ -112,13 +140,6 @@ public class Editor
         // Finalize rendering
         ImGui.render();
         imguiGl3.renderDrawData(ImGui.getDrawData());
-    
-        if (enableMultiViewport) {
-            final long backupWindowPtr = GLFW.glfwGetCurrentContext();
-            ImGui.updatePlatformWindows();
-            ImGui.renderPlatformWindowsDefault();
-            GLFW.glfwMakeContextCurrent(backupWindowPtr);
-        }
     }
 
     public void addWindow(EditorWindow window)

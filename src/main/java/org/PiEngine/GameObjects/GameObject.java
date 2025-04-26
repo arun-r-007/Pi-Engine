@@ -52,7 +52,7 @@ public class GameObject
         component.gameObject = this;  // Link the component to this GameObject
         component.transform = this.transform;
         components.add(component);    // Store it in the list
-        component.start();            // Trigger its startup behavior
+        component.safeStart();            // Trigger its startup behavior
     }
 
     /**
@@ -87,7 +87,7 @@ public class GameObject
         // Update all components attached to this GameObject
         for (Component c : components)
         {
-            c.fixedUpdate();
+            c.safeFixedUpdate();
         }
 
         // Recursively update all child GameObjects
@@ -111,7 +111,9 @@ public class GameObject
         // Update all components attached to this GameObject
         for (Component c : components)
         {
-            c.update();
+            
+            c.safeUpdate();
+            
         }
 
         // Recursively update all child GameObjects
@@ -138,7 +140,7 @@ public class GameObject
             {
                 if((layer & layerMask) > 0)
                 {
-                    c.render(camera);
+                    c.safeRender(camera);
                 }
             }
         }

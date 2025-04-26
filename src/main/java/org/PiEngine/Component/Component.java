@@ -2,6 +2,7 @@ package org.PiEngine.Component;
 
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.*;
+import org.PiEngine.Engine.Console;
 
 /**
  * Base class for all components that can be attached to a GameObject.
@@ -49,5 +50,66 @@ public abstract class Component
      * Example: Drawing wireframes, bounding boxes, or debug info.
      */
     public void debugRender() {}
-}
 
+
+    // A helper method to get the line number from the exception
+    private String getLineNumber(Exception e) {
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        if (stackTrace.length > 0) {
+            return "Line: " + stackTrace[0].getLineNumber();
+        }
+        return "Unknown Line";
+    }
+
+    final public void safeUpdate() 
+    {
+        try 
+        {
+            update(); 
+        } 
+        catch (Exception e) 
+        {
+            String errorMessage = "Exception in update: " + e.getMessage() + " (" + getLineNumber(e) + ")";
+            Console.errorClass(errorMessage, this.getClass().getSimpleName()+".java");
+        }
+    }
+
+    final public void safeStart() 
+    {
+        try 
+        {
+            start(); 
+        } 
+        catch (Exception e) 
+        {
+            String errorMessage = "Exception in start: " + e.getMessage() + " (" + getLineNumber(e) + ")";
+            Console.errorClass(errorMessage, this.getClass().getSimpleName()+".java");
+        }
+    }
+
+    final public void safeFixedUpdate() 
+    {
+        try 
+        {
+            fixedUpdate(); 
+        } 
+        catch (Exception e) 
+        {
+            String errorMessage = "Exception in fixedUpdate: " + e.getMessage() + " (" + getLineNumber(e) + ")";
+            Console.errorClass(errorMessage, this.getClass().getSimpleName()+".java");
+        }
+    }
+
+    final public void safeRender(Camera cam) 
+    {
+        try 
+        {
+            render(cam); 
+        } 
+        catch (Exception e) 
+        {
+            String errorMessage = "Exception in render: " + e.getMessage() + " (" + getLineNumber(e) + ")";
+            Console.errorClass(errorMessage, this.getClass().getSimpleName()+".java");
+        }
+    }
+}

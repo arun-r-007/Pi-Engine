@@ -20,6 +20,7 @@ import org.PiEngine.Editor.*;
 import org.PiEngine.Render.*;
 import org.PiEngine.Scripting.*;
 
+
 public class Main
 {
     public static void main(String[] args)
@@ -28,8 +29,10 @@ public class Main
         {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
-
-        long window = glfwCreateWindow(1600, 900, "Pi-Engine", 0, 0);
+        
+        int width = 1600;
+        int height = 900;
+        long window = glfwCreateWindow(width, height, "Pi-Engine", 0, 0);
         if (window == 0)
         {
             throw new RuntimeException("Failed to create window");
@@ -39,8 +42,6 @@ public class Main
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
 
-        int width = 1280;
-        int height = 720;
         glViewport(0, 0, width, height);
 
         // --- ImGui Init ---
@@ -142,17 +143,16 @@ public class Main
         Editor editor = Editor.getInstance(window, false);
         editor.init();
 
+        editor.addWindow(new DockingWindow("Docker"));
         editor.addWindow(new LayerWindow());
         editor.addWindow(new HierarchyWindow(world));
         editor.addWindow(new InspectorWindow(false));
         
         editor.addWindow(new PerfomanceWindow());
 
-        SceneWindow sceneWindow = new SceneWindow("Scene");
-        editor.addWindow(sceneWindow);
+        
+        editor.addWindow(new ConsoleWindow());
 
-        SceneWindow sceneWindow1 = new SceneWindow("Game");
-        editor.addWindow(sceneWindow1);
 
 
         // --- Renderer Setup ---
@@ -187,20 +187,20 @@ public class Main
         );
         
         Renderer SceneRenderer = new Renderer();
-        GeometryPass GP = new GeometryPass("SceneGeomtry", DefaultShader, width/2, height/2);
+        GeometryPass GP = new GeometryPass("SceneGeomtry", DefaultShader, width, height);
         SceneRenderer.addPass(GP);
         SceneRenderer.setFinalPass("SceneGeomtry");
 
 
         Renderer GameRenderer = new Renderer();
-        GeometryPass GameGP = new GeometryPass("GameGeomtry",DefaultShader, width/2, height/2);
-        GeometryPass GameGP1 = new GeometryPass("GameGeomtry1",DefaultShader, width/2, height/2);
+        GeometryPass GameGP = new GeometryPass("GameGeomtry",DefaultShader, width, height);
+        GeometryPass GameGP1 = new GeometryPass("GameGeomtry1",DefaultShader, width, height);
 
         GameGP1.setLayerMask(LayerManager.getLayerBit(LayerManager.getLayerName(30)));
 
-        PostProcessingPass GamePP = new PostProcessingPass("CRT",CRTShader, width/2, height/2, 2);
-        PostProcessingPass GamePP1 = new PostProcessingPass("BLUR",BloomShader, width/2, height/2, 1);
-        PostProcessingPass finalPP = new PostProcessingPass("FINAL",FinalShader, width/2, height/2, 1);
+        PostProcessingPass GamePP = new PostProcessingPass("CRT",CRTShader, width, height, 2);
+        PostProcessingPass GamePP1 = new PostProcessingPass("BLUR",BloomShader, width, height, 1);
+        PostProcessingPass finalPP = new PostProcessingPass("FINAL",FinalShader, width, height, 1);
 
 
         GameRenderer.addPass(GameGP); 
@@ -217,26 +217,25 @@ public class Main
         GameRenderer.connect("CRT", "FINAL", 0);
 
 
-
        // GameRenderer.connect("GameGeomtry", "CRT", 0);
 
        
         RenderGraphEditorWindow graphWindow = new RenderGraphEditorWindow(GameRenderer);
         editor.addWindow(graphWindow);
+        SceneWindow sceneWindow = new SceneWindow("Scene");
+        editor.addWindow(sceneWindow);
+
+        SceneWindow sceneWindow1 = new SceneWindow("Game");
+        editor.addWindow(sceneWindow1);
 
         // Drivers
         
-        System.out.println("OpenGL Vendor: " + glGetString(GL_VENDOR));
-        System.out.println("OpenGL Renderer: " + glGetString(GL_RENDERER));
-        System.out.println("OpenGL Version: " + glGetString(GL_VERSION));
-        System.out.println("OpenGL version: " + glGetString(GL_VERSION));
-        System.out.println("GLSL version: " + glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 
         try 
         {
-            CompileScripts compiler = CompileScripts.getInstance("src\\main\\resources\\Scripts", "Compiled", null);
-            compiler.compileScripts();
+            //CompileScripts compiler = CompileScripts.getInstance("src\\main\\resources\\Scripts", "Compiled", null);
+            //compiler.compileScripts();
         } 
         catch (Exception e) 
         {
@@ -274,17 +273,16 @@ public class Main
 
             
             SceneRenderer.renderPipeline(Scenecamera, world);
-            int outputTex = SceneRenderer.getFinalTexture();
-            sceneWindow.setid(outputTex);
+            sceneWindow.setFrameBuffer(SceneRenderer.getFinalFramebuffer());
             
-            int outputTex1 = -1;
+            Framebuffer GameFB = null;
             CameraComponent GameCamear = Camera.getComponent(CameraComponent.class);
             if(GameCamear != null)
             {
                 GameRenderer.renderPipeline(GameCamear.getCamera(), world);
-                outputTex1 = GameRenderer.getFinalTexture();        
+                GameFB = GameRenderer.getFinalFramebuffer();        
             }
-            sceneWindow1.setid(outputTex1);
+            sceneWindow1.setFrameBuffer(GameFB);
             
             // --- Editor Update ---
             editor.update(Time.deltaTime);

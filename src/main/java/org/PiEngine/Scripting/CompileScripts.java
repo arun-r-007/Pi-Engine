@@ -4,11 +4,13 @@ import javax.tools.*;
 import java.io.*;
 import java.util.*;
 
+import org.PiEngine.Engine.Console;
+
 public class CompileScripts 
 {
     private static CompileScripts instance;
 
-    private final File scriptFolder;
+    private final File scriptFolder;    
     private final File outputFolder;
     private final File engineJar;
 
@@ -38,7 +40,9 @@ public class CompileScripts
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         if (compiler == null) throw new IllegalStateException("JDK required! JavaCompiler not available.");
 
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
+
         Iterable<? extends JavaFileObject> units = fileManager.getJavaFileObjects(javaFiles);
 
         List<String> options = new ArrayList<>(Arrays.asList("-d", outputFolder.getAbsolutePath()));
@@ -47,14 +51,27 @@ public class CompileScripts
             options.addAll(Arrays.asList("-classpath", engineJar.getAbsolutePath()));
         }
 
-        boolean success = compiler.getTask(null, fileManager, null, options, null, units).call();
+        boolean success = compiler.getTask(null, fileManager, diagnostics, options, null, units).call();
         fileManager.close();
 
-        if (!success) throw new RuntimeException("Script compilation failed.");
-
-        for (File file : javaFiles) 
+        if (!success)
         {
-            System.out.println(file.getName() + " script is compiled");
+            for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics())
+            {
+                String errorMsg = diagnostic.getSource() != null
+                        ? diagnostic.getSource().getName() + ":" + diagnostic.getLineNumber() + " - " + diagnostic.getMessage(null)
+                        : "Unknown source - " + diagnostic.getMessage(null);
+
+                Console.error(errorMsg);
+            }
+        }
+
+        for (File file : javaFiles)
+        {
+            if (success)
+                Console.log(file.getName() + ": script compiled successfully.");
+            else
+                Console.warning(file.getName() + ": script compilation had errors.");
         }
     }
 

@@ -27,8 +27,8 @@ public class LayerWindow extends EditorWindow {
         ImGui.begin("Layers");
 
         // Set up the scrollable region with a fixed height
-        final float windowHeight = 400.0f; // Set your desired height here
-        ImGui.beginChild("LayerList", -1, windowHeight, true);  // -1 for auto width, fixed height, scrolling enabled
+        //final float windowHeight = 400.0f; // Set your desired height here
+        //ImGui.beginChild("LayerList", -1, windowHeight, true);  // -1 for auto width, fixed height, scrolling enabled
 
         for (int i = 0; i < MAX_LAYERS; i++) {
             ImGui.text("Layer " + i);
@@ -68,7 +68,7 @@ public class LayerWindow extends EditorWindow {
         }
 
         // End the scrollable child window
-        ImGui.endChild();
+        //ImGui.endChild();
 
         ImGui.end();
     }

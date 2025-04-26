@@ -21,10 +21,9 @@ public class DockingWindow extends EditorWindow {
 
     @Override
     public void onCreate() {
-        // Make DockingWindow fullscreen
-        //ImGuiIO io = ImGui.getIO();
-        float screenWidth = 1600;
-        float screenHeight = 900;
+        ImGuiIO io = ImGui.getIO();
+        float screenWidth = io.getDisplaySizeX();
+        float screenHeight = io.getDisplaySizeY();
 
         this.setPosition(0, 0);
         this.setSize(screenWidth, screenHeight);
@@ -43,28 +42,30 @@ public class DockingWindow extends EditorWindow {
 
     @Override
     public void onRender() {
-        // Setup the window to act as a fullscreen dockspace
+        ImGuiIO io = ImGui.getIO();
+        float screenWidth = io.getDisplaySizeX();
+        float screenHeight = io.getDisplaySizeY();
+    
         int windowFlags = ImGuiWindowFlags.NoTitleBar
                         | ImGuiWindowFlags.NoCollapse
                         | ImGuiWindowFlags.NoResize
                         | ImGuiWindowFlags.NoMove
                         | ImGuiWindowFlags.NoBringToFrontOnFocus
                         | ImGuiWindowFlags.MenuBar;
-
+    
         ImGui.setNextWindowPos(0, 0);
-        ImGui.setNextWindowSize(1280, 720);
-
+        ImGui.setNextWindowSize(screenWidth, screenHeight);
+    
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
-
+    
         ImGui.begin(name, windowFlags);
-
+    
         ImGui.popStyleVar(2);
-
-        // 👇 This creates the DockSpace
+    
         int dockspaceId = ImGui.getID("MyDockspace");
         ImGui.dockSpace(dockspaceId);
-
+    
         ImGui.end();
     }
 
