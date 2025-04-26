@@ -2,6 +2,7 @@ package org.PiEngine.IO;
 
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
+import org.PiEngine.Engine.Console;
 import org.PiEngine.Render.Texture;
 
 import java.nio.ByteBuffer;
@@ -23,7 +24,10 @@ public class TextureLoader
             // Ask STB to give us RGBA (4 channels)
             ByteBuffer image = STBImage.stbi_load(path, w, h, ch, 4);
             if (image == null)
-                throw new RuntimeException("Failed to load image: " + STBImage.stbi_failure_reason());
+            {
+                Console.error("Failed to load image: " + STBImage.stbi_failure_reason());
+                return null;
+            }
 
             int width  = w.get(0);
             int height = h.get(0);

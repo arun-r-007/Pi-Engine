@@ -79,16 +79,21 @@ public class HierarchyWindow extends EditorWindow {
      * Called every frame to render the hierarchy window contents.
      */
     @Override
-    public void onRender() {
+   public void onRender() {
+    // ImGui.pushStyleColor(ImGuiCol.WindowBg, ImGui.colorConvertFloat4ToU32(0.14f, 0.14f, 0.5f, 1.00f)); // Light blue background
+    if (!isOpen || root == null) return;
+    
+    ImGui.begin("Hierarchy");
+    renderGameObjectHierarchy(root);
+    ImGui.end();
+    // ImGui.popStyleColor(1);
 
-        if (!isOpen || root == null) return;
-        
 
-        ImGui.begin("Hierarchy");
-        renderGameObjectHierarchy(root);
-        ImGui.end();
 
-    }
+
+    // ImGui.popStyleColor(1);
+}
+
 
 
     /**

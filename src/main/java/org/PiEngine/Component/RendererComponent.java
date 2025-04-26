@@ -65,7 +65,7 @@ public class RendererComponent extends Component
     @Override
     public void render(Camera camera)
     {
-
+        if(texture == null) return;
         texture.bind();
         shader.use();
         Matrix4 viewProj = Matrix4.multiply(camera.getProjectionMatrix(), camera.getViewMatrix());
