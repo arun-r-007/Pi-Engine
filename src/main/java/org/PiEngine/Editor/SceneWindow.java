@@ -3,6 +3,7 @@ package org.PiEngine.Editor;
 import org.PiEngine.Render.Framebuffer;
 import imgui.ImGui;
 import imgui.ImVec2;
+import imgui.type.ImBoolean;
 
 public class SceneWindow extends EditorWindow
 {
@@ -27,7 +28,17 @@ public class SceneWindow extends EditorWindow
     @Override
     public void onRender()
     {
-        ImGui.begin(name);
+        ImBoolean isOpen = new ImBoolean(true);
+        if (!ImGui.begin(name, isOpen))
+        {
+            ImGui.end();
+            return;
+        }
+
+        if (!isOpen.get())
+        {
+            Editor.get().queueRemoveWindow(this);
+        }
 
         ImVec2 availSize = ImGui.getContentRegionAvail();
         float availWidth = availSize.x;

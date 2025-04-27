@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
 
+import java.util.Map;
 
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -17,7 +18,10 @@ import org.PiEngine.Core.*;
 import org.PiEngine.GameObjects.*;
 import org.PiEngine.Component.*;
 import org.PiEngine.Editor.*;
+import org.PiEngine.Engine.Console;
 import org.PiEngine.Render.*;
+import org.PiEngine.Render.Passes.GeometryPass;
+import org.PiEngine.Render.Passes.PostProcessingPass;
 import org.PiEngine.Scripting.*;
 
 
@@ -155,6 +159,7 @@ public class Main
 
 
 
+
         // --- Renderer Setup ---
         Shader DefaultShader = new Shader
         (
@@ -215,6 +220,8 @@ public class Main
         GameRenderer.connect("GameGeomtry1", "BLUR", 0);
         GameRenderer.connect("BLUR", "CRT", 1);
         GameRenderer.connect("CRT", "FINAL", 0);
+
+        editor.addWindow(new RendererInspector(GameRenderer));    
 
 
        // GameRenderer.connect("GameGeomtry", "CRT", 0);
@@ -289,6 +296,9 @@ public class Main
 
             glfwSwapBuffers(window);
             glfwPollEvents();
+            
+            // System.out.println(GameRenderer.getConnections());
+            
 
             // System.out.println("input GP OP:" + GameGP.getOutputTexture());
             // System.out.println("input BLUR:" + GamePP.getInputTexture(0));

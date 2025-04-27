@@ -87,7 +87,7 @@ public class InspectorWindow extends EditorWindow {
         ImBoolean isOpen = new ImBoolean(true);
     
         // Begin the window with a close button if actAsProperty is true
-        if (!ImGui.begin(name, actAsProperty ? isOpen : null)) {
+        if (!ImGui.begin(name, isOpen)) {
             ImGui.end();
             return;
         }

@@ -1,6 +1,7 @@
 package org.PiEngine.Editor;
 
 import imgui.ImGui;
+import imgui.type.ImBoolean;
 import imgui.type.ImString;
 import org.PiEngine.Core.LayerManager;
 
@@ -24,7 +25,19 @@ public class LayerWindow extends EditorWindow {
 
     @Override
     public void onRender() {
-        ImGui.begin("Layers");
+        
+
+        ImBoolean isOpen = new ImBoolean(true);
+        if (!ImGui.begin("Layers", isOpen))
+        {
+            ImGui.end();
+            return;
+        }
+
+        if (!isOpen.get())
+        {
+            Editor.get().queueRemoveWindow(this);
+        }
 
         // Set up the scrollable region with a fixed height
         //final float windowHeight = 400.0f; // Set your desired height here

@@ -25,6 +25,11 @@ public class Camera
     private boolean isOrthographic = false;
     private float orthoLeft, orthoRight, orthoBottom, orthoTop;
 
+    public Camera()
+    {
+
+    }
+    
     /**
      * Constructs a new Camera with the specified projection parameters.
      */

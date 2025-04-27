@@ -16,6 +16,55 @@ public class Renderer
         passes.put(pass.getName(), pass);
     }
 
+    public void removePass(String passName)
+    {
+        // Remove the pass itself
+        passes.remove(passName);
+        
+        // Remove all connections to this pass from other passes
+        for (Map.Entry<String, Map<Integer, String>> entry : connections.entrySet())
+        {
+            Map<Integer, String> inputMap = entry.getValue();
+            inputMap.entrySet().removeIf(input -> input.getValue().equals(passName));
+
+            // If no more connections exist for this pass, remove the entry
+            if (inputMap.isEmpty())
+            {
+                connections.remove(entry.getKey());
+            }
+        }
+
+        connections.remove(passName);
+
+        // If the removed pass was the final pass, reset it
+        if (passName.equals(finalPassName))
+        {
+            finalPassName = null;
+        }
+    }
+
+    public void updatePassName(String oldName, String newName)
+    {
+        if (passes.containsKey(oldName))
+        {
+            RenderPass pass = passes.get(oldName);
+            
+            // Update the name in the passes map
+            passes.remove(oldName);
+            pass.setName(newName); // Assuming setName is implemented in RenderPass
+            passes.put(newName, pass);
+            
+            // Update the connections to reflect the name change
+            if (connections.containsKey(oldName)) {
+                Map<Integer, String> inputMap = connections.get(oldName);
+                connections.remove(oldName);  // Remove the old connections
+        
+                // Reassign the connections to the new name
+                connections.put(newName, inputMap);
+            }
+        }
+    }
+
     // Connect a pass to another pass by input index
     public void connect(String fromPassName, String toPassName, int inputIndex)
     {
