@@ -4,6 +4,7 @@ import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.ImVec4;
 import imgui.flag.ImGuiKey;
+import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.extension.imnodes.ImNodes;
 
@@ -38,11 +39,14 @@ public class RenderGraphEditorWindow extends EditorWindow
             this.inputIndex = inputIndex;
         }
     }
+    
+    public static int count = 0;
 
     public RenderGraphEditorWindow(Renderer renderer)
     {
         super("Render Graph Editor");
         this.renderer = renderer;
+        id = count++;
 
         // Register any passes that already exist
         renderer.getPasses().keySet().forEach(this::registerPass);
@@ -117,11 +121,28 @@ public class RenderGraphEditorWindow extends EditorWindow
     @Override
     public void onRender()
     {
-        ImGui.begin(getName());
+        ImBoolean isOpen = new ImBoolean(true);
+        if (!ImGui.begin(name + "##" + id, isOpen))
+        {
+            ImGui.end();
+            return;
+        }
+
+        if (!isOpen.get())
+        {
+            Editor.get().queueRemoveWindow(this);
+        }
         ImNodes.beginNodeEditor();
 
         for (String passName : renderer.getPasses().keySet())
         {
+            // Check if nodeIds and pinId maps contain the passName
+            if (!nodeIds.containsKey(passName) || !inputPinIds.containsKey(passName) || !outputPinIds.containsKey(passName))
+            {
+                registerPass(passName);
+                continue; // Skip this pass if it's not registered properly
+            }
+
             int nodeId = nodeIds.get(passName);
             List<Integer> inputs = inputPinIds.get(passName);
             int outputId = outputPinIds.get(passName);
@@ -143,14 +164,13 @@ public class RenderGraphEditorWindow extends EditorWindow
                 ImNodes.endInputAttribute();
             }
 
-            
             float fullWidth = 190;
-            if(!(inputs.size()<= 0))
+            if (!(inputs.size() <= 0))
             {
                 ImGui.sameLine();
                 fullWidth = 130;
             }
-           
+            
             float labelWidth = ImGui.calcTextSize("Output").x;
             ImGui.setCursorPosX(ImGui.getCursorPosX() + fullWidth - labelWidth);
 
@@ -170,11 +190,16 @@ public class RenderGraphEditorWindow extends EditorWindow
             ImNodes.endNode();
         }
 
-        
         // Handle link creation and rendering
         linkMap.clear();
         renderer.getConnections().forEach((toPass, inputMap) -> {
             inputMap.forEach((inputIndex, fromPass) -> {
+                // Ensure that the required maps are populated
+                if (!outputPinIds.containsKey(fromPass) || !inputPinIds.containsKey(toPass))
+                {
+                    return; // Skip invalid connections
+                }
+
                 int fromOutput = outputPinIds.get(fromPass);
                 int toInput = inputPinIds.get(toPass).get(inputIndex);
                 int linkId = Objects.hash(fromOutput, toInput);
@@ -186,9 +211,10 @@ public class RenderGraphEditorWindow extends EditorWindow
 
         ImNodes.endNodeEditor();
         ImGui.end();
+
         // Check for link creation
         ImInt startAttr = new ImInt();
-        ImInt endAttr   = new ImInt();
+        ImInt endAttr = new ImInt();
         if (ImNodes.isLinkCreated(startAttr, endAttr))
         {
             String from = findPassByOutputId(startAttr.get());
@@ -225,7 +251,6 @@ public class RenderGraphEditorWindow extends EditorWindow
                 }
             }
         }
-
-
     }
+
 }

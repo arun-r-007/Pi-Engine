@@ -5,21 +5,34 @@ import org.PiEngine.Engine.*;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiComboFlags;
+import imgui.type.ImBoolean;
 
 public class ConsoleWindow extends EditorWindow
 {
     private static final String[] filters = { "All", "Warning", "Error" };
     private static int currentFilter = 0; // 0 = All
+    public static int count = 0;
 
     public ConsoleWindow()
     {
         super("Console");
+        id = count++;
     }
 
     @Override
     public void onRender()
     {
-        ImGui.begin(name);
+        ImBoolean isOpen = new ImBoolean(true);
+        if (!ImGui.begin(name + "##" + id, isOpen))
+        {
+            ImGui.end();
+            return;
+        }
+
+        if (!isOpen.get())
+        {
+            Editor.get().queueRemoveWindow(this);
+        }
         // Top Bar: Filter dropdown and Clear button
         ImGui.beginChild("ConsoleTopBar", 0, 30, false);
         ImGui.text("Filter: ");

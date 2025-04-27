@@ -5,7 +5,6 @@ import org.lwjgl.opengl.GL;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
 
-
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
@@ -18,6 +17,7 @@ import org.PiEngine.GameObjects.*;
 import org.PiEngine.Component.*;
 import org.PiEngine.Editor.*;
 import org.PiEngine.Render.*;
+import org.PiEngine.Render.Passes.*;
 import org.PiEngine.Scripting.*;
 
 
@@ -143,15 +143,14 @@ public class Main
         Editor editor = Editor.getInstance(window, false);
         editor.init();
 
-        editor.addWindow(new DockingWindow("Docker"));
+        editor.addWindow(new DockingWindow());
         editor.addWindow(new LayerWindow());
         editor.addWindow(new HierarchyWindow(world));
         editor.addWindow(new InspectorWindow(false));
-        
         editor.addWindow(new PerfomanceWindow());
-
-        
         editor.addWindow(new ConsoleWindow());
+        editor.addWindow(new NavigationWindow());
+
 
 
 
@@ -215,6 +214,8 @@ public class Main
         GameRenderer.connect("GameGeomtry1", "BLUR", 0);
         GameRenderer.connect("BLUR", "CRT", 1);
         GameRenderer.connect("CRT", "FINAL", 0);
+
+        editor.addWindow(new RendererInspector(GameRenderer));    
 
 
        // GameRenderer.connect("GameGeomtry", "CRT", 0);
@@ -289,6 +290,9 @@ public class Main
 
             glfwSwapBuffers(window);
             glfwPollEvents();
+            
+            // System.out.println(GameRenderer.getConnections());
+            
 
             // System.out.println("input GP OP:" + GameGP.getOutputTexture());
             // System.out.println("input BLUR:" + GamePP.getInputTexture(0));

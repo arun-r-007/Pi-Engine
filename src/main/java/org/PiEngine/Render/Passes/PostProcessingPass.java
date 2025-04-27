@@ -1,14 +1,22 @@
-package org.PiEngine.Render;
+package org.PiEngine.Render.Passes;
+
 
 import static org.lwjgl.opengl.GL30.*;
 
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.GameObject;
+import org.PiEngine.Render.RenderPass;
+import org.PiEngine.Render.Shader;
 
 public class PostProcessingPass extends RenderPass
 {
     private int fullscreenVAO = -1;
     private int fullscreenVBO = -1;
+
+    public PostProcessingPass()
+    {
+        super("Default Postprocessing", new Shader( "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert", "src\\main\\resources\\Shaders\\PostProcess\\CRT.frag", null), 800, 600, 2);
+    }
 
     public PostProcessingPass(String name, Shader shader, int width, int height, int itextures)
     {
@@ -39,7 +47,7 @@ public class PostProcessingPass extends RenderPass
 
     @Override
     public void render(Camera camera, GameObject scene)
-    {
+    {   
         bindAndPrepare();
         glBindVertexArray(fullscreenVAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);

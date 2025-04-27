@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL32.*;
 
 import org.PiEngine.Math.*;
 
-public class    Shader
+public class Shader
 {
     private int programId;
 

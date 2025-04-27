@@ -7,6 +7,7 @@ public abstract class EditorWindow
 {
     protected String name;
     protected boolean isOpen = true;
+    protected int id;
 
     protected float x = 100;
     protected float y = 100;

@@ -3,13 +3,22 @@ package org.PiEngine.Editor;
 import imgui.ImGui;
 import org.PiEngine.Core.*;
 import imgui.ImVec2;
+import imgui.type.ImBoolean;
 
 public class PerfomanceWindow extends EditorWindow
 {
+    public static int count = 0;
 
     public PerfomanceWindow()
     {
         super("Perfomance");
+        id = count++;
+    }
+
+    public PerfomanceWindow(String Name)
+    {
+        super(Name);
+        id = count++;
     }
 
     @Override
@@ -21,7 +30,17 @@ public class PerfomanceWindow extends EditorWindow
         long maxMemory = runtime.maxMemory();
 
 
-        ImGui.begin("PiEngine Perfomance");
+        ImBoolean isOpen = new ImBoolean(true);
+        if (!ImGui.begin(name + "##" + id, isOpen))
+        {
+            ImGui.end();
+            return;
+        }
+
+        if (!isOpen.get())
+        {
+            Editor.get().queueRemoveWindow(this);
+        }
         
         ImGui.text("DeltaTime : " + String.format("%.10f", Time.unscaledDeltaTime));
         ImGui.text("FPS : " + (int)(1.0 / Time.unscaledDeltaTime));

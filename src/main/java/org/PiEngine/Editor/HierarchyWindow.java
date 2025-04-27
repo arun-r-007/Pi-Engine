@@ -8,6 +8,7 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiKey;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiTreeNodeFlags;
+import imgui.type.ImBoolean;
 import imgui.type.ImString;
 
 import java.util.ArrayList;
@@ -32,9 +33,14 @@ public class HierarchyWindow extends EditorWindow {
     private final List<InspectorWindow> windowsToAdd = new ArrayList<>();
     private final List<List<GameObject>> toReparent = new ArrayList<>();
 
+    public static int count = 0;
+
+
     public HierarchyWindow(GameObject root) {
         super("Hierarchy");
         this.root = root;
+        id = count++;
+        
     }
 
     public void setRoot(GameObject root) {
@@ -79,20 +85,32 @@ public class HierarchyWindow extends EditorWindow {
      * Called every frame to render the hierarchy window contents.
      */
     @Override
-   public void onRender() {
-    // ImGui.pushStyleColor(ImGuiCol.WindowBg, ImGui.colorConvertFloat4ToU32(0.14f, 0.14f, 0.5f, 1.00f)); // Light blue background
-    if (!isOpen || root == null) return;
-    
-    ImGui.begin("Hierarchy");
-    renderGameObjectHierarchy(root);
-    ImGui.end();
-    // ImGui.popStyleColor(1);
+   public void onRender() 
+   {
+        // ImGui.pushStyleColor(ImGuiCol.WindowBg, ImGui.colorConvertFloat4ToU32(0.14f, 0.14f, 0.5f, 1.00f)); // Light blue background
+        if (!isOpen || root == null) return;
+        
+        ImBoolean isOpen = new ImBoolean(true);
+        if (!ImGui.begin(name + "##" + id, isOpen))
+        {
+            ImGui.end();
+            return;
+        }
+
+        if (!isOpen.get())
+        {
+            Editor.get().queueRemoveWindow(this);
+        }
+        
+        renderGameObjectHierarchy(root);
+        ImGui.end();
+        // ImGui.popStyleColor(1);
 
 
 
 
-    // ImGui.popStyleColor(1);
-}
+        // ImGui.popStyleColor(1);
+    }
 
 
 

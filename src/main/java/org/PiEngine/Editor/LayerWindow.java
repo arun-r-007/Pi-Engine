@@ -1,6 +1,7 @@
 package org.PiEngine.Editor;
 
 import imgui.ImGui;
+import imgui.type.ImBoolean;
 import imgui.type.ImString;
 import org.PiEngine.Core.LayerManager;
 
@@ -10,10 +11,13 @@ public class LayerWindow extends EditorWindow {
     private final ImString[] editableNames = new ImString[MAX_LAYERS];
     private final String[] originalNames = new String[MAX_LAYERS];
     private final boolean[] showErrorPopup = new boolean[MAX_LAYERS]; // control per-layer popup logic
+    public static int count = 0;
+    
 
     public LayerWindow() {
-        super("LayerWindow");
-
+        super("Layer");
+        id = count++;
+        
         String[] currentNames = LayerManager.GetLayerNameArray();
         for (int i = 0; i < MAX_LAYERS; i++) {
             editableNames[i] = new ImString(currentNames[i], 32);
@@ -24,7 +28,19 @@ public class LayerWindow extends EditorWindow {
 
     @Override
     public void onRender() {
-        ImGui.begin("Layers");
+        
+
+        ImBoolean isOpen = new ImBoolean(true);
+        if (!ImGui.begin(name + "##" + id, isOpen))
+        {
+            ImGui.end();
+            return;
+        }
+
+        if (!isOpen.get())
+        {
+            Editor.get().queueRemoveWindow(this);
+        }
 
         // Set up the scrollable region with a fixed height
         //final float windowHeight = 400.0f; // Set your desired height here
