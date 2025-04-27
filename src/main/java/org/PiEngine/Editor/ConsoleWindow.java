@@ -11,17 +11,19 @@ public class ConsoleWindow extends EditorWindow
 {
     private static final String[] filters = { "All", "Warning", "Error" };
     private static int currentFilter = 0; // 0 = All
+    public static int count = 0;
 
     public ConsoleWindow()
     {
         super("Console");
+        id = count++;
     }
 
     @Override
     public void onRender()
     {
         ImBoolean isOpen = new ImBoolean(true);
-        if (!ImGui.begin(name, isOpen))
+        if (!ImGui.begin(name + "##" + id, isOpen))
         {
             ImGui.end();
             return;

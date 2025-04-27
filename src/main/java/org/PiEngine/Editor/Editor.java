@@ -48,6 +48,10 @@ public class Editor
         return instance;
     }
 
+    public static Editor getInstance()
+    {
+        return instance;
+    }
     public static Editor get()
     {
         if (instance == null)
@@ -152,11 +156,13 @@ public class Editor
         editorWindows.remove(window);
     }
 
-    public void queueAddWindow(EditorWindow window) {
+    public void queueAddWindow(EditorWindow window) 
+    {
         windowsToAdd.add(window);
     }
 
-    public void queueRemoveWindow(EditorWindow window) {
+    public void queueRemoveWindow(EditorWindow window) 
+    {
         windowsToRemove.add(window);
     }
     

@@ -9,10 +9,12 @@ public class SceneWindow extends EditorWindow
 {
     private Framebuffer frame;
     private int outputTex;
+    public static int count = 0;
 
     public SceneWindow(String name)
     {
         super(name);
+        id = count++;
     }
 
     public void setid(int o)
@@ -29,7 +31,7 @@ public class SceneWindow extends EditorWindow
     public void onRender()
     {
         ImBoolean isOpen = new ImBoolean(true);
-        if (!ImGui.begin(name, isOpen))
+        if (!ImGui.begin(name + "##" + id, isOpen))
         {
             ImGui.end();
             return;

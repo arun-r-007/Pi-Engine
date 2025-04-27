@@ -11,8 +11,8 @@ public class DockingWindow extends EditorWindow {
 
     private final List<EditorWindow> dockedWindows = new ArrayList<>();
 
-    public DockingWindow(String name) {
-        super(name);
+    public DockingWindow() {
+        super("Docker");
     }
 
     public void addDockedWindow(EditorWindow window) {

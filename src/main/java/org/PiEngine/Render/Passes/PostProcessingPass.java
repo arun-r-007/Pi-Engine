@@ -47,7 +47,7 @@ public class PostProcessingPass extends RenderPass
 
     @Override
     public void render(Camera camera, GameObject scene)
-    {
+    {   
         bindAndPrepare();
         glBindVertexArray(fullscreenVAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);

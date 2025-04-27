@@ -20,18 +20,21 @@ public class RendererInspector extends EditorWindow
     String[] RenamePass = new String[2];
     RenderPass passToRename;
     boolean rename;
+    public static int count = 0;
+    
 
     public RendererInspector(Renderer renderer)
     {
         super("Renderer Inspector");
         this.renderer = renderer;
+        id = count++;
     }
 
     @Override
     public void onRender()
     {
         ImBoolean isOpen = new ImBoolean(true);
-        if (!ImGui.begin(name, isOpen))
+        if (!ImGui.begin(name + "##" + id, isOpen))
         {
             ImGui.end();
             return;

@@ -33,9 +33,14 @@ public class HierarchyWindow extends EditorWindow {
     private final List<InspectorWindow> windowsToAdd = new ArrayList<>();
     private final List<List<GameObject>> toReparent = new ArrayList<>();
 
+    public static int count = 0;
+
+
     public HierarchyWindow(GameObject root) {
         super("Hierarchy");
         this.root = root;
+        id = count++;
+        
     }
 
     public void setRoot(GameObject root) {
@@ -86,7 +91,7 @@ public class HierarchyWindow extends EditorWindow {
         if (!isOpen || root == null) return;
         
         ImBoolean isOpen = new ImBoolean(true);
-        if (!ImGui.begin("Hierarchy", isOpen))
+        if (!ImGui.begin(name + "##" + id, isOpen))
         {
             ImGui.end();
             return;

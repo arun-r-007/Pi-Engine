@@ -39,11 +39,14 @@ public class RenderGraphEditorWindow extends EditorWindow
             this.inputIndex = inputIndex;
         }
     }
+    
+    public static int count = 0;
 
     public RenderGraphEditorWindow(Renderer renderer)
     {
         super("Render Graph Editor");
         this.renderer = renderer;
+        id = count++;
 
         // Register any passes that already exist
         renderer.getPasses().keySet().forEach(this::registerPass);
@@ -119,7 +122,7 @@ public class RenderGraphEditorWindow extends EditorWindow
     public void onRender()
     {
         ImBoolean isOpen = new ImBoolean(true);
-        if (!ImGui.begin(name, isOpen))
+        if (!ImGui.begin(name + "##" + id, isOpen))
         {
             ImGui.end();
             return;

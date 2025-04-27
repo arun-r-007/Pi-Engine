@@ -31,6 +31,7 @@ public class InspectorWindow extends EditorWindow {
     public static GameObject root = null;
     public GameObject propertyObject = null;
     private final ImString searchBuffer = new ImString(64); // or larger size as needed
+    public static int count = 0;
 
 
     public boolean actAsProperty = false;
@@ -65,13 +66,22 @@ public class InspectorWindow extends EditorWindow {
         }
     }
 
+    public InspectorWindow()
+    {
+        super("Inspector");
+        actAsProperty = false;
+        id = count++;
+    }
+
     /**
      * Constructor to initialize the InspectorWindow.
      * Sets whether this window acts as a property editor.
      */
     public InspectorWindow(boolean isproperty) {
-        super(!isproperty ? "Inspector" : "Property");
+
+        super((!isproperty ? "Inspector" : "Property"));
         actAsProperty = isproperty;
+        id = count++;
     }
 
     /**
@@ -80,14 +90,14 @@ public class InspectorWindow extends EditorWindow {
      */
     @Override
     public void onRender() {
-        name = !actAsProperty ? "Inspector" : "Property" + propertyObject;
+        String sname = !actAsProperty ? name : "Property (" + propertyObject.Name +")";
         GameObject current = actAsProperty ? propertyObject : inspectObject;
     
         // Define a boolean to control the window's visibility
         ImBoolean isOpen = new ImBoolean(true);
     
         // Begin the window with a close button if actAsProperty is true
-        if (!ImGui.begin(name, isOpen)) {
+        if (!ImGui.begin(sname + "##" + id, isOpen)) {
             ImGui.end();
             return;
         }

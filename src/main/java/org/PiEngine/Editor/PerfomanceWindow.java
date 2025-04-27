@@ -7,10 +7,18 @@ import imgui.type.ImBoolean;
 
 public class PerfomanceWindow extends EditorWindow
 {
+    public static int count = 0;
 
     public PerfomanceWindow()
     {
         super("Perfomance");
+        id = count++;
+    }
+
+    public PerfomanceWindow(String Name)
+    {
+        super(Name);
+        id = count++;
     }
 
     @Override
@@ -23,7 +31,7 @@ public class PerfomanceWindow extends EditorWindow
 
 
         ImBoolean isOpen = new ImBoolean(true);
-        if (!ImGui.begin("PiEngine Perfomance", isOpen))
+        if (!ImGui.begin(name + "##" + id, isOpen))
         {
             ImGui.end();
             return;

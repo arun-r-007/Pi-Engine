@@ -5,8 +5,6 @@ import org.lwjgl.opengl.GL;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
 
-import java.util.Map;
-
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
@@ -18,10 +16,8 @@ import org.PiEngine.Core.*;
 import org.PiEngine.GameObjects.*;
 import org.PiEngine.Component.*;
 import org.PiEngine.Editor.*;
-import org.PiEngine.Engine.Console;
 import org.PiEngine.Render.*;
-import org.PiEngine.Render.Passes.GeometryPass;
-import org.PiEngine.Render.Passes.PostProcessingPass;
+import org.PiEngine.Render.Passes.*;
 import org.PiEngine.Scripting.*;
 
 
@@ -147,15 +143,13 @@ public class Main
         Editor editor = Editor.getInstance(window, false);
         editor.init();
 
-        editor.addWindow(new DockingWindow("Docker"));
+        editor.addWindow(new DockingWindow());
         editor.addWindow(new LayerWindow());
         editor.addWindow(new HierarchyWindow(world));
         editor.addWindow(new InspectorWindow(false));
-        
         editor.addWindow(new PerfomanceWindow());
-
-        
         editor.addWindow(new ConsoleWindow());
+        editor.addWindow(new NavigationWindow());
 
 
 
