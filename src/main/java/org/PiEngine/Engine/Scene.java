@@ -132,6 +132,7 @@ public class Scene implements Serializable
         editor.addWindow(new PerfomanceWindow());
         editor.addWindow(new ConsoleWindow());
         editor.addWindow(new NavigationWindow());
+        editor.queueAddWindow(new FileWindow());
 
         // Setup Renderers
         Shader DefaultShader = new Shader(

@@ -101,6 +101,10 @@ public class NavigationWindow extends EditorWindow
             {
                 Editor.getInstance().queueAddWindow(new SceneWindow("Game View", Scene.getInstance().getGameRenderer().getFinalFramebuffer()));
             }
+            if (ImGui.menuItem("Files"))
+            {
+                Editor.getInstance().queueAddWindow(new FileWindow());
+            }
             ImGui.endMenu();
         }
 
