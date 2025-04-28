@@ -1,5 +1,7 @@
 package org.PiEngine.Editor;
 
+import org.PiEngine.Engine.Scene;
+
 import imgui.ImGui;
 
 public class NavigationWindow extends EditorWindow
@@ -25,11 +27,11 @@ public class NavigationWindow extends EditorWindow
             }
             if (ImGui.menuItem("Open", "Ctrl+O"))
             {
-                // Handle open action
+                Scene.getInstance().Load();   
             }
             if (ImGui.menuItem("Save", "Ctrl+S"))
             {
-                // Handle save action
+                Scene.getInstance().Save();
             }
             if (ImGui.menuItem("Exit", "Ctrl+Esc"))
             {
@@ -71,10 +73,10 @@ public class NavigationWindow extends EditorWindow
             {
                 Editor.getInstance().queueAddWindow(new PerfomanceWindow());
             }
-            // if (ImGui.menuItem("Hierarchy"))
-            // {
-            //     Editor.getInstance().queueAddWindow(new HierarchyWindow());
-            // }
+            if (ImGui.menuItem("Hierarchy"))
+            {
+                 Editor.getInstance().queueAddWindow(new HierarchyWindow(Scene.getInstance().getRoot()));
+            }
             if (ImGui.menuItem("Inspector"))
             {
                 Editor.getInstance().queueAddWindow(new InspectorWindow());
@@ -82,6 +84,26 @@ public class NavigationWindow extends EditorWindow
             if (ImGui.menuItem("Layer"))
             {
                 Editor.getInstance().queueAddWindow(new LayerWindow());
+            }
+            if (ImGui.menuItem("Render Inspector"))
+            {
+                Editor.getInstance().queueAddWindow(new RendererInspector(Scene.getInstance().getGameRenderer()));
+            }
+            if (ImGui.menuItem("Render Graph"))
+            {
+                Editor.getInstance().queueAddWindow(new RenderGraphEditorWindow(Scene.getInstance().getGameRenderer()));
+            }
+            if (ImGui.menuItem("Scene View"))
+            {
+                Editor.getInstance().queueAddWindow(new SceneWindow("Scene View", Scene.getInstance().getSceneRenderer().getFinalFramebuffer()));
+            }
+            if (ImGui.menuItem("Game View"))
+            {
+                Editor.getInstance().queueAddWindow(new SceneWindow("Game View", Scene.getInstance().getGameRenderer().getFinalFramebuffer()));
+            }
+            if (ImGui.menuItem("Files"))
+            {
+                Editor.getInstance().queueAddWindow(new FileWindow());
             }
             ImGui.endMenu();
         }

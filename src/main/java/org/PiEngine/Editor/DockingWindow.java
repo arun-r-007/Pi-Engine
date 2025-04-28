@@ -34,9 +34,9 @@ public class DockingWindow extends EditorWindow {
     }
 
     @Override
-    public void onUpdate(float deltaTime) {
+    public void onUpdate() {
         for (EditorWindow window : dockedWindows) {
-            window.onUpdate(deltaTime);
+            window.onUpdate();
         }
     }
 

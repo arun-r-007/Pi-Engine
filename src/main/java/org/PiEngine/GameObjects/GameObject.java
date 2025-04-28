@@ -13,6 +13,7 @@ public class GameObject
 {
     public String Name;
     public Transform transform;
+    private int id;
 
     private int layer = LayerManager.getLayerBit("Layer0");
 
@@ -24,6 +25,7 @@ public class GameObject
         this.Name = name;
         this.transform = new Transform();
         this.transform.setGameObject(this);
+        id = IDGenerator.generateUniqueID();
     }
 
 
@@ -365,6 +367,55 @@ public class GameObject
     protected void finalize() throws Throwable
     {
         // System.out.println("Removed: " + this.Name);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+
+    public String getName() {
+        return Name;
+    }
+
+
+    public void setName(String name) {
+        Name = name;
+    }
+
+
+    public Transform getTransform() {
+        return transform;
+    }
+
+
+    public void setTransform(Transform transform) {
+        this.transform = transform;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public int getLayer() {
+        return layer;
+    }
+
+
+    public List<Component> getComponents() {
+        return components;
+    }
+
+
+    public void setComponents(List<Component> components) {
+        this.components = components;
+    }
+
+    public int getComponentCount()
+    {
+        return components.size();
     }
 
 }

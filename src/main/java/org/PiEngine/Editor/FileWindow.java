@@ -27,7 +27,7 @@ public class FileWindow extends EditorWindow
 
     
     @Override
-    public void onUpdate(float deltaTime) 
+    public void onUpdate() 
     {
     
     }

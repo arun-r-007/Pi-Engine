@@ -74,4 +74,9 @@ public class ComponentFactory {
         componentConstructors.put(name, constructor);
     }
 
+    public static Component createComponent(int typeId) 
+    {
+        throw new UnsupportedOperationException("Unimplemented method 'createComponent'");
+    }
+
 }

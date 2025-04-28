@@ -7,6 +7,8 @@ import org.PiEngine.Component.*;
 public class Updown extends Component
 {
     public float speed;
+
+    
     @Override
     public void update()
     {

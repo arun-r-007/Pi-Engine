@@ -116,7 +116,7 @@ public class Editor
         GLFW.glfwTerminate();
     }
 
-    public void update(float deltaTime) {
+    public void update() {
         // Add new windows
         for (EditorWindow aw : windowsToAdd) {
             addWindow(aw);
@@ -130,7 +130,7 @@ public class Editor
     
         for (EditorWindow window : editorWindows) {
             if (window.isOpen()) {
-                window.onUpdate(deltaTime);
+                window.onUpdate();
                 window.onRender();
             }
         }

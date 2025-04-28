@@ -1,0 +1,369 @@
+{
+  "sceneName": "Scene",
+  "gameObjects": [
+    {
+      "components": [
+        {
+          "name": "Movemet",
+          "id": 30,
+          "properties": {
+            "speed": 10.0
+          }
+        },
+        {
+          "name": "RendererComponent",
+          "id": 31,
+          "properties": {
+            "size": 2.5,
+            "Color": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "Player",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 1,
+      "position": {
+        "x": 2.240202,
+        "y": 1.6527187,
+        "z": 0.0
+      },
+      "layer": 2
+    },
+    {
+      "components": [
+        {
+          "name": "Follower",
+          "id": 33,
+          "properties": {
+            "zindex": 0.0,
+            "MinumDist": 1.25,
+            "speed": 5.0
+          }
+        },
+        {
+          "name": "RendererComponent",
+          "id": 34,
+          "properties": {
+            "size": 2.5,
+            "Color": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "Enemy",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 2,
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "layer": 2
+    },
+    {
+      "components": [
+        {
+          "name": "Follower",
+          "id": 36,
+          "properties": {
+            "zindex": 0.0,
+            "MinumDist": 1.25,
+            "speed": 5.0
+          }
+        },
+        {
+          "name": "RendererComponent",
+          "id": 37,
+          "properties": {
+            "size": 2.5,
+            "Color": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "Enemy1",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 3,
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "layer": 2
+    },
+    {
+      "components": [
+        {
+          "name": "Follower",
+          "id": 39,
+          "properties": {
+            "zindex": 0.0,
+            "MinumDist": 1.25,
+            "speed": 5.0
+          }
+        },
+        {
+          "name": "RendererComponent",
+          "id": 40,
+          "properties": {
+            "size": 2.5,
+            "Color": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "Enemy2",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 4,
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "layer": 2
+    },
+    {
+      "components": [
+        {
+          "name": "Follower",
+          "id": 42,
+          "properties": {
+            "zindex": 0.0,
+            "MinumDist": 1.25,
+            "speed": 5.0
+          }
+        },
+        {
+          "name": "RendererComponent",
+          "id": 43,
+          "properties": {
+            "size": 2.5,
+            "Color": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "Enemy3",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 5,
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "layer": 2
+    },
+    {
+      "components": [
+        {
+          "name": "SpinComponent",
+          "id": 45,
+          "properties": {
+            "dir": 1.0,
+            "speed": 100.0
+          }
+        },
+        {
+          "name": "RendererComponent",
+          "id": 46,
+          "properties": {
+            "size": 2.5,
+            "Color": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        }
+      ],
+      "children": [
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 48,
+              "properties": {
+                "size": 2.5,
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [
+            {
+              "components": [
+                {
+                  "name": "RendererComponent",
+                  "id": 50,
+                  "properties": {
+                    "size": 2.5,
+                    "Color": {
+                      "x": 1.0,
+                      "y": 1.0,
+                      "z": 1.0
+                    }
+                  }
+                }
+              ],
+              "children": [],
+              "rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "name": "CChildHolder",
+              "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+              },
+              "id": 8,
+              "position": {
+                "x": 5.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "layer": 1073741824
+            }
+          ],
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "ChildHolder",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 7,
+          "position": {
+            "x": 5.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "layer": 1
+        }
+      ],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 77.44839
+      },
+      "name": "Holder",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 6,
+      "position": {
+        "x": 4.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "layer": 1
+    },
+    {
+      "components": [
+        {
+          "name": "CameraComponent",
+          "id": 52,
+          "properties": {
+            "Far": 100.0,
+            "Near": 0.01
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "Main Camera",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 23,
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 20.0
+      },
+      "layer": 1
+    }
+  ]
+}

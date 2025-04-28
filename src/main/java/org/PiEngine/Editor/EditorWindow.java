@@ -67,7 +67,8 @@ public abstract class EditorWindow
     {
     }
 
-    public void onUpdate(float deltaTime)
+    
+    public void onUpdate()
     {
     }
 
