@@ -150,6 +150,7 @@ public class Main
         editor.addWindow(new PerfomanceWindow());
         editor.addWindow(new ConsoleWindow());
         editor.addWindow(new NavigationWindow());
+        editor.addWindow(new FileWindow());
 
 
 
