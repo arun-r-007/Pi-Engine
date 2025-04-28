@@ -140,6 +140,7 @@ public class HierarchyWindow extends EditorWindow {
             }
 
             if (ImGui.beginDragDropTarget()) {
+                System.out.println("ne");
                 Object payloadObj = ImGui.acceptDragDropPayload("GAME_OBJECT");
                 if (payloadObj instanceof GameObject) {
                     GameObject draggedObj = (GameObject) payloadObj;

@@ -17,6 +17,13 @@ public class SceneWindow extends EditorWindow
         id = count++;
     }
 
+    public SceneWindow(String name, Framebuffer fb)
+    {
+        super(name);
+        id = count++;
+        frame = fb;
+    }
+
     public void setid(int o)
     {
         outputTex = o;

@@ -1,7 +1,16 @@
 package org.PiEngine.Component;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.*;
+import org.PiEngine.Math.Vector;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import org.PiEngine.Engine.Console;
 
 /**
@@ -15,6 +24,12 @@ public abstract class Component
     /** Reference to the GameObject this component is attached to */
     public GameObject gameObject;
     public Transform transform;
+    private int id;
+
+    public Component()
+    {
+        id = IDGenerator.generateUniqueID();
+    }
 
     /**
      * Called once when the component is first added to a GameObject.
@@ -111,5 +126,79 @@ public abstract class Component
             String errorMessage = "Exception in render: " + e.getMessage() + " (" + getLineNumber(e) + ")";
             Console.errorClass(errorMessage, this.getClass().getSimpleName()+".java");
         }
+    }
+
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        
+        
+        Field[] fields = this.getClass().getDeclaredFields();
+        
+        
+        for (Field field : fields) {
+            field.setAccessible(true); 
+            try {
+                
+                properties.put(field.getName(), field.get(this));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace(); 
+            }
+        }
+        // System.out.println(properties);
+        return properties;
+    }
+
+
+    public void setComponentProperty(String propertyName, JsonElement propertyValue) {
+        try {
+            
+            Field field = this.getClass().getDeclaredField(propertyName);
+            field.setAccessible(true); 
+
+            // Handle different property types
+            if (field.getType() == String.class) {
+                field.set(this, propertyValue.getAsString());
+            } else if (field.getType() == Integer.class) {
+                field.set(this, propertyValue.getAsInt());
+            } else if (field.getType() == Float.class) {
+                field.set(this, propertyValue.getAsFloat());
+            } else if (field.getType() == Boolean.class) {
+                field.set(this, propertyValue.getAsBoolean());
+            } else if (field.getType() == Vector.class) {
+                JsonObject vectorObject = propertyValue.getAsJsonObject();
+                float x = vectorObject.get("x").getAsFloat();
+                float y = vectorObject.get("y").getAsFloat();
+                float z = vectorObject.get("z").getAsFloat();
+                field.set(this, new Vector(x, y, z));  
+            } else {
+                System.out.println("Unsupported field type: " + field.getType());
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();  
+        }
+    }
+
+    public GameObject getGameObject() {
+        return gameObject;
+    }
+
+    public void setGameObject(GameObject gameObject) {
+        this.gameObject = gameObject;
+    }
+
+    public Transform getTransform() {
+        return transform;
+    }
+
+    public void setTransform(Transform transform) {
+        this.transform = transform;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
