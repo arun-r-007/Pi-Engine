@@ -5,14 +5,14 @@
       "components": [
         {
           "name": "Movemet",
-          "id": 9,
+          "id": 30,
           "properties": {
             "speed": 10.0
           }
         },
         {
           "name": "RendererComponent",
-          "id": 15,
+          "id": 31,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -37,8 +37,8 @@
       },
       "id": 1,
       "position": {
-        "x": 0.0,
-        "y": 0.0,
+        "x": 2.240202,
+        "y": 1.6527187,
         "z": 0.0
       },
       "layer": 2
@@ -47,7 +47,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 10,
+          "id": 33,
           "properties": {
             "zindex": 0.0,
             "MinumDist": 1.25,
@@ -56,7 +56,7 @@
         },
         {
           "name": "RendererComponent",
-          "id": 16,
+          "id": 34,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -91,7 +91,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 11,
+          "id": 36,
           "properties": {
             "zindex": 0.0,
             "MinumDist": 1.25,
@@ -100,7 +100,7 @@
         },
         {
           "name": "RendererComponent",
-          "id": 17,
+          "id": 37,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -135,7 +135,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 12,
+          "id": 39,
           "properties": {
             "zindex": 0.0,
             "MinumDist": 1.25,
@@ -144,7 +144,7 @@
         },
         {
           "name": "RendererComponent",
-          "id": 18,
+          "id": 40,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -179,7 +179,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 13,
+          "id": 42,
           "properties": {
             "zindex": 0.0,
             "MinumDist": 1.25,
@@ -188,7 +188,7 @@
         },
         {
           "name": "RendererComponent",
-          "id": 19,
+          "id": 43,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -223,7 +223,7 @@
       "components": [
         {
           "name": "SpinComponent",
-          "id": 14,
+          "id": 45,
           "properties": {
             "dir": 1.0,
             "speed": 100.0
@@ -231,7 +231,7 @@
         },
         {
           "name": "RendererComponent",
-          "id": 20,
+          "id": 46,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -247,7 +247,7 @@
           "components": [
             {
               "name": "RendererComponent",
-              "id": 21,
+              "id": 48,
               "properties": {
                 "size": 2.5,
                 "Color": {
@@ -263,7 +263,7 @@
               "components": [
                 {
                   "name": "RendererComponent",
-                  "id": 22,
+                  "id": 50,
                   "properties": {
                     "size": 2.5,
                     "Color": {
@@ -318,7 +318,7 @@
       "rotation": {
         "x": 0.0,
         "y": 0.0,
-        "z": 0.0
+        "z": 77.44839
       },
       "name": "Holder",
       "scale": {
@@ -338,7 +338,7 @@
       "components": [
         {
           "name": "CameraComponent",
-          "id": 24,
+          "id": 52,
           "properties": {
             "Far": 100.0,
             "Near": 0.01

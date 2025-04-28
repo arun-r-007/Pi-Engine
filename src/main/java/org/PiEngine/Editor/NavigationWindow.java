@@ -27,11 +27,11 @@ public class NavigationWindow extends EditorWindow
             }
             if (ImGui.menuItem("Open", "Ctrl+O"))
             {
-                // Handle open action
+                Scene.getInstance().Load();   
             }
             if (ImGui.menuItem("Save", "Ctrl+S"))
             {
-                // Handle save action
+                Scene.getInstance().Save();
             }
             if (ImGui.menuItem("Exit", "Ctrl+Esc"))
             {

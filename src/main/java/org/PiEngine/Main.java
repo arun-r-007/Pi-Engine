@@ -3,6 +3,10 @@ package org.PiEngine;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.*;
 
 import imgui.ImGui;
@@ -18,6 +22,7 @@ import org.PiEngine.Engine.Scene;
 
 public class Main
 {
+    public static long Windowthis = 0;
     public static void main(String[] args)
     {
         if (!glfwInit())
@@ -52,6 +57,9 @@ public class Main
         // Scene.getInstance().Save();
         // Scene.getInstance().Load();
 
+        boolean isLoop = false;
+
+
         while (!glfwWindowShouldClose(window))
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -59,7 +67,15 @@ public class Main
             Time.update();
             Input.update();
 
-            Scene.getInstance().update();
+            if(Input.isKeyPressed(GLFW_KEY_SPACE)) 
+            {
+                isLoop = !isLoop;
+            }
+
+            if(isLoop)
+            {
+                Scene.getInstance().update();
+            }
             Scene.getInstance().render();
 
             Editor.getInstance().update();

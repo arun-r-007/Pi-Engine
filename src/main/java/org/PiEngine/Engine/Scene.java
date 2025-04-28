@@ -62,59 +62,59 @@ public class Scene implements Serializable
         // Root GameObject
         root = new GameObject(Name);
 
-        GameObject player = new GameObject("Player");
-        GameObject enemy = new GameObject("Enemy");
-        GameObject enemy1 = new GameObject("Enemy1");
-        GameObject enemy2 = new GameObject("Enemy2");
-        GameObject enemy3 = new GameObject("Enemy3");
-        GameObject holder = new GameObject("Holder");
-        GameObject childHolder = new GameObject("ChildHolder");
-        GameObject cChildHolder = new GameObject("CChildHolder");
-        // Setup hierarchy
-        root.addChild(player);
-        root.addChild(enemy);
-        root.addChild(enemy1);
-        root.addChild(enemy2);
-        root.addChild(enemy3);
-        root.addChild(holder);
-        holder.addChild(childHolder);
-        childHolder.addChild(cChildHolder);
+        // GameObject player = new GameObject("Player");
+        // GameObject enemy = new GameObject("Enemy");
+        // GameObject enemy1 = new GameObject("Enemy1");
+        // GameObject enemy2 = new GameObject("Enemy2");
+        // GameObject enemy3 = new GameObject("Enemy3");
+        // GameObject holder = new GameObject("Holder");
+        // GameObject childHolder = new GameObject("ChildHolder");
+        // GameObject cChildHolder = new GameObject("CChildHolder");
+        // // Setup hierarchy
+        // root.addChild(player);
+        // root.addChild(enemy);
+        // root.addChild(enemy1);
+        // root.addChild(enemy2);
+        // root.addChild(enemy3);
+        // root.addChild(holder);
+        // holder.addChild(childHolder);
+        // childHolder.addChild(cChildHolder);
         
-        // Setup transforms
-        player.transform.setLocalPosition(new Vector(0f, 0, 0));
-        holder.transform.setLocalPosition(new Vector(4f, 0, 0));
-        childHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
-        cChildHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
+        // // Setup transforms
+        // player.transform.setLocalPosition(new Vector(0f, 0, 0));
+        // holder.transform.setLocalPosition(new Vector(4f, 0, 0));
+        // childHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
+        // cChildHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
         
-        cChildHolder.setLayer(LayerManager.getLayerBit("Layer30"));
+        // cChildHolder.setLayer(LayerManager.getLayerBit("Layer30"));
         
-        // Add Components
-        player.addComponent(new Movemet());
-        enemy.addComponent(new Follower());
-        enemy1.addComponent(new Follower());
-        enemy2.addComponent(new Follower());
-        enemy3.addComponent(new Follower());
-        holder.addComponent(new SpinComponent());
+        // // Add Components
+        // player.addComponent(new Movemet());
+        // enemy.addComponent(new Follower());
+        // enemy1.addComponent(new Follower());
+        // enemy2.addComponent(new Follower());
+        // enemy3.addComponent(new Follower());
+        // holder.addComponent(new SpinComponent());
         
-        player.addComponent(new RendererComponent());
-        enemy.addComponent(new RendererComponent());
-        enemy1.addComponent(new RendererComponent());
-        enemy2.addComponent(new RendererComponent());
-        enemy3.addComponent(new RendererComponent());
-        holder.addComponent(new RendererComponent());
-        childHolder.addComponent(new RendererComponent());
-        cChildHolder.addComponent(new RendererComponent());
+        // player.addComponent(new RendererComponent());
+        // enemy.addComponent(new RendererComponent());
+        // enemy1.addComponent(new RendererComponent());
+        // enemy2.addComponent(new RendererComponent());
+        // enemy3.addComponent(new RendererComponent());
+        // holder.addComponent(new RendererComponent());
+        // childHolder.addComponent(new RendererComponent());
+        // cChildHolder.addComponent(new RendererComponent());
         
-        player.setLayerByName("Layer1", false);
-        enemy.setLayerByName("Layer1", false);
-        enemy1.setLayerByName("Layer1", false);
-        enemy2.setLayerByName("Layer1", false);
-        enemy3.setLayerByName("Layer1", false);
+        // player.setLayerByName("Layer1", false);
+        // enemy.setLayerByName("Layer1", false);
+        // enemy1.setLayerByName("Layer1", false);
+        // enemy2.setLayerByName("Layer1", false);
+        // enemy3.setLayerByName("Layer1", false);
         
-        enemy.getComponent(Follower.class).Target = cChildHolder;
-        enemy1.getComponent(Follower.class).Target = enemy;
-        enemy2.getComponent(Follower.class).Target = enemy1;
-        enemy3.getComponent(Follower.class).Target = enemy2;
+        // enemy.getComponent(Follower.class).Target = cChildHolder;
+        // enemy1.getComponent(Follower.class).Target = enemy;
+        // enemy2.getComponent(Follower.class).Target = enemy1;
+        // enemy3.getComponent(Follower.class).Target = enemy2;
         
         GameObject cameraObject = new GameObject("Main Camera");
         GameCamera = cameraObject;

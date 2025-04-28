@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Iterator;
 
+import org.PiEngine.Engine.Scene;
 import org.PiEngine.GameObjects.GameObject;
 import org.PiEngine.GameObjects.Transform;
 
@@ -47,7 +48,7 @@ public class HierarchyWindow extends EditorWindow {
         this.root = root;
     }
 
-    public void onUpdate(float deltaTime)
+    public void onUpdate()
     {
         setCustomTheme();
 
@@ -102,11 +103,11 @@ public class HierarchyWindow extends EditorWindow {
             Editor.get().queueRemoveWindow(this);
         }
         
-        renderGameObjectHierarchy(root);
+        renderGameObjectHierarchy(Scene.getInstance().getRoot());
         ImGui.end();
         // ImGui.popStyleColor(1);
 
-
+        
 
 
         // ImGui.popStyleColor(1);
@@ -140,12 +141,12 @@ public class HierarchyWindow extends EditorWindow {
             }
 
             if (ImGui.beginDragDropTarget()) {
-                System.out.println("ne");
                 Object payloadObj = ImGui.acceptDragDropPayload("GAME_OBJECT");
                 if (payloadObj instanceof GameObject) {
                     GameObject draggedObj = (GameObject) payloadObj;
                     if (draggedObj != obj) {
-                        toReparent.add(Arrays.asList(draggedObj, obj)); // Reparent dragged object to the drop target
+                        toReparent.add(Arrays.asList(draggedObj, obj)); 
+                        System.out.println(toReparent);
                     }
                 }
                 ImGui.endDragDropTarget();

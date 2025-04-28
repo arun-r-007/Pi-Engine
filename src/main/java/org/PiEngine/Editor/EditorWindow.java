@@ -67,6 +67,7 @@ public abstract class EditorWindow
     {
     }
 
+    
     public void onUpdate()
     {
     }
