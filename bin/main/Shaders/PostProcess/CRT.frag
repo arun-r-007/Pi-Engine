@@ -43,5 +43,5 @@ void main()
     else
         col *= 1.2;
 
-    fragColor = vec4(col, 1.0) + vec4(texture(u_Texture1, v_UV).x, 0.0, 0.0, 1.0);
+    fragColor = vec4(col, 1.0) + vec4(texture(u_Texture1, v_UV).x * 5.0, 0.0, 0.0, 1.0);
 }

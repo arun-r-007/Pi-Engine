@@ -3,10 +3,6 @@ package org.PiEngine;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.*;
 
 import imgui.ImGui;
@@ -18,6 +14,8 @@ import imgui.glfw.ImGuiImplGlfw;
 import org.PiEngine.Core.*;
 import org.PiEngine.Editor.Editor;
 import org.PiEngine.Engine.Scene;
+import org.PiEngine.Scripting.CompileScripts;
+import org.PiEngine.Scripting.ScriptLoader;
 
 
 public class Main
@@ -51,13 +49,25 @@ public class Main
         ImGuiImplGl3 imguiGl3 = new ImGuiImplGl3();
         imguiGlfw.init(window, true);
         imguiGl3.init("#version 330 core");
+        
+        try 
+        {
+            CompileScripts compiler = CompileScripts.getInstance("src\\main\\resources\\Scripts", "Compiled", null);
+            compiler.compileScripts();
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+
+
+        ScriptLoader.getInstance().loadComponentScripts("Compiled/Scripts");
 
         Scene.getInstance().init(window, width, height);
 
-        // Scene.getInstance().Save();
-        // Scene.getInstance().Load();
 
         boolean isLoop = false;
+
 
 
         while (!glfwWindowShouldClose(window))

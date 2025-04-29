@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-import org.PiEngine.Main;
 import org.PiEngine.Component.*;
 import org.PiEngine.GameObjects.*;
 import org.PiEngine.Math.Vector;
@@ -23,8 +22,9 @@ public class SceneDeserializerJSON {
 
         // Create a new Scene object
         Scene scene = Scene.getInstance();
+        scene.getGameCamera();
         scene.setRoot(new GameObject(sceneName));
-
+        scene.getRoot().addChild(Scene.getInstance().getGameCamera());
 
         // Deserialize game objects
         JsonArray gameObjectsArray = jsonObject.getAsJsonArray("gameObjects");
@@ -41,8 +41,9 @@ public class SceneDeserializerJSON {
         int id = jsonObject.get("id").getAsInt();  // Parse the id as an int
         String name = jsonObject.get("name").getAsString();
         int layer = jsonObject.get("layer").getAsInt();
-
         
+        
+
         GameObject gameObject = new GameObject(name);
         gameObject.setId(id);
         gameObject.setLayer(layer);
