@@ -1,6 +1,8 @@
 package org.PiEngine.Editor;
 
 import org.PiEngine.Engine.Scene;
+import org.PiEngine.Scripting.CompileScripts;
+import org.PiEngine.Scripting.ScriptLoader;
 
 import imgui.ImGui;
 
@@ -75,7 +77,7 @@ public class NavigationWindow extends EditorWindow
             }
             if (ImGui.menuItem("Hierarchy"))
             {
-                 Editor.getInstance().queueAddWindow(new HierarchyWindow(Scene.getInstance().getRoot()));
+                 Editor.getInstance().queueAddWindow(new HierarchyWindow());
             }
             if (ImGui.menuItem("Inspector"))
             {
@@ -108,6 +110,45 @@ public class NavigationWindow extends EditorWindow
             ImGui.endMenu();
         }
 
+        if (ImGui.beginMenu("Script"))
+        {
+            if (ImGui.menuItem("Compile Script"))
+            {
+                try 
+                {
+                    CompileScripts compiler = CompileScripts.getInstance("src\\main\\resources\\Scripts", "Compiled", null);
+                    compiler.compileScripts();
+                } 
+                catch (Exception e) 
+                {
+                    e.printStackTrace();
+                }
+
+            }
+            if (ImGui.menuItem("Load Script"))
+            {
+                ScriptLoader.getInstance().loadComponentScripts("Compiled/Scripts");
+            }
+            if (ImGui.menuItem("Compile & Load Script"))
+            {
+                try 
+                {
+                    CompileScripts compiler = CompileScripts.getInstance("src\\main\\resources\\Scripts", "Compiled", null);
+                    compiler.compileScripts();
+                } 
+                catch (Exception e) 
+                {
+                    e.printStackTrace();
+                }
+                ScriptLoader.getInstance().loadComponentScripts("Compiled/Scripts");
+            }
+
+            ImGui.endMenu();
+        }
+
+        
+
+        
         // Help dropdown
         if (ImGui.beginMenu("Help"))
         {

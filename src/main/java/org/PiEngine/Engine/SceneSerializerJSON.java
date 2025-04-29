@@ -33,6 +33,7 @@ public class SceneSerializerJSON {
         objData.put("id", gameObject.getId());
         objData.put("name", gameObject.getName());
         objData.put("layer", gameObject.getLayerBit());
+        if (gameObject.getName().equals("Main Camera")) return;
 
 
         objData.put("position", vectorToMap(gameObject.transform.getLocalPosition()));
