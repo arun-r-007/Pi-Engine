@@ -67,7 +67,6 @@ public class GameObject
      * @param type The class object representing the desired component type.
      * @return The component instance if found; otherwise, null.
      */
-    @SuppressWarnings("unchecked")
     public <T extends Component> T getComponent(Class<T> type)
     {
         for (Component c : components)
@@ -211,37 +210,6 @@ public class GameObject
     }
 
     /**
-     * 
-     * @param position Position of the Object
-     * @param size Size of the Plane
-     */
-
-    // public void debugDrawSquare(Vector position, float size)
-    // {
-    //     float half = size / 2.0f;
-    //     float x = position.x;
-    //     float y = position.y;
-    //     float z = position.z;
-
-    //     //glColor3f(1.0f, 0.0f, 0.0f); // Red color
-
-    //     glBegin(GL_TRIANGLES);
-
-    //     // Triangle 1
-    //     glVertex3f(x - half, y - half, z);
-    //     glVertex3f(x + half, y - half, z);
-    //     glVertex3f(x + half, y + half, z);
-
-    //     // Triangle 2
-    //     glVertex3f(x - half, y - half, z);
-    //     glVertex3f(x + half, y + half, z);
-    //     glVertex3f(x - half, y + half, z);
-
-    //     glEnd();
-    // }
-
-
-    /**
      * Reparents this GameObject to a new parent GameObject.
      * 
      * This will remove this GameObject from its current parent's children list
@@ -251,6 +219,16 @@ public class GameObject
      */
     public void reparentTo(GameObject newParent)
     {
+        Transform cParent = newParent.transform;
+        while (cParent != null) 
+        {
+            if(cParent == transform)
+            {
+                reparentToChild();
+                break;
+            }
+            cParent = cParent.getParent();  
+        }
         // Remove from current parent if it exists
         Transform currentParent = this.transform.getParent();
         Vector gpos = transform.getWorldPosition();
@@ -259,7 +237,7 @@ public class GameObject
 
         if (currentParent != null)
         {
-            currentParent.getChildren().remove(this.transform);
+            currentParent.removeChild(transform);
         }
 
         // Add to new parent's children
@@ -268,6 +246,20 @@ public class GameObject
         this.transform.setWorldRotation(grot);
         this.transform.setWorldScale(gscl);
 
+    }
+
+    private void reparentToChild()
+    {
+        List<GameObject> repatentObjects = new ArrayList();
+        GameObject Parent = transform.getParent().getGameObject();
+        for (Transform gb : transform.getChildren())
+        {
+            repatentObjects.add(gb.getGameObject());
+        }
+        for (GameObject gameObject : repatentObjects) 
+        {
+            gameObject.reparentTo(Parent);
+        }
     }
 
 

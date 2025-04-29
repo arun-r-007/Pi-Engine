@@ -37,9 +37,8 @@ public class HierarchyWindow extends EditorWindow {
     public static int count = 0;
 
 
-    public HierarchyWindow(GameObject root) {
+    public HierarchyWindow() {
         super("Hierarchy");
-        this.root = root;
         id = count++;
         
     }
@@ -50,6 +49,7 @@ public class HierarchyWindow extends EditorWindow {
 
     public void onUpdate()
     {
+        root = Scene.getInstance().getRoot();
         setCustomTheme();
 
         Iterator<List<GameObject>> reparentIterator = toReparent.iterator();

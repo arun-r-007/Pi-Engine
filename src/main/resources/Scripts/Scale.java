@@ -3,9 +3,6 @@ package Scripts;
 import org.PiEngine.Core.*;
 import org.PiEngine.Math.*;
 import org.PiEngine.Component.*;
-import org.PiEngine.Editor.*;
-import org.PiEngine.Render.*;
-
 
 public class Scale extends Component
 {

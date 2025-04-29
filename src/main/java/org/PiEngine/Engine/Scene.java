@@ -127,7 +127,7 @@ public class Scene implements Serializable
         editor.init();
         editor.addWindow(new DockingWindow());
         editor.addWindow(new LayerWindow());
-        editor.addWindow(new HierarchyWindow(root));
+        editor.addWindow(new HierarchyWindow());
         editor.addWindow(new InspectorWindow(false));
         editor.addWindow(new PerfomanceWindow());
         editor.addWindow(new ConsoleWindow());
@@ -184,7 +184,7 @@ public class Scene implements Serializable
         gameRenderer.setFinalPass("FINAL");
         gameRenderer.connect("Geometry", "CRT", 0);
         gameRenderer.connect("Box", "BLUR", 0);
-        gameRenderer.connect("BLUR", "CRT", 1);
+        // gameRenderer.connect("BLUR", "CRT", 1);
         gameRenderer.connect("CRT", "FINAL", 0);
 
         editor.addWindow(new RendererInspector(gameRenderer));

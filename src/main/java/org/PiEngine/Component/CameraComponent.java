@@ -37,7 +37,6 @@ public class CameraComponent extends Component
         camera.setPosition(pos);
         Vector rot = new Vector(gameObject.transform.getWorldRotation());
         camera.setRotation(rot);
-
-
+        // camera.updateViewMatrix();
     }
 }

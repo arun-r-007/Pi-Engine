@@ -77,7 +77,7 @@ public class NavigationWindow extends EditorWindow
             }
             if (ImGui.menuItem("Hierarchy"))
             {
-                 Editor.getInstance().queueAddWindow(new HierarchyWindow(Scene.getInstance().getRoot()));
+                 Editor.getInstance().queueAddWindow(new HierarchyWindow());
             }
             if (ImGui.menuItem("Inspector"))
             {
@@ -116,7 +116,7 @@ public class NavigationWindow extends EditorWindow
             {
                 try 
                 {
-                    CompileScripts compiler = CompileScripts.getInstance("Scripts", "Compiled", null);
+                    CompileScripts compiler = CompileScripts.getInstance("src\\main\\resources\\Scripts", "Compiled", null);
                     compiler.compileScripts();
                 } 
                 catch (Exception e) 
@@ -133,7 +133,7 @@ public class NavigationWindow extends EditorWindow
             {
                 try 
                 {
-                    CompileScripts compiler = CompileScripts.getInstance("Scripts", "Compiled", null);
+                    CompileScripts compiler = CompileScripts.getInstance("src\\main\\resources\\Scripts", "Compiled", null);
                     compiler.compileScripts();
                 } 
                 catch (Exception e) 
