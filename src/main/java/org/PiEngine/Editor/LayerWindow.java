@@ -47,10 +47,10 @@ public class LayerWindow extends EditorWindow {
         //ImGui.beginChild("LayerList", -1, windowHeight, true);  // -1 for auto width, fixed height, scrolling enabled
 
         for (int i = 0; i < MAX_LAYERS; i++) {
-            ImGui.text("Layer " + i);
-            ImGui.sameLine();
+            // ImGui.text("Layer " + i);
+            // ImGui.sameLine();
 
-            ImGui.inputText("##layerName" + i, editableNames[i]);
+            ImGui.inputText("Layer " + i, editableNames[i]);
 
             if (ImGui.isItemDeactivatedAfterEdit()) {
                 String newName = editableNames[i].get();

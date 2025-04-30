@@ -73,12 +73,12 @@ public class RendererInspector extends EditorWindow
                 }
 
                 // Editable Pass Name
-                ImGui.text("Name   ");
-                ImGui.sameLine();
+                // ImGui.text("Name   ");
+                // ImGui.sameLine();
                 String oldName = pass.getName();
                 ImString buffer = new ImString(oldName, 32);  // Create a buffer with the current name
 
-                if (ImGui.inputText("###input", buffer, ImGuiInputTextFlags.EnterReturnsTrue))
+                if (ImGui.inputText("Name", buffer, ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     String newName = buffer.get();  // Get the new name from the buffer
 
@@ -111,11 +111,11 @@ public class RendererInspector extends EditorWindow
                     selected = "None";
                 }
 
-                ImGui.text("Layers ");
-                ImGui.sameLine();
+                // ImGui.text("Layers ");
+                // ImGui.sameLine();
 
                 // Begin Combo Box
-                if (ImGui.beginCombo("###Select Layers", selected))
+                if (ImGui.beginCombo("Layers", selected))
                 {
                     // Iterate over the layers and create selectable items
                     for (int i = 0; i < layers.length; i++)

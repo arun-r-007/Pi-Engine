@@ -124,7 +124,7 @@ public class HierarchyWindow extends EditorWindow {
     
         boolean isRoot = (obj == root);
         boolean isLeaf = obj.transform.getChildren().isEmpty();
-        int flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.DefaultOpen;
+        int flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.DefaultOpen; 
         if (isLeaf) flags |= ImGuiTreeNodeFlags.Leaf;
     
         boolean nodeOpen;

@@ -121,10 +121,11 @@ public class InspectorWindow extends EditorWindow {
         String[] layers = LayerManager.GetLayerNameArray();
         int currentLayer = LayerManager.getIndexFromBitmask(current.getLayerBit());
         ImInt selected = new ImInt(currentLayer);
-    
+        ImGui.sameLine();
         if (ImGui.combo("##LayerCombo", selected, layers, layers.length)) {
             current.setLayerByName(LayerManager.getLayerName(selected.get()), false);
         }
+        ImGui.separator();
     
         if (ImGui.collapsingHeader("Transform", ImGuiTreeNodeFlags.DefaultOpen)) {
             renderTransformEditor(current);
@@ -179,9 +180,6 @@ public class InspectorWindow extends EditorWindow {
     private final Map<String, VectorField> transformBlocks = new HashMap<>();
     private void renderTransformEditor(GameObject obj)
     {
-        ImGui.text("All Transform Properties of " + obj.Name);
-        ImGui.separator();
-
         ImGui.text("GLOBAL");
         ImGui.separator();
 

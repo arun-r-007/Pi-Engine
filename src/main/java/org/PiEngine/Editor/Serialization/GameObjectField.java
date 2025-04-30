@@ -45,12 +45,12 @@ public class GameObjectField extends SerializeField<GameObject> {
     }
 
     public void draw() {
-        ImGui.text(label);
-        ImGui.sameLine();
+        // ImGui.text(label);
+        // ImGui.sameLine();
 
         // Display the GameObject's name or "NULL" if not set
         String displayName = (value != null && value.Name != null) ? value.Name : "NULL";
-        ImGui.inputText("", new ImString(displayName), ImGuiInputTextFlags.ReadOnly); 
+        ImGui.inputText(name, new ImString(displayName), ImGuiInputTextFlags.ReadOnly); 
 
         
         // Drag and Drop to set the GameObject

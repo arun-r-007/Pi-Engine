@@ -28,11 +28,11 @@ public class FloatField extends SerializeField<Float> {
                 set(getter.get());
             }
 
-            ImGui.text(name);
-            ImGui.sameLine();
+            // ImGui.text(name);
+            // ImGui.sameLine();
 
             ImGui.pushID(label);
-            boolean edited = ImGui.dragFloat("###input", value, 0.1f);
+            boolean edited = ImGui.dragFloat(name, value, 0.1f);
             ImGui.popID();
 
             if (edited) {
@@ -45,11 +45,11 @@ public class FloatField extends SerializeField<Float> {
 
     @Override
     public void draw() {
-        ImGui.text(name);
-        ImGui.sameLine();
+        // ImGui.text(name);
+        // ImGui.sameLine();
 
         ImGui.pushID(label);
-        ImGui.dragFloat("###input", value, 0.1f);
+        ImGui.dragFloat(name, value, 0.1f);
         ImGui.popID();
     }
 }

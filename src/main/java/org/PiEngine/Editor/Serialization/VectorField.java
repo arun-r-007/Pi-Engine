@@ -47,31 +47,29 @@ public class VectorField extends SerializeField<Vector>
                 set(getter.get());
             }
 
-            // Draw and detect changes
-            ImGui.text(name);
-            ImGui.sameLine();
-            ImGui.pushItemWidth(70);
-            ImGui.pushID(label); // make sure IDs are scoped correctly
+            // ImGui.pushItemWidth(200); // slightly wider for all 3 floats
+            ImGui.pushID(label); // ensure unique ID
 
-            boolean edited = false;
+            float[] xyz = {x[0], y[0], z[0]};
+            boolean edited = ImGui.dragFloat3(name, xyz, 0.1f);
 
-            edited |= ImGui.dragFloat("##X", x, 0.1f);
-            ImGui.sameLine();
-            edited |= ImGui.dragFloat("##Y", y, 0.1f);
-            ImGui.sameLine();
-            edited |= ImGui.dragFloat("##Z", z, 0.1f);
+            // ImGui.sameLine();
+            // ImGui.text(name);
 
             ImGui.popID();
-            ImGui.popItemWidth();
+            // ImGui.popItemWidth();
 
             if (edited)
             {
+                x[0] = xyz[0];
+                y[0] = xyz[1];
+                z[0] = xyz[2];
                 setter.accept(get());
             }
         }
         else
         {
-            draw(); // fallback if not synced
+            draw(); // fallback
         }
     }
 
@@ -80,16 +78,17 @@ public class VectorField extends SerializeField<Vector>
     {
         ImGui.text(name);
         ImGui.sameLine();
-        ImGui.pushItemWidth(70);
+        // ImGui.pushItemWidth(200);
 
         ImGui.pushID(label);
-        ImGui.dragFloat("##X", x, 0.1f);
-        ImGui.sameLine();
-        ImGui.dragFloat("##Y", y, 0.1f);
-        ImGui.sameLine();
-        ImGui.dragFloat("##Z", z, 0.1f);
+        float[] xyz = {x[0], y[0], z[0]};
+        ImGui.dragFloat3(name, xyz, 0.1f);
+        x[0] = xyz[0];
+        y[0] = xyz[1];
+        z[0] = xyz[2];
         ImGui.popID();
 
-        ImGui.popItemWidth();
+        // ImGui.popItemWidth();
     }
+
 }

@@ -29,11 +29,12 @@ public class BooleanField extends SerializeField<Boolean> {
             }
 
             boolean temp = value ;
-            ImGui.text(name);
-            ImGui.sameLine();
+            // ImGui.text(name);
+            // ImGui.sameLine();
 
             ImGui.pushID(label);
-            boolean changed = ImGui.checkbox("###checkbox", temp);
+            boolean changed = ImGui.checkbox(name, temp);
+
             ImGui.popID();
 
             if (changed) {
@@ -47,12 +48,12 @@ public class BooleanField extends SerializeField<Boolean> {
 
     @Override
     public void draw() {
-        ImGui.text(name);
-        ImGui.sameLine();
+        // ImGui.text(name);
+        // ImGui.sameLine();
 
         boolean temp = value;
         ImGui.pushID(label);
-        ImGui.checkbox("###checkbox", temp);
+        ImGui.checkbox(name, temp);
         ImGui.popID();
     }
 }

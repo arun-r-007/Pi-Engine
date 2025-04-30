@@ -28,11 +28,11 @@ public class IntField extends SerializeField<Integer> {
                 set(getter.get());
             }
 
-            ImGui.text(name);
-            ImGui.sameLine();
+            // ImGui.text(name);
+            // ImGui.sameLine();
 
             ImGui.pushID(label);
-            boolean edited = ImGui.dragInt("###input", value);
+            boolean edited = ImGui.dragInt(name, value);
             ImGui.popID();
 
             if (edited) {
@@ -49,7 +49,7 @@ public class IntField extends SerializeField<Integer> {
         ImGui.sameLine();
 
         ImGui.pushID(label);
-        ImGui.dragInt("###input", value);
+        ImGui.dragInt(name, value);
         ImGui.popID();
     }
 }
