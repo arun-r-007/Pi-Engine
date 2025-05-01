@@ -30,11 +30,13 @@ public class SceneDeserializerJSON {
         JsonObject jsonObject = JsonParser.parseReader(new FileReader(filePath)).getAsJsonObject();
 
         String sceneName = jsonObject.get("sceneName").getAsString();
+        String GameCamPath = jsonObject.get("GameCamera").getAsString();
+
+
 
         Scene scene = Scene.getInstance();
-        scene.getGameCamera();
         scene.setRoot(new GameObject(sceneName));
-        scene.getRoot().addChild(Scene.getInstance().getGameCamera());
+        
 
         JsonArray gameObjectsArray = jsonObject.getAsJsonArray("gameObjects");
         for (JsonElement gameObjectElement : gameObjectsArray) {
@@ -51,8 +53,10 @@ public class SceneDeserializerJSON {
             }
         }
 
-        deferredComponentMap.clear(); // Cleanup
+        Scene.getInstance().setGameCamera(GameObject.findGameObject(GameCamPath, Scene.getInstance().getRoot()));
 
+        deferredComponentMap.clear();
+        
         return scene;
     }
 

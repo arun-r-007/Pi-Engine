@@ -17,6 +17,7 @@ public class SceneSerializerJSON {
 
         Map<String, Object> sceneData = new HashMap<>();
         sceneData.put("sceneName", scene.getName());
+        sceneData.put("GameCamera", GameObject.Location(scene.getGameCamera()));
 
         List<Object> gameObjects = new ArrayList<>();
         for (Transform child : scene.getRoot().transform.getChildren()) {
@@ -36,9 +37,8 @@ public class SceneSerializerJSON {
         objData.put("layer", gameObject.getLayerBit());
         objData.put("Location", GameObject.Location(gameObject));
 
-        if (gameObject.getName().equals("Main Camera")) return;
-
-
+        
+        
         objData.put("position", vectorToMap(gameObject.transform.getLocalPosition()));
         objData.put("rotation", vectorToMap(gameObject.transform.getLocalRotation()));
         objData.put("scale", vectorToMap(gameObject.transform.getLocalScale()));
