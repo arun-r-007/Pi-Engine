@@ -52,5 +52,13 @@ public class DoubleField extends SerializeField<Double> {
         ImGui.pushID(label);
         ImGui.dragFloat(name, value, 0.1f);
         ImGui.popID();
+        ImGui.sameLine();
+        ImGui.textDisabled("(?)");
+        if (ImGui.isItemHovered())
+        {
+            ImGui.beginTooltip();
+            ImGui.text("is set to null in script");
+            ImGui.endTooltip();
+        }
     }
 }

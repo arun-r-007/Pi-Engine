@@ -12,7 +12,8 @@ import org.PiEngine.Math.Vector;
 public class SceneSerializerJSON {
 
     public static void serialize(Scene scene, String filePath) throws IOException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        // TODO: need to remove setPrettyPrinting for faster and compact file size
 
         Map<String, Object> sceneData = new HashMap<>();
         sceneData.put("sceneName", scene.getName());

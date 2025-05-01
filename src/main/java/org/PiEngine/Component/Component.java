@@ -149,10 +149,21 @@ public abstract class Component
             field.setAccessible(true);
             try {
                 Object value = field.get(this);
-    
+                
                 if (value instanceof GameObject) 
                 {
                     value = GameObject.Location((GameObject)value);
+                }
+                if (Component.class.isAssignableFrom(field.getType()))
+                {
+                    Component cmp = (Component)field.get(this);
+                    if(cmp != null)
+                    { 
+                        Object fieldValue = field.get(this);
+                        fieldValue.getClass();
+                        String str = GameObject.Location(cmp.gameObject) + "<" + fieldValue.getClass().getSimpleName() +">";
+                        value = str;
+                    }
                 }
     
                 properties.put(field.getName(), value);
@@ -204,6 +215,23 @@ public abstract class Component
                 GameObject target = GameObject.findGameObject(location, Scene.getInstance().getRoot());
                 field.set(this, target);
             } 
+            else if (Component.class.isAssignableFrom(field.getType()))
+            {
+                String full = propertyValue.getAsString();
+                int start = full.indexOf('<');
+                int end = full.indexOf('>');
+
+                String component = full.substring(start + 1, end);
+                String path = full.substring(0, start);
+
+                
+                GameObject target = GameObject.findGameObject(path, Scene.getInstance().getRoot());
+                Class<? extends Component> componentClass = ComponentFactory.GetClass(component);
+                if (componentClass != null && target != null) 
+                {    
+                    field.set(this, target.getComponent(componentClass));
+                }
+            }
             else 
             {
                 System.out.println("Unsupported field type: " + fieldType);

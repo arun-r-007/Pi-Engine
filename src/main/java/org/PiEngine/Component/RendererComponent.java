@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RendererComponent extends Component
 {
+    public boolean Render = true;
     public Mesh mesh;
     public Float size = 2.5f;
     Shader shader;
@@ -65,6 +66,7 @@ public class RendererComponent extends Component
     @Override
     public void render(Camera camera)
     {
+        if(!Render) return;
         if(texture == null) return;
         texture.bind();
         shader.use();

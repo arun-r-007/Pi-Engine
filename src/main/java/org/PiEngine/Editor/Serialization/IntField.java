@@ -45,11 +45,19 @@ public class IntField extends SerializeField<Integer> {
 
     @Override
     public void draw() {
-        ImGui.text(name);
-        ImGui.sameLine();
+        // ImGui.text(name);
+        // ImGui.sameLine();
 
         ImGui.pushID(label);
         ImGui.dragInt(name, value);
         ImGui.popID();
+        ImGui.sameLine();
+        ImGui.textDisabled("(?)");
+        if (ImGui.isItemHovered())
+        {
+            ImGui.beginTooltip();
+            ImGui.text("is set to null in script");
+            ImGui.endTooltip();
+        }
     }
 }

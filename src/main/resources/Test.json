@@ -15,11 +15,25 @@
           "id": 6,
           "properties": {
             "size": 2.5,
+            "Render": true,
             "Color": {
               "x": 1.0,
               "y": 1.0,
               "z": 1.0
             }
+          }
+        },
+        {
+          "name": "FieldTester",
+          "id": 7,
+          "properties": {
+            "Gameobject": "/Scene/Player",
+            "Movemet": "/Scene/Player<Movemet>",
+            "RendererComponent": "/Scene/Holder/ChildHolder/CChildHolder<RendererComponent>",
+            "Follower": "/Scene/Enemy<Follower>",
+            "CameraComponent": "/Scene/Main Camera<CameraComponent>",
+            "SpinComponent": "/Scene/Holder<SpinComponent>",
+            "Component": "/Scene/Player<Movemet>"
           }
         }
       ],
@@ -48,7 +62,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 8,
+          "id": 9,
           "properties": {
             "Target": "/Scene/Holder/ChildHolder/CChildHolder",
             "zindex": 0.0,
@@ -58,9 +72,10 @@
         },
         {
           "name": "RendererComponent",
-          "id": 9,
+          "id": 10,
           "properties": {
             "size": 2.5,
+            "Render": true,
             "Color": {
               "x": 1.0,
               "y": 1.0,
@@ -94,7 +109,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 11,
+          "id": 12,
           "properties": {
             "Target": "/Scene/Enemy",
             "zindex": 0.0,
@@ -104,9 +119,10 @@
         },
         {
           "name": "RendererComponent",
-          "id": 12,
+          "id": 13,
           "properties": {
             "size": 2.5,
+            "Render": true,
             "Color": {
               "x": 1.0,
               "y": 1.0,
@@ -140,7 +156,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 14,
+          "id": 15,
           "properties": {
             "Target": "/Scene/Enemy1",
             "zindex": 0.0,
@@ -150,9 +166,10 @@
         },
         {
           "name": "RendererComponent",
-          "id": 15,
+          "id": 16,
           "properties": {
             "size": 2.5,
+            "Render": true,
             "Color": {
               "x": 1.0,
               "y": 1.0,
@@ -186,7 +203,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 17,
+          "id": 18,
           "properties": {
             "Target": "/Scene/Enemy2",
             "zindex": 0.0,
@@ -196,9 +213,10 @@
         },
         {
           "name": "RendererComponent",
-          "id": 18,
+          "id": 19,
           "properties": {
             "size": 2.5,
+            "Render": true,
             "Color": {
               "x": 1.0,
               "y": 1.0,
@@ -232,7 +250,7 @@
       "components": [
         {
           "name": "SpinComponent",
-          "id": 20,
+          "id": 21,
           "properties": {
             "dir": 1.0,
             "speed": 100.0
@@ -240,9 +258,10 @@
         },
         {
           "name": "RendererComponent",
-          "id": 21,
+          "id": 22,
           "properties": {
             "size": 2.5,
+            "Render": true,
             "Color": {
               "x": 1.0,
               "y": 1.0,
@@ -256,9 +275,10 @@
           "components": [
             {
               "name": "RendererComponent",
-              "id": 23,
+              "id": 24,
               "properties": {
                 "size": 2.5,
+                "Render": true,
                 "Color": {
                   "x": 1.0,
                   "y": 1.0,
@@ -272,9 +292,10 @@
               "components": [
                 {
                   "name": "RendererComponent",
-                  "id": 25,
+                  "id": 26,
                   "properties": {
                     "size": 2.5,
+                    "Render": true,
                     "Color": {
                       "x": 1.0,
                       "y": 1.0,

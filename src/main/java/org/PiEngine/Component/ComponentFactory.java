@@ -74,6 +74,21 @@ public class ComponentFactory {
         componentConstructors.put(name, constructor);
     }
 
+    public static Class<? extends Component> GetClass(String name) 
+    {
+        
+        Supplier<Component> supplier = componentConstructors.get(name);
+        
+        if (supplier != null) {
+            Component component = supplier.get();
+            return component.getClass();
+        } 
+        else 
+        {
+            return null;
+        }
+    }
+
     public static Component createComponent(int typeId) 
     {
         throw new UnsupportedOperationException("Unimplemented method 'createComponent'");

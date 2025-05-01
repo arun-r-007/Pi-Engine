@@ -57,5 +57,13 @@ public class StringField extends SerializeField<String> {
         ImGui.pushID(label);
         ImGui.inputText(name, buffer);
         ImGui.popID();
+        ImGui.sameLine();
+        ImGui.textDisabled("(?)");
+        if (ImGui.isItemHovered())
+        {
+            ImGui.beginTooltip();
+            ImGui.text("is set to null in script");
+            ImGui.endTooltip();
+        }
     }
 }

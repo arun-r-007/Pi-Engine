@@ -36,8 +36,9 @@ public class ComponentPropertyBlock {
         fieldTypeMap.put(Boolean.class, BooleanField.class);
         fieldTypeMap.put(String.class, StringField.class);
         fieldTypeMap.put(Texture.class, TextureField.class);
+        fieldTypeMap.put(Component.class, ComponentField.class);
 
-
+        
         // Add other mappings as needed (e.g., String.class -> StringField.class)
     }
 
@@ -56,21 +57,20 @@ public class ComponentPropertyBlock {
         for (Field field : fields) {
             String fieldName = field.getName();
             Class<?> fieldType = field.getType();
-
             // Skip non-editable or internal references
             if (fieldName.equals("gameObject") || fieldName.equals("transform")) {
                 continue;
             }
 
             for (Map.Entry<Class<?>, Class<?>> entry : fieldTypeMap.entrySet()) {
-                // Get the value and the handler class
+                
                 Class<?> handlerClass = entry.getKey();
                 Class<?> FieldClass = entry.getValue();
                 
                 try {
                     Object value = field.get(c); 
-                    
-                    if (handlerClass.isInstance(value)) {
+                    if (handlerClass.isInstance(value) && handlerClass != Component.class) 
+                    {
                         Object fieldHandler = FieldClass.getConstructor(String.class, String.class).newInstance(field.getName(), field.getName());
                         
 
@@ -95,9 +95,37 @@ public class ComponentPropertyBlock {
                         syncWithMethod.invoke(fieldHandler, supplier, consumer);
 
                         Method setMethod = FieldClass.getMethod("set", value.getClass());
-                        
-                        
                         setMethod.invoke(fieldHandler, value); 
+
+                        Method handleMethod = FieldClass.getMethod("handle");
+                        handleMethod.invoke(fieldHandler);
+                    }
+                    else if (Component.class.isAssignableFrom(fieldType) && handlerClass == Component.class)
+                    {
+                        Object fieldHandler = new ComponentField(fieldName, fieldName, fieldType);
+                        Supplier<Component> supplier = () -> {
+                            try {
+                                return (Component) field.get(c);
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                                return null;
+                            }
+                        };
+
+                        Consumer<Component> consumer = newVal -> {
+                            try {
+                                field.set(c, newVal);
+                            } catch (IllegalAccessException e) {
+                                ImGui.text("Cannot modify: " + field.getName());
+                            }
+                        };
+
+                        Method syncWithMethod = FieldClass.getMethod("syncWith", Supplier.class, Consumer.class);
+                        syncWithMethod.invoke(fieldHandler, supplier, consumer);
+
+                        Component cmovalue = (Component) field.get(c);  // Get the instance
+                        Method setMethod = FieldClass.getMethod("set", Component.class);  // Expecting an instance of Component
+                        setMethod.invoke(fieldHandler, cmovalue);  // Set the value
 
                         Method handleMethod = FieldClass.getMethod("handle");
                         handleMethod.invoke(fieldHandler);
@@ -122,6 +150,8 @@ public class ComponentPropertyBlock {
                         draMethod.invoke(fieldHandler);
                         
                     }
+
+
                 } catch (Exception e) {
                     e.printStackTrace(); 
                     ImGui.text("Failed to access: " + fieldName);

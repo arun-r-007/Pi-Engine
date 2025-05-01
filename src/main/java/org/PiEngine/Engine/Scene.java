@@ -129,7 +129,6 @@ public class Scene implements Serializable
         editor.addWindow(new DockingWindow());
         editor.addWindow(new LayerWindow());
         editor.addWindow(new HierarchyWindow());
-        editor.addWindow(new InspectorWindow(false));
         editor.addWindow(new PerfomanceWindow());
         editor.addWindow(new ConsoleWindow());
         editor.addWindow(new NavigationWindow());
@@ -190,6 +189,8 @@ public class Scene implements Serializable
 
         editor.addWindow(new RendererInspector(gameRenderer));
         editor.addWindow(new RenderGraphEditorWindow(gameRenderer));
+        editor.addWindow(new InspectorWindow(false));
+
 
         // Scene Windows
         editorSceneWindow = new SceneWindow("Scene");

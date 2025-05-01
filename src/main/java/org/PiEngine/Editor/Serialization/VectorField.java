@@ -76,8 +76,8 @@ public class VectorField extends SerializeField<Vector>
     @Override
     public void draw()
     {
-        ImGui.text(name);
-        ImGui.sameLine();
+            // ImGui.text(name);
+            // ImGui.sameLine();
         // ImGui.pushItemWidth(200);
 
         ImGui.pushID(label);
@@ -87,6 +87,15 @@ public class VectorField extends SerializeField<Vector>
         y[0] = xyz[1];
         z[0] = xyz[2];
         ImGui.popID();
+        ImGui.sameLine();
+        ImGui.textDisabled("(?)");
+
+        if (ImGui.isItemHovered())
+        {
+            ImGui.beginTooltip();
+            ImGui.text("is set to null in script");
+            ImGui.endTooltip();
+        }
 
         // ImGui.popItemWidth();
     }
