@@ -7,7 +7,9 @@ import imgui.type.ImString;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.PiEngine.Manager.AssetManager;
 import org.PiEngine.Render.Texture;
+import org.PiEngine.Utils.GUIDProvider;
 
 public class TextureField extends SerializeField<Texture>
 {
@@ -45,15 +47,15 @@ public class TextureField extends SerializeField<Texture>
         ImGui.inputText("Texture ID", new ImString(displayName), ImGuiInputTextFlags.ReadOnly);
         
         if (value != null) {
-            ImGui.image(value.getTextureID(), 64, 64); // Show texture preview
+            ImGui.image(value.getTextureID(), 64, 64, 0, 1, 1 , 0);
         }
-        // ImGui.sameLine();
 
         
         if (ImGui.beginDragDropTarget()) {
-            Object payloadObj = ImGui.acceptDragDropPayload("TEXTURE");
-            if (payloadObj instanceof Texture droppedTex) {
-                value = droppedTex;
+            Object payloadObj = ImGui.acceptDragDropPayload("GUIDPROVIDER");
+            if (payloadObj instanceof GUIDProvider) {
+                GUIDProvider fileGUID = (GUIDProvider) payloadObj;
+                value = (Texture) AssetManager.get(fileGUID.getGUID());
                 if (setter != null) {
                     setter.accept(value);
                 }

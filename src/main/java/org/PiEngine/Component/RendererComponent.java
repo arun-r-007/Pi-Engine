@@ -27,7 +27,7 @@ public class RendererComponent extends Component
             null
         );
 
-        texture = TextureLoader.loadTexture("src\\main\\resources\\Sprites\\Box.png", GL11.GL_NEAREST, GL11.GL_NEAREST); //GL_LINEAR GL_NEAREST
+        texture = TextureLoader.loadTexture("src\\main\\resources\\Sprites\\Box.png", GL11.GL_NEAREST, GL11.GL_NEAREST);
     }
 
     @Override
@@ -77,8 +77,6 @@ public class RendererComponent extends Component
         shader.setUniformVec3("u_Color", Color);
         shader.setUniform1f("u_Time", Time.Time);
         shader.setUniform1f("u_Texture", texture.getTextureID());
-
-
 
         mesh.render();
     }

@@ -2,12 +2,13 @@ package org.PiEngine.Render;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
+import org.PiEngine.Utils.*;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-public class Texture
+public class Texture implements GUIDProvider
 {
     private int textureID;
     private int width;
@@ -15,6 +16,8 @@ public class Texture
 
     private int minFilter;
     private int magFilter;
+
+    private String GUID;
 
     public Texture(int[] imageData, int width, int height, int minFilter, int magFilter)
     {
@@ -59,6 +62,7 @@ public class Texture
         return textureID;
     }
 
+    
     public int getTextureID()
     {
         return textureID;
@@ -84,12 +88,24 @@ public class Texture
         return height;
     }
 
-    public void destroy()
+    public void dispose()
     {
         if (textureID != 0)
         {
             GL11.glDeleteTextures(textureID);
             textureID = 0;
         }
+    }
+
+    public void setGUID(String guid)
+    {
+        GUID = guid;
+
+    }
+
+    @Override
+    public String getGUID() 
+    {
+        return GUID;
     }
 }

@@ -17,7 +17,6 @@ import org.PiEngine.Scripting.*;
 
 public class Scene implements Serializable
 {
-    
     public String Name;
     private static Scene instance;
 
@@ -61,10 +60,14 @@ public class Scene implements Serializable
 
         // Root GameObject
         root = new GameObject(Name);
+        GameObject cameraObject = new GameObject("Main Camera");
+        GameCamera = cameraObject;
+        root.addChild(cameraObject);
+        cameraObject.transform.setLocalPosition(new Vector(0, 0, 20));
+        cameraObject.addComponent(new CameraComponent());
         
         // Setup Editor
-        editor = Editor.getInstance(window, false);
-        editor.init();
+        editor = Editor.getInstance();
         editor.addWindow(new DockingWindow());
         editor.addWindow(new LayerWindow());
         editor.addWindow(new HierarchyWindow());

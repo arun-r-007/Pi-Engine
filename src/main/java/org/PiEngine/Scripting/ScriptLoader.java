@@ -5,8 +5,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import org.PiEngine.Component.Component;
-import org.PiEngine.Component.ComponentFactory;
 import org.PiEngine.Engine.Console;
+import org.PiEngine.Utils.ComponentFactory;
 
 
 public class ScriptLoader 
