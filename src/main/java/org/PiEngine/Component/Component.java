@@ -6,7 +6,10 @@ import java.util.Map;
 
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.*;
+import org.PiEngine.Manager.AssetManager;
 import org.PiEngine.Math.Vector;
+import org.PiEngine.Utils.ComponentFactory;
+import org.PiEngine.Utils.GUIDProvider;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -149,7 +152,6 @@ public abstract class Component
             field.setAccessible(true);
             try {
                 Object value = field.get(this);
-                
                 if (value instanceof GameObject) 
                 {
                     value = GameObject.Location((GameObject)value);
@@ -160,11 +162,15 @@ public abstract class Component
                     if(cmp != null)
                     { 
                         Object fieldValue = field.get(this);
-                        fieldValue.getClass();
                         String str = GameObject.Location(cmp.gameObject) + "<" + fieldValue.getClass().getSimpleName() +">";
                         value = str;
                     }
                 }
+                else if (value instanceof GUIDProvider)
+                {
+                    value = ((GUIDProvider)value).getGUID();
+                }
+                
     
                 properties.put(field.getName(), value);
             } catch (IllegalAccessException e) {
@@ -175,13 +181,17 @@ public abstract class Component
         return properties;
     }
     
-
+    public void msg(String ms)
+    {
+        System.out.println(ms);
+    }
 
     public void setComponentProperty(String propertyName, JsonElement propertyValue) 
     {
         try 
         {
             Field field = this.getClass().getDeclaredField(propertyName);
+            Object value = field.get(this);
             field.setAccessible(true);
 
             Class<?> fieldType = field.getType();
@@ -232,9 +242,10 @@ public abstract class Component
                     field.set(this, target.getComponent(componentClass));
                 }
             }
-            else 
+            else if(value instanceof GUIDProvider)
             {
-                System.out.println("Unsupported field type: " + fieldType);
+                value = AssetManager.get(propertyValue.getAsString());
+                field.set(this, value);
             }
 
         } catch (NoSuchFieldException | IllegalAccessException e) {

@@ -1,38 +1,41 @@
 package org.PiEngine.Editor;
 
 import imgui.ImGui;
+import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiTreeNodeFlags;
 import imgui.type.ImBoolean;
 
+
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
+
+import org.PiEngine.Manager.AssetManager;
+import org.PiEngine.Utils.GUID;
+import org.PiEngine.Utils.GUIDProvider;
 
 /**
  * Displays a file explorer for src/main/resources directory.
  */
 public class FileWindow extends EditorWindow
 {
-
     private File rootDirectory;
     private static int count = 0;
+    private static final Path BASE_PATH = Paths.get("src/main/resources").normalize();
 
-    public FileWindow() 
+    public FileWindow()
     {
         super("File Explorer");
         id = count++;
-        rootDirectory = new File("src/main/resources");
+        rootDirectory = new File(BASE_PATH.toString());
     }
 
-
-    
     @Override
-    public void onUpdate() 
+    public void onUpdate()
     {
-    
     }
-
-
 
     @Override
     public void onRender()
@@ -55,44 +58,63 @@ public class FileWindow extends EditorWindow
         {
             renderDirectoryRecursive(rootDirectory);
         }
-        else {
+        else
+        {
             ImGui.text("Directory not found: " + rootDirectory.getPath());
         }
 
         ImGui.end();
     }
 
-
-
     private void renderDirectoryRecursive(File directory)
     {
         if (directory == null || !directory.exists()) return;
-    
+
         File[] files = directory.listFiles();
         if (files == null) return;
-    
+
         // Sort folders first, then files
         Arrays.sort(files, Comparator
             .comparing(File::isFile)
             .thenComparing(File::getName, String.CASE_INSENSITIVE_ORDER));
-    
+
         for (File file : files)
         {
             ImGui.pushID(file.getPath());
-    
+
             int flags = ImGuiTreeNodeFlags.OpenOnArrow;
             if (file.isFile())
             {
                 flags |= ImGuiTreeNodeFlags.Leaf;
             }
-    
+
             boolean nodeOpen = ImGui.treeNodeEx(file.getName(), flags);
-    
-            if (ImGui.isItemClicked())
+
+            if (file.isFile() && ImGui.beginDragDropSource())
             {
-                System.out.println("Selected file: " + file.getAbsolutePath());
+                String guid = GUID.generateGUIDFromPath(file.toPath().toString());
+
+                if (AssetManager.get(guid) != null)
+                {
+                    Object asset = AssetManager.get(guid);
+                    if (asset instanceof GUIDProvider)
+                    {
+                        GUIDProvider Fileguid = (GUIDProvider) asset;
+                        ImGui.setDragDropPayload("GUIDPROVIDER", Fileguid, ImGuiCond.None);
+                        ImGui.text("Dragging: " + Fileguid.getGUID());
+                        ImGui.endDragDropSource();
+                    }
+                    else
+                    {
+                        ImGui.text("Asset of type " + asset.getClass().getSimpleName() + " found.");
+                    }
+                }
+                else
+                {
+                    ImGui.text("No asset found for GUID: " + guid);
+                }
             }
-    
+
             if (nodeOpen)
             {
                 if (file.isDirectory())
@@ -101,16 +123,13 @@ public class FileWindow extends EditorWindow
                 }
                 ImGui.treePop();
             }
-    
+
             ImGui.popID();
         }
     }
-    
-
 
     @Override
     public void setCustomTheme()
     {
-
     }
 }

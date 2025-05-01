@@ -105,11 +105,4 @@ public class Input
         glfwGetCursorPos(window, new double[1], y);
         return (float) y[0];
     }
-
-
-    public static boolean isKeyHeld(int key)
-    {
-        return isKeyDown(key);
-    }
-
 }

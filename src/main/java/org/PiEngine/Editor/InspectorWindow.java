@@ -6,6 +6,7 @@ import imgui.flag.ImGuiTreeNodeFlags;
 
 import org.PiEngine.GameObjects.*;
 import org.PiEngine.Math.Vector;
+import org.PiEngine.Utils.ComponentFactory;
 import org.reflections.Reflections;
 import org.PiEngine.Component.*;
 import org.PiEngine.Core.LayerManager;

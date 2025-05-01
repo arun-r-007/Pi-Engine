@@ -14,6 +14,7 @@ import imgui.glfw.ImGuiImplGlfw;
 import org.PiEngine.Core.*;
 import org.PiEngine.Editor.Editor;
 import org.PiEngine.Engine.Scene;
+import org.PiEngine.Manager.AssetManager;
 import org.PiEngine.Scripting.CompileScripts;
 import org.PiEngine.Scripting.ScriptLoader;
 
@@ -39,9 +40,9 @@ public class Main
         Input.init(window);
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
-
+        
         glViewport(0, 0, width, height);
-
+        
         ImGui.createContext();
         ImGuiIO io = ImGui.getIO();
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
@@ -50,6 +51,15 @@ public class Main
         imguiGlfw.init(window, true);
         imguiGl3.init("#version 330 core");
         
+        Thread assetThread = new Thread(() -> {
+            AssetManager assetManager = new AssetManager() {};
+            assetManager.run();
+        });
+        assetThread.start();
+
+        
+        Editor.getInstance(window, false);
+        Editor.getInstance().init();
         try 
         {
             CompileScripts compiler = CompileScripts.getInstance("src\\main\\resources\\Scripts", "Compiled", null);
@@ -70,10 +80,11 @@ public class Main
 
 
 
+
         while (!glfwWindowShouldClose(window))
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+            AssetManager.processAssetQueue();
             Time.update();
             Input.update();
 
@@ -87,7 +98,7 @@ public class Main
                 Scene.getInstance().update();
             }
             Scene.getInstance().render();
-
+            
             Editor.getInstance().update();
             
             glfwSwapBuffers(window);

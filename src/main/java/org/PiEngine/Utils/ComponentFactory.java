@@ -1,5 +1,6 @@
-package org.PiEngine.Component;
+package org.PiEngine.Utils;
 
+import org.PiEngine.Component.Component;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
