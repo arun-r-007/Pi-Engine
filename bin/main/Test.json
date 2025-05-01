@@ -37,11 +37,12 @@
       },
       "id": 1,
       "position": {
-        "x": 2.240202,
-        "y": 1.6527187,
+        "x": 0.0,
+        "y": 0.0,
         "z": 0.0
       },
-      "layer": 2
+      "layer": 2,
+      "Location": "/Scene/Player"
     },
     {
       "components": [
@@ -49,6 +50,7 @@
           "name": "Follower",
           "id": 8,
           "properties": {
+            "Target": "/Scene/Holder/ChildHolder/CChildHolder",
             "zindex": 0.0,
             "MinumDist": 1.25,
             "speed": 5.0
@@ -85,7 +87,8 @@
         "y": 0.0,
         "z": 0.0
       },
-      "layer": 2
+      "layer": 2,
+      "Location": "/Scene/Enemy"
     },
     {
       "components": [
@@ -93,6 +96,7 @@
           "name": "Follower",
           "id": 11,
           "properties": {
+            "Target": "/Scene/Enemy",
             "zindex": 0.0,
             "MinumDist": 1.25,
             "speed": 5.0
@@ -129,7 +133,8 @@
         "y": 0.0,
         "z": 0.0
       },
-      "layer": 2
+      "layer": 2,
+      "Location": "/Scene/Enemy1"
     },
     {
       "components": [
@@ -137,6 +142,7 @@
           "name": "Follower",
           "id": 14,
           "properties": {
+            "Target": "/Scene/Enemy1",
             "zindex": 0.0,
             "MinumDist": 1.25,
             "speed": 5.0
@@ -173,7 +179,8 @@
         "y": 0.0,
         "z": 0.0
       },
-      "layer": 2
+      "layer": 2,
+      "Location": "/Scene/Enemy2"
     },
     {
       "components": [
@@ -181,6 +188,7 @@
           "name": "Follower",
           "id": 17,
           "properties": {
+            "Target": "/Scene/Enemy2",
             "zindex": 0.0,
             "MinumDist": 1.25,
             "speed": 5.0
@@ -217,7 +225,8 @@
         "y": 0.0,
         "z": 0.0
       },
-      "layer": 2
+      "layer": 2,
+      "Location": "/Scene/Enemy3"
     },
     {
       "components": [
@@ -292,7 +301,8 @@
                 "y": 0.0,
                 "z": 0.0
               },
-              "layer": 1073741824
+              "layer": 1073741824,
+              "Location": "/Scene/Holder/ChildHolder/CChildHolder"
             }
           ],
           "rotation": {
@@ -312,13 +322,14 @@
             "y": 0.0,
             "z": 0.0
           },
-          "layer": 1
+          "layer": 1,
+          "Location": "/Scene/Holder/ChildHolder"
         }
       ],
       "rotation": {
         "x": 0.0,
         "y": 0.0,
-        "z": 51.675385
+        "z": 0.0
       },
       "name": "Holder",
       "scale": {
@@ -332,7 +343,8 @@
         "y": 0.0,
         "z": 0.0
       },
-      "layer": 1
+      "layer": 1,
+      "Location": "/Scene/Holder"
     }
   ]
 }

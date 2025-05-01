@@ -115,6 +115,7 @@ public class Scene implements Serializable
         // enemy1.getComponent(Follower.class).Target = enemy;
         // enemy2.getComponent(Follower.class).Target = enemy1;
         // enemy3.getComponent(Follower.class).Target = enemy2;
+
         
         GameObject cameraObject = new GameObject("Main Camera");
         GameCamera = cameraObject;
@@ -240,9 +241,11 @@ public class Scene implements Serializable
 
     public void Load()
     {
+        InspectorWindow.inspectObject = null;
         try 
         {
             SceneDeserializerJSON.deserialize("src\\main\\resources\\Test.json");
+            IDGenerator.resetIDCounter();
         } 
         catch (Exception e) 
         {

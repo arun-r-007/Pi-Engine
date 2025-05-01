@@ -24,9 +24,10 @@ public class GameObjectField extends SerializeField<GameObject> {
     }
 
     private Field field = null;
-        public void set(Field initialValue) {
+    
+    public void set(Field initialValue) 
+    {
         this.field = initialValue;
-        System.out.println(field);
     }
 
     public void syncWith(Supplier<GameObject> getter, Consumer<GameObject> setter) {
@@ -45,15 +46,11 @@ public class GameObjectField extends SerializeField<GameObject> {
     }
 
     public void draw() {
-        // ImGui.text(label);
-        // ImGui.sameLine();
 
-        // Display the GameObject's name or "NULL" if not set
         String displayName = (value != null && value.Name != null) ? value.Name : "NULL";
         ImGui.inputText(name, new ImString(displayName), ImGuiInputTextFlags.ReadOnly); 
 
         
-        // Drag and Drop to set the GameObject
         if (ImGui.beginDragDropTarget()) {
             Object payloadObj = ImGui.acceptDragDropPayload("GAME_OBJECT");
             if (payloadObj instanceof GameObject droppedObj) {
@@ -63,7 +60,6 @@ public class GameObjectField extends SerializeField<GameObject> {
             ImGui.endDragDropTarget();
         }
 
-        // Add a "Set to NULL" button next to the text box
         if (value != null) {
             ImGui.sameLine();
             if(ImGui.button("NULL"))
