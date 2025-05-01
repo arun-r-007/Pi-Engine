@@ -33,11 +33,11 @@ public class StringField extends SerializeField<String> {
                 set(getter.get());
             }
 
-            ImGui.text(name);
-            ImGui.sameLine();
+            // ImGui.text(name);
+            // ImGui.sameLine();
 
             ImGui.pushID(label);
-            boolean edited = ImGui.inputText("###input", buffer);
+            boolean edited = ImGui.inputText(name, buffer);
             ImGui.popID();
 
             if (edited) {
@@ -51,11 +51,19 @@ public class StringField extends SerializeField<String> {
 
     @Override
     public void draw() {
-        ImGui.text(name);
-        ImGui.sameLine();
+        // ImGui.text(name);
+        // ImGui.sameLine();
 
         ImGui.pushID(label);
-        ImGui.inputText("###input", buffer);
+        ImGui.inputText(name, buffer);
         ImGui.popID();
+        ImGui.sameLine();
+        ImGui.textDisabled("(?)");
+        if (ImGui.isItemHovered())
+        {
+            ImGui.beginTooltip();
+            ImGui.text("is set to null in script");
+            ImGui.endTooltip();
+        }
     }
 }

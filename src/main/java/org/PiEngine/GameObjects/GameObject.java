@@ -182,6 +182,88 @@ public class GameObject
         }
     }
 
+    public static String Location(GameObject gb)
+    {
+        if(gb.transform.getParent() == null) return "/" + gb.Name; 
+        return Location(gb.transform.getParent().getGameObject()) + "/" + gb.Name; 
+    }
+
+    public static GameObject findGameObject(String path, GameObject root)
+    {
+        // Trim leading slash and split path
+        if (path.startsWith("/"))
+        {
+            path = path.substring(1);
+        }
+
+        String[] parts = path.split("/", 2); // Split into current part and the rest
+        String currentName = parts[0];
+
+        // Check current level name
+        if (!root.Name.equals(currentName))
+        {
+            return null;
+        }
+
+        // Base case: if there's no more path, return current object
+        if (parts.length == 1)
+        {
+            return root;
+        }
+
+        // Recurse into children
+        for (Transform childTransform : root.transform.getChildren())
+        {
+            GameObject child = childTransform.getGameObject();
+            GameObject result = findGameObject(parts[1], child);
+            if (result != null)
+            {
+                return result;
+            }
+        }
+
+        return null; // No match found
+    }
+
+    public static GameObject findGameObjectItrative(String path, GameObject root)
+    {
+        String[] parts = path.startsWith("/") ? path.substring(1).split("/") : path.split("/");
+
+        // Check if the path starts from this root
+        if (!root.Name.equals(parts[0]))
+        {
+            return null; // Root name doesn't match
+        }
+
+        GameObject current = root;
+
+        // Start from second part
+        for (int i = 1; i < parts.length; i++)
+        {
+            String part = parts[i];
+            boolean found = false;
+
+            for (Transform childTransform : current.transform.getChildren())
+            {
+                GameObject child = childTransform.getGameObject();
+                if (child.Name.equals(part))
+                {
+                    current = child;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                return null; // Path segment not found
+            }
+        }
+
+        return current;
+    }
+
+
 
 
     /**

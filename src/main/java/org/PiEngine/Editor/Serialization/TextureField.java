@@ -40,16 +40,15 @@ public class TextureField extends SerializeField<Texture>
 
     @Override
     public void draw() {
-        ImGui.text(label + ":");
         
-        ImGui.sameLine();
+        String displayName = (value != null) ? "Texture ID: " + value.getTextureID() : "NULL";
+        ImGui.inputText("Texture ID", new ImString(displayName), ImGuiInputTextFlags.ReadOnly);
+        
         if (value != null) {
             ImGui.image(value.getTextureID(), 64, 64); // Show texture preview
         }
-        ImGui.sameLine();
+        // ImGui.sameLine();
 
-        String displayName = (value != null) ? "Texture ID: " + value.getTextureID() : "NULL";
-        ImGui.inputText("Texture ID:", new ImString(displayName), ImGuiInputTextFlags.ReadOnly);
         
         if (ImGui.beginDragDropTarget()) {
             Object payloadObj = ImGui.acceptDragDropPayload("TEXTURE");

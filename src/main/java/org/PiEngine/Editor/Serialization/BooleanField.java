@@ -24,22 +24,17 @@ public class BooleanField extends SerializeField<Boolean> {
 
     public void handle() {
         if (getter != null && setter != null) {
-            if (!ImGui.isAnyItemActive()) {
-                value = getter.get();
-            }
+            value = getter.get();
+            
 
-            boolean temp = value ;
-            ImGui.text(name);
-            ImGui.sameLine();
+
 
             ImGui.pushID(label);
-            boolean changed = ImGui.checkbox("###checkbox", temp);
+            if (ImGui.checkbox(name, value)) {
+                setter.accept(!value);
+            }
             ImGui.popID();
 
-            if (changed) {
-                value = temp;
-                setter.accept(value);
-            }
         } else {
             draw();
         }
@@ -47,12 +42,20 @@ public class BooleanField extends SerializeField<Boolean> {
 
     @Override
     public void draw() {
-        ImGui.text(name);
-        ImGui.sameLine();
+        // ImGui.text(name);
+        // ImGui.sameLine();
 
         boolean temp = value;
         ImGui.pushID(label);
-        ImGui.checkbox("###checkbox", temp);
+        ImGui.checkbox(name, temp);
         ImGui.popID();
+        ImGui.sameLine();
+        ImGui.textDisabled("(?)");
+        if (ImGui.isItemHovered())
+        {
+            ImGui.beginTooltip();
+            ImGui.text("is set to null in script");
+            ImGui.endTooltip();
+        }
     }
 }
