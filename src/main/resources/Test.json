@@ -158,6 +158,7 @@
           "properties": {
             "size": 2.5,
             "Render": true,
+            "texture": "57f20d580da08507",
             "Color": {
               "x": 1.0,
               "y": 1.0,

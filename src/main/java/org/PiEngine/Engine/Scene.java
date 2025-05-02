@@ -8,11 +8,11 @@ import org.PiEngine.GameObjects.*;
 
 import java.io.Serializable;
 
+import org.PiEngine.Main;
 import org.PiEngine.Component.*;
 import org.PiEngine.Editor.*;
 import org.PiEngine.Render.*;
 import org.PiEngine.Render.Passes.*;
-import org.PiEngine.Scripting.*;
 
 
 public class Scene implements Serializable
@@ -77,27 +77,31 @@ public class Scene implements Serializable
         editor.queueAddWindow(new FileWindow());
 
         // Setup Renderers
-        Shader DefaultShader = new Shader(
-            "src\\main\\resources\\Shaders\\Camera\\Default.vert",
-            "src\\main\\resources\\Shaders\\Camera\\Default.frag",
+        Shader DefaultShader = new Shader
+        (
+            Main.ResourceFolder + "Shaders/Camera/Default.vert",
+            Main.ResourceFolder + "Shaders/Camera/Default.frag",
             null
         );
 
-        Shader CRTShader = new Shader(
-            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert",
-            "src\\main\\resources\\Shaders\\PostProcess\\CRT.frag",
+        Shader CRTShader = new Shader
+        (
+            Main.ResourceFolder + "Shaders/PostProcess/SCREEN.vert",
+            Main.ResourceFolder + "Shaders/PostProcess/CRT.frag",
             null
         );
 
-        Shader BloomShader = new Shader(
-            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert",
-            "src\\main\\resources\\Shaders\\PostProcess\\BLUR.frag",
+        Shader BloomShader = new Shader
+        (
+            Main.ResourceFolder + "Shaders/PostProcess/SCREEN.vert",
+            Main.ResourceFolder + "Shaders/PostProcess/BLUR.frag",
             null
         );
 
-        Shader FinalShader = new Shader(
-            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert",
-            "src\\main\\resources\\Shaders\\PostProcess\\FINAL.frag",
+        Shader FinalShader = new Shader
+        (
+            Main.ResourceFolder + "Shaders/PostProcess/SCREEN.vert",
+            Main.ResourceFolder +"Shaders/PostProcess/FINAL.frag",
             null
         );
 
@@ -141,9 +145,6 @@ public class Scene implements Serializable
         gameSceneWindow = new SceneWindow("Game");
         editor.addWindow(gameSceneWindow);
 
-        // Scripts
-        ScriptLoader.getInstance().loadComponentScripts("Compiled/Scripts");
-
         Time.timeScale = 1.0f;
     }
 
@@ -174,7 +175,7 @@ public class Scene implements Serializable
     {
         try 
         {
-            SceneSerializerJSON.serialize(instance, "src\\main\\resources\\Test.json");
+            SceneSerializerJSON.serialize(instance, Main.ResourceFolder+"Test.json");
         } 
         catch (Exception e) 
         {
@@ -187,7 +188,7 @@ public class Scene implements Serializable
         InspectorWindow.inspectObject = null;
         try 
         {
-            SceneDeserializerJSON.deserialize("src\\main\\resources\\Test.json");
+            SceneDeserializerJSON.deserialize(Main.ResourceFolder+"Test.json");
             IDGenerator.resetIDCounter();
         } 
         catch (Exception e) 

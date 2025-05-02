@@ -16,14 +16,15 @@ import org.PiEngine.Editor.Editor;
 import org.PiEngine.Engine.Scene;
 import org.PiEngine.Manager.AssetManager;
 import org.PiEngine.Scripting.CompileScripts;
-import org.PiEngine.Scripting.ScriptLoader;
 
 
 public class Main
 {
     public static long Windowthis = 0;
+    public static String ResourceFolder = "src/main/resources/";
     public static void main(String[] args)
     {
+        
         if (!glfwInit())
         {
             throw new IllegalStateException("Unable to initialize GLFW");
@@ -51,36 +52,28 @@ public class Main
         imguiGlfw.init(window, true);
         imguiGl3.init("#version 330 core");
         
+        CompileScripts.getInstance(Main.ResourceFolder + "Scripts", Main.ResourceFolder+"Compiled", null);
+
+
         Thread assetThread = new Thread(() -> {
             AssetManager assetManager = new AssetManager() {};
             assetManager.run();
         });
         assetThread.start();
 
+        String javaHome = System.getProperty("java.home");
+        System.out.println("Running with JRE at: " + javaHome);
         
         Editor.getInstance(window, false);
         Editor.getInstance().init();
-        try 
-        {
-            CompileScripts compiler = CompileScripts.getInstance("src\\main\\resources\\Scripts", "Compiled", null);
-            compiler.compileScripts();
-        } 
-        catch (Exception e) 
-        {
-            e.printStackTrace();
-        }
 
-
-        ScriptLoader.getInstance().loadComponentScripts("Compiled/Scripts");
 
         Scene.getInstance().init(window, width, height);
 
 
         boolean isLoop = false;
 
-
-
-
+        
         while (!glfwWindowShouldClose(window))
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -1,7 +1,10 @@
 package org.PiEngine.Editor;
 
+import java.io.File;
+
+import org.PiEngine.Main;
 import org.PiEngine.Engine.Scene;
-import org.PiEngine.Scripting.CompileScripts;
+import org.PiEngine.Manager.AssetManager;
 import org.PiEngine.Scripting.ScriptLoader;
 
 import imgui.ImGui;
@@ -110,38 +113,19 @@ public class NavigationWindow extends EditorWindow
             ImGui.endMenu();
         }
 
-        if (ImGui.beginMenu("Script"))
+        if (ImGui.beginMenu("Assets"))
         {
             if (ImGui.menuItem("Compile Script"))
             {
-                try 
-                {
-                    CompileScripts compiler = CompileScripts.getInstance("src\\main\\resources\\Scripts", "Compiled", null);
-                    compiler.compileScripts();
-                } 
-                catch (Exception e) 
-                {
-                    e.printStackTrace();
-                }
+                ScriptLoader.reset();
+                Thread assetThread = new Thread(() -> {
+                    AssetManager assetManager = new AssetManager() {};
+                    assetManager.run();
+                });
+                assetThread.start();
+            }
+            
 
-            }
-            if (ImGui.menuItem("Load Script"))
-            {
-                ScriptLoader.getInstance().loadComponentScripts("Compiled/Scripts");
-            }
-            if (ImGui.menuItem("Compile & Load Script"))
-            {
-                try 
-                {
-                    CompileScripts compiler = CompileScripts.getInstance("src\\main\\resources\\Scripts", "Compiled", null);
-                    compiler.compileScripts();
-                } 
-                catch (Exception e) 
-                {
-                    e.printStackTrace();
-                }
-                ScriptLoader.getInstance().loadComponentScripts("Compiled/Scripts");
-            }
 
             ImGui.endMenu();
         }

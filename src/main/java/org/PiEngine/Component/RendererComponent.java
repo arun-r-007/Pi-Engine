@@ -1,10 +1,9 @@
 package org.PiEngine.Component;
 
+import org.PiEngine.Main;
 import org.PiEngine.Core.*;
-import org.PiEngine.IO.TextureLoader;
 import org.PiEngine.Math.*;
 import org.PiEngine.Render.*;
-import org.lwjgl.opengl.GL11;
 
 public class RendererComponent extends Component
 {
@@ -22,12 +21,12 @@ public class RendererComponent extends Component
         updateMesh();
         shader = new Shader
         (
-            "src\\main\\resources\\Shaders\\Camera\\Default.vert",
-            "src\\main\\resources\\Shaders\\Camera\\Sprite.frag",
+            Main.ResourceFolder +"Shaders/Camera/Default.vert",
+            Main.ResourceFolder + "Shaders/Camera/Sprite.frag",
             null
         );
 
-        texture = TextureLoader.loadTexture("src\\main\\resources\\Sprites\\Box.png", GL11.GL_NEAREST, GL11.GL_NEAREST);
+        // texture = TextureLoader.loadTexture("src\\main\\resources\\Sprites\\Box.png", GL11.GL_NEAREST, GL11.GL_NEAREST);
     }
 
     @Override

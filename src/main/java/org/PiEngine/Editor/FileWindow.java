@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.PiEngine.Main;
 import org.PiEngine.Manager.AssetManager;
 import org.PiEngine.Utils.GUID;
 import org.PiEngine.Utils.GUIDProvider;
@@ -23,13 +24,17 @@ public class FileWindow extends EditorWindow
 {
     private File rootDirectory;
     private static int count = 0;
-    private static final Path BASE_PATH = Paths.get("src/main/resources").normalize();
+    private static final Path BASE_PATH = Paths.get(Main.ResourceFolder).toAbsolutePath().normalize();
+
+    private static final Path ABSOLUTE_BASE = Paths.get("").toAbsolutePath().normalize();
+    private static final Path RELATIVE_BASE = Paths.get(Main.ResourceFolder).normalize();
 
     public FileWindow()
     {
         super("File Explorer");
         id = count++;
         rootDirectory = new File(BASE_PATH.toString());
+        // System.out.println(rootDirectory.exists() + " " + rootDirectory.isDirectory()); 
     }
 
     @Override
@@ -54,6 +59,7 @@ public class FileWindow extends EditorWindow
             Editor.get().queueRemoveWindow(this);
         }
 
+        
         if (rootDirectory.exists() && rootDirectory.isDirectory())
         {
             renderDirectoryRecursive(rootDirectory);
@@ -73,7 +79,6 @@ public class FileWindow extends EditorWindow
         File[] files = directory.listFiles();
         if (files == null) return;
 
-        // Sort folders first, then files
         Arrays.sort(files, Comparator
             .comparing(File::isFile)
             .thenComparing(File::getName, String.CASE_INSENSITIVE_ORDER));
@@ -90,28 +95,23 @@ public class FileWindow extends EditorWindow
 
             boolean nodeOpen = ImGui.treeNodeEx(file.getName(), flags);
 
-            if (file.isFile() && ImGui.beginDragDropSource())
-            {
-                String guid = GUID.generateGUIDFromPath(file.toPath().toString());
-
+            if (file.isFile())
+            {   
+                
+                String relativePath = ABSOLUTE_BASE.relativize(file.toPath().toAbsolutePath().normalize()).toString();
+                String guid = GUID.generateGUIDFromPath(relativePath);
+                
                 if (AssetManager.get(guid) != null)
                 {
                     Object asset = AssetManager.get(guid);
-                    if (asset instanceof GUIDProvider)
+                    if (asset instanceof GUIDProvider && ImGui.beginDragDropSource())
                     {
                         GUIDProvider Fileguid = (GUIDProvider) asset;
                         ImGui.setDragDropPayload("GUIDPROVIDER", Fileguid, ImGuiCond.None);
                         ImGui.text("Dragging: " + Fileguid.getGUID());
                         ImGui.endDragDropSource();
                     }
-                    else
-                    {
-                        ImGui.text("Asset of type " + asset.getClass().getSimpleName() + " found.");
-                    }
-                }
-                else
-                {
-                    ImGui.text("No asset found for GUID: " + guid);
+                    
                 }
             }
 
