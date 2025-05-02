@@ -2,7 +2,9 @@ package org.PiEngine.Editor;
 
 import java.io.File;
 
+import org.PiEngine.Main;
 import org.PiEngine.Engine.Scene;
+import org.PiEngine.Manager.AssetManager;
 import org.PiEngine.Scripting.ScriptLoader;
 
 import imgui.ImGui;
@@ -111,19 +113,19 @@ public class NavigationWindow extends EditorWindow
             ImGui.endMenu();
         }
 
-        if (ImGui.beginMenu("Script"))
+        if (ImGui.beginMenu("Assets"))
         {
             if (ImGui.menuItem("Compile Script"))
             {
-                
+                ScriptLoader.reset();
+                Thread assetThread = new Thread(() -> {
+                    AssetManager assetManager = new AssetManager() {};
+                    assetManager.run();
+                });
+                assetThread.start();
             }
-            if (ImGui.menuItem("Load Script"))
-            {
-                ScriptLoader.getInstance().loadComponentFolder(new File("src/main/resources/Compiled"));
-            }
-            if (ImGui.menuItem("Compile & Load Script"))
-            {
-            }
+            
+
 
             ImGui.endMenu();
         }

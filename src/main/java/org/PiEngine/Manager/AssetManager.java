@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingDeque;
+
+import org.PiEngine.Main;
 import org.PiEngine.Scripting.CompileScripts;
 import org.PiEngine.Scripting.ScriptLoader;
 import org.PiEngine.Utils.GUID;
@@ -33,7 +35,8 @@ enum AssetType
 
 public abstract class AssetManager implements Runnable
 {
-    protected static final Path BASE_PATH = Paths.get("src\\main\\resources").normalize();
+    protected static final Path BASE_PATH = Paths.get(Main.ResourceFolder).normalize();
+
     protected static final Map<String, Object> resources = new HashMap<>();
     private static final LinkedBlockingDeque<QueuedAsset> generalAssetQueue = new LinkedBlockingDeque<>();
 
@@ -137,7 +140,7 @@ public abstract class AssetManager implements Runnable
         }
         if (isclass) 
         {    
-            ScriptLoader.getInstance().loadComponentFolder(new File("src/main/resources/Compiled"));
+            ScriptLoader.getInstance().loadComponentFolder("Compiled");
         }
     }
 

@@ -8,17 +8,17 @@ import org.PiEngine.Component.Component;
 import org.PiEngine.Engine.Console;
 import org.PiEngine.Utils.ComponentFactory;
 
-
 public class ScriptLoader 
 {
     private static ScriptLoader instance;
 
-    private final File rootDirectory;
-    private final URLClassLoader urlClassLoader;
+    private File rootDirectory;
+    private URLClassLoader urlClassLoader;
 
     private ScriptLoader(String compiledOutputPath) throws Exception 
     {
         this.rootDirectory = new File(compiledOutputPath);
+
         if (!rootDirectory.exists()) 
         {
             throw new IllegalArgumentException("Compiled directory does not exist: " + compiledOutputPath);
@@ -34,7 +34,7 @@ public class ScriptLoader
         {
             try 
             {
-                instance = new ScriptLoader("src/main/resources/Compiled/Scripts");
+                instance = new ScriptLoader("Compiled");
             } 
             catch (Exception e) 
             {
@@ -43,6 +43,25 @@ public class ScriptLoader
         }
         return instance;
     }
+
+    public static void reset() 
+    {
+        if (instance != null) 
+        {
+            ComponentFactory.Clear();  
+
+            
+            try {
+                instance.urlClassLoader.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            instance.urlClassLoader = null;
+            instance = null;
+        }
+    }
+
 
     public Class<?> loadClass(String fullyQualifiedName) throws ClassNotFoundException 
     {
@@ -54,100 +73,67 @@ public class ScriptLoader
         try 
         {
             urlClassLoader.close();
-        } catch (Exception e) 
+        } 
+        catch (Exception e) 
         {
             e.printStackTrace();
         }
     }
 
-    public void loadComponentScript(File Script) 
-    {        
-        File[] classFiles = {Script};
-        for (File file : classFiles) 
+    private void loadClassAndRegister(String fullClassName)
+    {
+        try 
         {
-            System.out.println(file.toPath());   
-            String className = file.getName().replace(".class", "");
-            String fullClassName = "Scripts." + className;
-            
-            try 
+            Class<?> scriptClass = loadClass(fullClassName);
+
+            if (Component.class.isAssignableFrom(scriptClass)) 
             {
-                Class<?> scriptClass = loadClass(fullClassName);
-                
-                if (Component.class.isAssignableFrom(scriptClass)) 
-                {
-                    ComponentFactory.register(scriptClass.getSimpleName(), () -> 
-                    {
-                        try 
-                        {
-                            return (Component) scriptClass.getDeclaredConstructor().newInstance();
-                        } 
-                        catch (Exception e) 
-                        {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    });
-                    Console.log("Loaded & registered component: " + fullClassName);
-                } 
-                else 
-                {
-                    Console.warning("Skipped (not a Component): " + fullClassName);
-                }
+                ComponentFactory.register(scriptClass.getSimpleName(), () -> {
+                    try {
+                        return (Component) scriptClass.getDeclaredConstructor().newInstance();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                });
+
+                Console.log("Loaded & registered component: " + fullClassName);
             } 
-            catch (Exception e) 
+            else 
             {
-                Console.error("Failed to load: " + fullClassName);
+                Console.warning("Skipped (not a Component): " + fullClassName);
             }
+        } 
+        catch (Exception e) 
+        {
+            Console.error("Failed to load: " + fullClassName);
+            e.printStackTrace();
         }
     }
 
+    public void loadComponentScript(File scriptFile) 
+    {
+        String className = scriptFile.getName().replace(".class", "");
+        String fullClassName = "Scripts." + className;
+        loadClassAndRegister(fullClassName);
+    }
 
-    public void loadComponentFolder(File Script) 
-    {        
-        File[] classFiles = Script.listFiles((dir, name) -> name.endsWith(".class"));
+    public void loadComponentFolder(String folderPath) 
+    {
+        File componentDir = new File(folderPath);
+        if (!componentDir.exists() || !componentDir.isDirectory()) return;
+
+        File[] classFiles = componentDir.listFiles((dir, name) -> name.endsWith(".class"));
         if (classFiles == null) return;
+
         for (File file : classFiles) 
         {
-            System.out.println(file.toPath());   
             String className = file.getName().replace(".class", "");
             String fullClassName = "Scripts." + className;
-            
-            try 
-            {
-                Class<?> scriptClass = loadClass(fullClassName);
-                
-                if (Component.class.isAssignableFrom(scriptClass)) 
-                {
-                    ComponentFactory.register(scriptClass.getSimpleName(), () -> 
-                    {
-                        try 
-                        {
-                            return (Component) scriptClass.getDeclaredConstructor().newInstance();
-                        } 
-                        catch (Exception e) 
-                        {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    });
-                    Console.log("Loaded & registered component: " + fullClassName);
-                } 
-                else 
-                {
-                    Console.warning("Skipped (not a Component): " + fullClassName);
-                }
-            } 
-            catch (Exception e) 
-            {
-                Console.error("Failed to load: " + fullClassName);
-            }
+            loadClassAndRegister(fullClassName);
         }
     }
-    public void loadSystemScripts(String folderPath) 
-    {
-    }
 
-    public void loadBehaviorScripts(String folderPath) 
-    {
-    }
+    public void loadSystemScripts(String folderPath) { }
+    public void loadBehaviorScripts(String folderPath) { }
 }

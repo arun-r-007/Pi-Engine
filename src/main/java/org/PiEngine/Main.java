@@ -21,8 +21,10 @@ import org.PiEngine.Scripting.CompileScripts;
 public class Main
 {
     public static long Windowthis = 0;
+    public static String ResourceFolder = "src/main/resources/";
     public static void main(String[] args)
     {
+        
         if (!glfwInit())
         {
             throw new IllegalStateException("Unable to initialize GLFW");
@@ -50,7 +52,7 @@ public class Main
         imguiGlfw.init(window, true);
         imguiGl3.init("#version 330 core");
         
-        CompileScripts.getInstance("src\\main\\resources\\Scripts", "src/main/resources/Compiled", null);
+        CompileScripts.getInstance(Main.ResourceFolder + "Scripts", Main.ResourceFolder+"Compiled", null);
 
 
         Thread assetThread = new Thread(() -> {
@@ -59,6 +61,8 @@ public class Main
         });
         assetThread.start();
 
+        String javaHome = System.getProperty("java.home");
+        System.out.println("Running with JRE at: " + javaHome);
         
         Editor.getInstance(window, false);
         Editor.getInstance().init();

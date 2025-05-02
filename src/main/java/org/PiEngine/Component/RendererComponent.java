@@ -1,5 +1,6 @@
 package org.PiEngine.Component;
 
+import org.PiEngine.Main;
 import org.PiEngine.Core.*;
 import org.PiEngine.Math.*;
 import org.PiEngine.Render.*;
@@ -20,8 +21,8 @@ public class RendererComponent extends Component
         updateMesh();
         shader = new Shader
         (
-            "src\\main\\resources\\Shaders\\Camera\\Default.vert",
-            "src\\main\\resources\\Shaders\\Camera\\Sprite.frag",
+            Main.ResourceFolder +"Shaders/Camera/Default.vert",
+            Main.ResourceFolder + "Shaders/Camera/Sprite.frag",
             null
         );
 

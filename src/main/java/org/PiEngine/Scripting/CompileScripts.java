@@ -35,7 +35,7 @@ public class CompileScripts
     public static CompileScripts getInstance()
     {
         if (instance == null)
-        {
+        {   
             throw new IllegalStateException("CompileScripts has not been initialized yet.");
         }
         return instance;
