@@ -90,29 +90,23 @@ public class FileWindow extends EditorWindow
 
             boolean nodeOpen = ImGui.treeNodeEx(file.getName(), flags);
 
-            if (file.isFile() && ImGui.beginDragDropSource())
+            if (file.isFile())
             {
                 String guid = GUID.generateGUIDFromPath(file.toPath().toString());
 
                 if (AssetManager.get(guid) != null)
                 {
                     Object asset = AssetManager.get(guid);
-                    if (asset instanceof GUIDProvider)
+                    if (asset instanceof GUIDProvider && ImGui.beginDragDropSource())
                     {
                         GUIDProvider Fileguid = (GUIDProvider) asset;
                         ImGui.setDragDropPayload("GUIDPROVIDER", Fileguid, ImGuiCond.None);
                         ImGui.text("Dragging: " + Fileguid.getGUID());
                         ImGui.endDragDropSource();
                     }
-                    else
-                    {
-                        ImGui.text("Asset of type " + asset.getClass().getSimpleName() + " found.");
-                    }
+                    
                 }
-                else
-                {
-                    ImGui.text("No asset found for GUID: " + guid);
-                }
+                
             }
 
             if (nodeOpen)

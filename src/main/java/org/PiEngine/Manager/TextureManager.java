@@ -37,7 +37,7 @@ public class TextureManager
         texture.setGUID(guid);
         textures.put(guid, texture);
         AssetManager.put(guid, texture);
-        System.out.println("Loaded texture: " + filePath + " as GUID: " + guid);
+        // System.out.println("Loaded texture: " + filePath + " as GUID: " + guid);
     }
 
     public Texture getByGUID(String guid)

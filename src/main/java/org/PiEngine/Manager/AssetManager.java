@@ -1,39 +1,54 @@
 package org.PiEngine.Manager;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
-
+import java.util.concurrent.LinkedBlockingDeque;
+import org.PiEngine.Scripting.CompileScripts;
+import org.PiEngine.Scripting.ScriptLoader;
 import org.PiEngine.Utils.GUID;
 
 enum AssetType
 {
-    TEXTURE, SHADER, FONT, SCENE, UNKNOWN;
+    TEXTURE, SHADER, FONT, SCENE, UNKNOWN, JAVA, CLASS;
     
     public static AssetType fromExtension(String ext)
     {
         return switch (ext.toLowerCase())
         {
             case "png" -> TEXTURE;
+            case "java" -> JAVA;
             case "frag", "vert", "glsl" -> SHADER;
             case "ttf" -> FONT;
-            case "json" -> SCENE;
+            case "j" -> SCENE;
+            case "class" -> CLASS;
             default -> UNKNOWN;
         };
     }
 }
 
 
-
 public abstract class AssetManager implements Runnable
 {
     protected static final Path BASE_PATH = Paths.get("src\\main\\resources").normalize();
     protected static final Map<String, Object> resources = new HashMap<>();
-    private static final LinkedBlockingQueue<String> assetLoadQueue = new LinkedBlockingQueue<>();
+    private static final LinkedBlockingDeque<QueuedAsset> generalAssetQueue = new LinkedBlockingDeque<>();
 
+
+    private static class QueuedAsset
+    {
+        final AssetType type;
+        final String path;
+
+        QueuedAsset(AssetType type, String path)
+        {
+            this.type = type;
+            this.path = path;
+        }
+    }
     @Override
     public void run()
     {
@@ -51,17 +66,15 @@ public abstract class AssetManager implements Runnable
                             String ext = getExtension(filePath.getFileName().toString());
                             AssetType type = AssetType.fromExtension(ext);
 
-                            System.out.println(filePath.toString());
-                            
                             switch (type)
                             {
-                                case TEXTURE -> assetLoadQueue.offer(filePath.toString()); 
+                                case TEXTURE -> generalAssetQueue.offer(new QueuedAsset(type, filePath.toString())); 
+                                case JAVA -> generalAssetQueue.addFirst(new QueuedAsset(type, filePath.toString()));
+                                case CLASS -> {generalAssetQueue.addLast(new QueuedAsset(type, filePath.toString()));}
                                 case SHADER -> {} 
                                 case FONT -> {} 
                                 case SCENE -> {} 
-                                case UNKNOWN -> {
-                                    System.out.println("Unknown asset." + ext);
-                                }
+                                case UNKNOWN -> {}
                             }
                         }
                     }
@@ -80,11 +93,51 @@ public abstract class AssetManager implements Runnable
 
     public static void processAssetQueue()
     {
-        while (!assetLoadQueue.isEmpty())
+        boolean isclass = true;
+        while (!generalAssetQueue.isEmpty())
         {
-            String assetPath = assetLoadQueue.poll();
-            String guid = GUID.generateGUIDFromPath(assetPath);
-            TextureManager.get().load(Paths.get(assetPath), guid);
+            QueuedAsset asset = generalAssetQueue.poll();
+            String guid = GUID.generateGUIDFromPath(asset.path);
+
+            switch (asset.type)
+            {
+                case TEXTURE ->
+                    TextureManager.get().load(Paths.get(asset.path), guid);
+
+                case JAVA ->
+                {
+                    try
+                    {
+                        CompileScripts.getInstance().compileScript(new File(asset.path));
+                    }
+                    catch (Exception e)
+                    {
+                        System.err.println("Failed to compile: " + asset.path);
+                        e.printStackTrace();
+                    }
+                }
+
+                case CLASS ->
+                {
+                    isclass = false;
+                    ScriptLoader.getInstance().loadComponentScript(new File(asset.path));
+                }
+
+                case SHADER -> {}//ShaderManager.get().load(Paths.get(asset.path), guid);
+
+                case FONT -> {}
+                    // FontManager.get().load(Paths.get(asset.path), guid);
+
+                case SCENE -> {} 
+                    // SceneManager.get().load(Paths.get(asset.path), guid);
+
+                default -> System.out.println("No handler for asset type: " + asset.type);
+            }
+            
+        }
+        if (isclass) 
+        {    
+            ScriptLoader.getInstance().loadComponentFolder(new File("src/main/resources/Compiled"));
         }
     }
 

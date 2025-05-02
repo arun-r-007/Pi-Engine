@@ -12,7 +12,6 @@ import org.PiEngine.Component.*;
 import org.PiEngine.Editor.*;
 import org.PiEngine.Render.*;
 import org.PiEngine.Render.Passes.*;
-import org.PiEngine.Scripting.*;
 
 
 public class Scene implements Serializable
@@ -77,25 +76,29 @@ public class Scene implements Serializable
         editor.queueAddWindow(new FileWindow());
 
         // Setup Renderers
-        Shader DefaultShader = new Shader(
+        Shader DefaultShader = new Shader
+        (
             "src\\main\\resources\\Shaders\\Camera\\Default.vert",
             "src\\main\\resources\\Shaders\\Camera\\Default.frag",
             null
         );
 
-        Shader CRTShader = new Shader(
+        Shader CRTShader = new Shader
+        (
             "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert",
             "src\\main\\resources\\Shaders\\PostProcess\\CRT.frag",
             null
         );
 
-        Shader BloomShader = new Shader(
+        Shader BloomShader = new Shader
+        (
             "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert",
             "src\\main\\resources\\Shaders\\PostProcess\\BLUR.frag",
             null
         );
 
-        Shader FinalShader = new Shader(
+        Shader FinalShader = new Shader
+        (
             "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert",
             "src\\main\\resources\\Shaders\\PostProcess\\FINAL.frag",
             null
@@ -140,9 +143,6 @@ public class Scene implements Serializable
 
         gameSceneWindow = new SceneWindow("Game");
         editor.addWindow(gameSceneWindow);
-
-        // Scripts
-        ScriptLoader.getInstance().loadComponentScripts("Compiled/Scripts");
 
         Time.timeScale = 1.0f;
     }

@@ -242,7 +242,7 @@ public abstract class Component
                     field.set(this, target.getComponent(componentClass));
                 }
             }
-            else if(value instanceof GUIDProvider)
+            if (GUIDProvider.class.isAssignableFrom(field.getType()))
             {
                 value = AssetManager.get(propertyValue.getAsString());
                 field.set(this, value);

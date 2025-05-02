@@ -34,7 +34,7 @@ public class ScriptLoader
         {
             try 
             {
-                instance = new ScriptLoader("Compiled");
+                instance = new ScriptLoader("src/main/resources/Compiled/Scripts");
             } 
             catch (Exception e) 
             {
@@ -60,23 +60,19 @@ public class ScriptLoader
         }
     }
 
-    public void loadComponentScripts(String folderPath) 
-    {
-        File componentDir = new File(folderPath);
-        if (!componentDir.exists() || !componentDir.isDirectory()) return;
-
-        File[] classFiles = componentDir.listFiles((dir, name) -> name.endsWith(".class"));
-        if (classFiles == null) return;
-
+    public void loadComponentScript(File Script) 
+    {        
+        File[] classFiles = {Script};
         for (File file : classFiles) 
         {
+            System.out.println(file.toPath());   
             String className = file.getName().replace(".class", "");
             String fullClassName = "Scripts." + className;
-
+            
             try 
             {
                 Class<?> scriptClass = loadClass(fullClassName);
-
+                
                 if (Component.class.isAssignableFrom(scriptClass)) 
                 {
                     ComponentFactory.register(scriptClass.getSimpleName(), () -> 
@@ -105,6 +101,48 @@ public class ScriptLoader
         }
     }
 
+
+    public void loadComponentFolder(File Script) 
+    {        
+        File[] classFiles = Script.listFiles((dir, name) -> name.endsWith(".class"));
+        if (classFiles == null) return;
+        for (File file : classFiles) 
+        {
+            System.out.println(file.toPath());   
+            String className = file.getName().replace(".class", "");
+            String fullClassName = "Scripts." + className;
+            
+            try 
+            {
+                Class<?> scriptClass = loadClass(fullClassName);
+                
+                if (Component.class.isAssignableFrom(scriptClass)) 
+                {
+                    ComponentFactory.register(scriptClass.getSimpleName(), () -> 
+                    {
+                        try 
+                        {
+                            return (Component) scriptClass.getDeclaredConstructor().newInstance();
+                        } 
+                        catch (Exception e) 
+                        {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    });
+                    Console.log("Loaded & registered component: " + fullClassName);
+                } 
+                else 
+                {
+                    Console.warning("Skipped (not a Component): " + fullClassName);
+                }
+            } 
+            catch (Exception e) 
+            {
+                Console.error("Failed to load: " + fullClassName);
+            }
+        }
+    }
     public void loadSystemScripts(String folderPath) 
     {
     }
