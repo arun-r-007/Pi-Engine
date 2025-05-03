@@ -181,9 +181,9 @@ public abstract class Component
         return properties;
     }
     
-    public void msg(String ms)
+    public static String Location(Component cmp)
     {
-        System.out.println(ms);
+        return GameObject.Location(cmp.gameObject) + "<" + cmp.getClass().getSimpleName() +">";
     }
 
     public void setComponentProperty(String propertyName, JsonElement propertyValue) 
@@ -252,6 +252,55 @@ public abstract class Component
             e.printStackTrace();
         }
     }
+
+    final public void updateFields()
+    {
+        Class<?> clazz = this.getClass();
+        while (clazz != null && clazz != Component.class)
+        {
+            for (Field field : clazz.getDeclaredFields())
+            {
+                field.setAccessible(true);
+                Class<?> fieldType = field.getType();
+                try
+                {
+                    if (GameObject.class.isAssignableFrom(fieldType))
+                    {
+                        GameObject val = (GameObject) field.get(this);
+                        if (val != null)
+                        {
+                            GameObject g = GameObject.findGameObject(val.Location, Scene.getInstance().getRoot());
+                            if (g == null)
+                            {
+                                field.set(this, null);
+                            }
+                        }
+                    }
+                    else if (Component.class.isAssignableFrom(fieldType))
+                    {
+                        Component val = (Component) field.get(this);
+                        if (val != null && val.gameObject != null)
+                        {
+                            GameObject g = GameObject.findGameObject(val.gameObject.Location, Scene.getInstance().getRoot());
+                            if (g == null)
+                            {
+                                field.set(this, null); 
+                            }
+                        }
+                    }
+                }
+                catch (IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+    }
+
+    
+    
+
 
 
     public GameObject getGameObject() {

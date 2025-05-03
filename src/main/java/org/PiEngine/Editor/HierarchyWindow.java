@@ -73,13 +73,11 @@ public class HierarchyWindow extends EditorWindow {
             addIterator.remove(); // remove from pending list
         }
 
-
-        Iterator<GameObject> removeCompo = toRemove.iterator();
-        while (removeCompo.hasNext())
+        for (GameObject gameObject : toRemove) 
         {
-            GameObject go = removeCompo.next();
-            go.destroy();
+            GameObject.destroy(gameObject);    
         }
+        toRemove.clear();
     }
 
     /**

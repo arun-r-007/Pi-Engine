@@ -49,14 +49,7 @@ public class ScriptLoader
         if (instance != null) 
         {
             ComponentFactory.Clear();  
-
-            
-            try {
-                instance.urlClassLoader.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+            instance.close();
             instance.urlClassLoader = null;
             instance = null;
         }
@@ -136,4 +129,10 @@ public class ScriptLoader
 
     public void loadSystemScripts(String folderPath) { }
     public void loadBehaviorScripts(String folderPath) { }
+
+    @Override
+    protected void finalize() throws Throwable
+    {
+        System.out.println("Removed: " + this);
+    }
 }
