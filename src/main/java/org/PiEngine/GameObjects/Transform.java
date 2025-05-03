@@ -55,6 +55,7 @@ public class Transform
     {
         childrens.remove(child);
         child.parent = null;
+        child.gameObject.Location = GameObject.Location(child.gameObject);
     }
 
     /**
@@ -351,4 +352,22 @@ public class Transform
             position, rotation, scale
         );
     }
+
+    public void destroy()
+    {
+        position = null;              
+        rotation = null;              
+        scale = null;                 
+        parent = null; 
+        if(childrens != null) childrens.clear();
+        childrens = null;    
+        transformMatrix = null;     
+        gameObject = null;       
+    }
+
+    // @Override
+    // protected void finalize() throws Throwable
+    // {
+    //     System.out.println("Removed: " + this);
+    // }
 }

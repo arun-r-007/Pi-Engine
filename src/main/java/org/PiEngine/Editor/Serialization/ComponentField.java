@@ -1,6 +1,7 @@
 package org.PiEngine.Editor.Serialization;
 
 import imgui.ImGui;
+import imgui.ImVec2;
 import imgui.flag.*;
 import imgui.type.ImString;
 
@@ -8,6 +9,7 @@ import org.PiEngine.Component.Component;
 import org.PiEngine.GameObjects.GameObject;
 
 import java.lang.reflect.Field;
+
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -52,7 +54,7 @@ public class ComponentField extends SerializeField<Component> {
 
     public void draw() {
 
-        String displayName = (value != null) ? value.getClass().getSimpleName() : "";
+        String displayName = (value != null) ? value.getClass().getSimpleName() + "(" + value.getGameObject().Name + ")" : "";
         String hint = fieldType.asSubclass(Component.class).getSimpleName(); 
         ImGui.inputTextWithHint(name, hint, new ImString(displayName), ImGuiInputTextFlags.None);
 
@@ -64,14 +66,24 @@ public class ComponentField extends SerializeField<Component> {
             }
             ImGui.endDragDropTarget();
         }
+        
+        
 
-        if (value != null) {
-            ImGui.sameLine();
-            if(ImGui.button("NULL"))
+        if (value != null) 
+        {
+            ImVec2 pos = ImGui.getItemRectMin();
+            String contextId = "##Context_" + pos.x + "_" + pos.y + "_" +value.getId();
+            if (ImGui.beginPopupContextItem(contextId))
             {
-                value = null; 
+                if (ImGui.menuItem("Set to null"))
+                {
+                    value = null;
+                    if (setter != null) setter.accept(null);
+                }
+                ImGui.endPopup();
             }
         }
+        
 
     }
 

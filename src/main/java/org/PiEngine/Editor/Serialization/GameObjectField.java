@@ -1,6 +1,7 @@
 package org.PiEngine.Editor.Serialization;
 
 import imgui.ImGui;
+import imgui.ImVec2;
 import imgui.flag.*;
 import imgui.type.ImString;
 
@@ -61,14 +62,22 @@ public class GameObjectField extends SerializeField<GameObject> {
             ImGui.endDragDropTarget();
         }
 
-        if (value != null) {
-            ImGui.sameLine();
-            if(ImGui.button("NULL"))
+        
+        if (value != null) 
+        {
+            
+            ImVec2 pos = ImGui.getItemRectMin();
+            String contextId = "##Context_" + pos.x + "_" + pos.y + "_" +value.getId();
+            if (ImGui.beginPopupContextItem(contextId))
             {
-                value = null; 
+                if (ImGui.menuItem("Set to null"))
+                {
+                    value = null;
+                    if (setter != null) setter.accept(null);
+                }
+                ImGui.endPopup();
             }
         }
-
     }
 
     public GameObject get() {

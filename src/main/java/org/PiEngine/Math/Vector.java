@@ -192,5 +192,4 @@ public class Vector
 
         return dist;
     }
-
 }

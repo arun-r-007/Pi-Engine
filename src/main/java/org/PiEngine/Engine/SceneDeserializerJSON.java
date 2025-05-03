@@ -57,7 +57,7 @@ public class SceneDeserializerJSON {
         Scene.getInstance().setGameCamera(GameObject.findGameObject(GameCamPath, Scene.getInstance().getRoot()));
 
         deferredComponentMap.clear();
-        
+        scene.getRoot().UpdateLocation();
         return scene;
     }
 
@@ -74,7 +74,12 @@ public class SceneDeserializerJSON {
         gameObject.transform.setLocalPosition(parseVector(jsonObject.getAsJsonObject("position")));
         gameObject.transform.setLocalRotation(parseVector(jsonObject.getAsJsonObject("rotation")));
         gameObject.transform.setLocalScale(parseVector(jsonObject.getAsJsonObject("scale")));
-
+        
+        JsonArray childrenArray = jsonObject.getAsJsonArray("children");
+        for (JsonElement childElement : childrenArray) {
+            GameObject child = deserializeGameObject(childElement.getAsJsonObject());
+            gameObject.addChild(child);
+        }
         // Components (defer property setting)
         JsonArray componentsArray = jsonObject.getAsJsonArray("components");
         List<Pair> componentList = new ArrayList<>();
@@ -92,11 +97,6 @@ public class SceneDeserializerJSON {
         deferredComponentMap.put(gameObject, componentList);
 
         // Children
-        JsonArray childrenArray = jsonObject.getAsJsonArray("children");
-        for (JsonElement childElement : childrenArray) {
-            GameObject child = deserializeGameObject(childElement.getAsJsonObject());
-            gameObject.transform.addChild(child.transform);
-        }
 
         return gameObject;
     }

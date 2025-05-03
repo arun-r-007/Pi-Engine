@@ -90,6 +90,7 @@ public class ComponentFactory
 
     public static void Clear()
     {
+        componentConstructors.clear();
         System.gc();
     }
 }

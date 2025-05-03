@@ -93,7 +93,7 @@ public class InspectorWindow extends EditorWindow {
     public void onRender() {
         String sname = !actAsProperty ? name : "Property (" + propertyObject.Name +")";
         GameObject current = actAsProperty ? propertyObject : inspectObject;
-    
+
         // Define a boolean to control the window's visibility
         ImBoolean isOpen = new ImBoolean(true);
     
@@ -185,36 +185,46 @@ public class InspectorWindow extends EditorWindow {
         ImGui.separator();
 
         String id = obj.Name;
-
-        transformBlocks.computeIfAbsent(id + "_worldPos", k -> new VectorField("Position  ", "worldPos"))
+        if(obj.transform == null) return;
+        try 
+        {
+            transformBlocks.computeIfAbsent(id + "_worldPos", k -> new VectorField("Position  ", "worldPos"))
             .syncWith(obj.transform::getWorldPosition, obj.transform::setWorldPosition);
-        transformBlocks.get(id + "_worldPos").handle();
+            transformBlocks.get(id + "_worldPos").handle();
 
-        transformBlocks.computeIfAbsent(id + "_worldRot", k -> new VectorField("Rotation  ", "worldRot"))
-            .syncWith(obj.transform::getWorldRotation, obj.transform::setWorldRotation);
-        transformBlocks.get(id + "_worldRot").handle();
+            transformBlocks.computeIfAbsent(id + "_worldRot", k -> new VectorField("Rotation  ", "worldRot"))
+                .syncWith(obj.transform::getWorldRotation, obj.transform::setWorldRotation);
+            transformBlocks.get(id + "_worldRot").handle();
 
-        transformBlocks.computeIfAbsent(id + "_worldScale", k -> new VectorField("Size      ", "worldScale"))
-            .syncWith(obj.transform::getWorldScale, obj.transform::setWorldScale);
-        transformBlocks.get(id + "_worldScale").handle();
+            transformBlocks.computeIfAbsent(id + "_worldScale", k -> new VectorField("Size      ", "worldScale"))
+                .syncWith(obj.transform::getWorldScale, obj.transform::setWorldScale);
+            transformBlocks.get(id + "_worldScale").handle();
 
-        ImGui.separator();
-        ImGui.text("LOCAL");
-        ImGui.separator();
+            ImGui.separator();
+            ImGui.text("LOCAL");
+            ImGui.separator();
 
-        transformBlocks.computeIfAbsent(id + "_localPos", k -> new VectorField("Position  ", "localPos"))
-            .syncWith(obj.transform::getLocalPosition, obj.transform::setLocalPosition);
-        transformBlocks.get(id + "_localPos").handle();
+            transformBlocks.computeIfAbsent(id + "_localPos", k -> new VectorField("Position  ", "localPos"))
+                .syncWith(obj.transform::getLocalPosition, obj.transform::setLocalPosition);
+            transformBlocks.get(id + "_localPos").handle();
 
-        transformBlocks.computeIfAbsent(id + "_localRot", k -> new VectorField("Rotation  ", "localRot"))
-            .syncWith(obj.transform::getLocalRotation, obj.transform::setLocalRotation);
-        transformBlocks.get(id + "_localRot").handle();
+            transformBlocks.computeIfAbsent(id + "_localRot", k -> new VectorField("Rotation  ", "localRot"))
+                .syncWith(obj.transform::getLocalRotation, obj.transform::setLocalRotation);
+            transformBlocks.get(id + "_localRot").handle();
 
-        transformBlocks.computeIfAbsent(id + "_localScale", k -> new VectorField("Size      ", "localScale"))
-            .syncWith(obj.transform::getLocalScale, obj.transform::setLocalScale);
-        transformBlocks.get(id + "_localScale").handle();
+            transformBlocks.computeIfAbsent(id + "_localScale", k -> new VectorField("Size      ", "localScale"))
+                .syncWith(obj.transform::getLocalScale, obj.transform::setLocalScale);
+            transformBlocks.get(id + "_localScale").handle();
 
-        ImGui.separator();
+            ImGui.separator();
+        } 
+        catch (Exception e) 
+        {
+            inspectObject = null;
+            propertyObject = null;
+        }
+
+        
     }
 
     private void handleVectorField(String key, String name, String label, Vector current, Consumer<Vector> setter)
@@ -239,6 +249,8 @@ public class InspectorWindow extends EditorWindow {
      */
     private void renderComponentEditor(GameObject obj) 
     {
+        if(obj.transform == null) return;
+
         ImGui.text("All Component Properties of " + obj.Name);
         ImGui.separator();
 

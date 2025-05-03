@@ -1,8 +1,5 @@
 package org.PiEngine.Editor;
 
-import java.io.File;
-
-import org.PiEngine.Main;
 import org.PiEngine.Engine.Scene;
 import org.PiEngine.Manager.AssetManager;
 import org.PiEngine.Scripting.ScriptLoader;
