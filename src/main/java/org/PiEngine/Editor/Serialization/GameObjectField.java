@@ -5,7 +5,6 @@ import imgui.ImVec2;
 import imgui.flag.*;
 import imgui.type.ImString;
 
-import org.PiEngine.Engine.Scene;
 import org.PiEngine.GameObjects.GameObject;
 
 import java.lang.reflect.Field;

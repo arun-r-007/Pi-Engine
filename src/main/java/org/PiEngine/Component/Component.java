@@ -288,6 +288,12 @@ public abstract class Component
                             }
                         }
                     }
+                    else if (GUIDProvider.class.isAssignableFrom(field.getType()))
+                    {
+                        GUIDProvider val = (GUIDProvider) field.get(this);
+                        Object guid = AssetManager.get(val.getGUID());
+                        field.set(this, guid);
+                    }
                 }
                 catch (IllegalAccessException e)
                 {
