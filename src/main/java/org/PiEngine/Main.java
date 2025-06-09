@@ -52,7 +52,7 @@ public class Main
         imguiGlfw.init(window, true);
         imguiGl3.init("#version 330 core");
         
-        CompileScripts.getInstance(Main.ResourceFolder + "Scripts", Main.ResourceFolder+"Compiled", null);
+        CompileScripts.getInstance(Main.ResourceFolder + "Scripts", "Compiled", null);
 
 
         Thread assetThread = new Thread(() -> {
