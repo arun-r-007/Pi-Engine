@@ -3,8 +3,11 @@ Made with love, learning, and long sleepless nights.
 
 PiEngine is a modular, component-based Java game engine built from scratch for 2D and (eventually) 3D games. It was created as a college project with a focus on learning, customization, and full control over the game development pipeline.
 
-![Editor Screenshot](docs/screenshots/Editor.png)
+### 🎥 PiEngine Demo
+[![Watch the video](docs/screenshots/Editor.png)](https://www.youtube.com/watch?v=3pVAaNRfhNo)
 ![RenderGraph Screenshots](docs/screenshots/RenderGraph.png)
+
+
 
 ## Features
 
