@@ -5,90 +5,104 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-import org.PiEngine.Main;
 import org.PiEngine.Component.*;
 import org.PiEngine.GameObjects.*;
 import org.PiEngine.Math.Vector;
+import org.PiEngine.Utils.ComponentFactory;
 
 public class SceneDeserializerJSON {
 
-    public static Scene deserialize(String filePath) throws IOException {
-        Gson gson = new Gson();
+    // This holds GameObject → List of (Component, properties)
+    private static final Map<GameObject, List<Pair>> deferredComponentMap = new HashMap<>();
 
-        // Read the JSON file and convert it to a Map
+    private static class Pair
+    {
+        Component component;
+        JsonObject properties;
+
+        Pair(Component c, JsonObject p)
+        {
+            component = c;
+            properties = p;
+        }
+    }
+
+    public static Scene deserialize(String filePath) throws IOException {
         JsonObject jsonObject = JsonParser.parseReader(new FileReader(filePath)).getAsJsonObject();
 
-        // Get the scene name
         String sceneName = jsonObject.get("sceneName").getAsString();
+        String GameCamPath = jsonObject.get("GameCamera").getAsString();
 
-        // Create a new Scene object
+
+
         Scene scene = Scene.getInstance();
         scene.setRoot(new GameObject(sceneName));
+        
 
-
-        // Deserialize game objects
         JsonArray gameObjectsArray = jsonObject.getAsJsonArray("gameObjects");
         for (JsonElement gameObjectElement : gameObjectsArray) {
             GameObject gameObject = deserializeGameObject(gameObjectElement.getAsJsonObject());
-            scene.getRoot().addChild(gameObject); // Assuming root's transform is the parent of new objects
+            scene.getRoot().addChild(gameObject); 
         }
 
+        // After all GameObjects are added, set component properties
+        for (Map.Entry<GameObject, List<Pair>> entry : deferredComponentMap.entrySet()) {
+            for (Pair pair : entry.getValue()) {
+                for (Map.Entry<String, JsonElement> prop : pair.properties.entrySet()) {
+                    pair.component.setComponentProperty(prop.getKey(), prop.getValue());
+                }
+            }
+        }
+
+        Scene.getInstance().setGameCamera(GameObject.findGameObject(GameCamPath, Scene.getInstance().getRoot()));
+
+        deferredComponentMap.clear();
+        scene.getRoot().UpdateLocation();
         return scene;
     }
 
     private static GameObject deserializeGameObject(JsonObject jsonObject) {
-        // Create the game object with an integer id
-        int id = jsonObject.get("id").getAsInt();  // Parse the id as an int
+        int id = jsonObject.get("id").getAsInt();  
         String name = jsonObject.get("name").getAsString();
         int layer = jsonObject.get("layer").getAsInt();
 
-        
         GameObject gameObject = new GameObject(name);
         gameObject.setId(id);
         gameObject.setLayer(layer);
 
-        // Deserialize the position, rotation, and scale
-        JsonObject position = jsonObject.getAsJsonObject("position");
-        Vector pos = new Vector(position.get("x").getAsFloat(), position.get("y").getAsFloat(), position.get("z").getAsFloat());
-        gameObject.transform.setLocalPosition(pos);
-
-        JsonObject rotation = jsonObject.getAsJsonObject("rotation");
-        Vector rot = new Vector(rotation.get("x").getAsFloat(), rotation.get("y").getAsFloat(), rotation.get("z").getAsFloat());
-        gameObject.transform.setLocalRotation(rot);
-
-        JsonObject scale = jsonObject.getAsJsonObject("scale");
-        Vector sca = new Vector(scale.get("x").getAsFloat(), scale.get("y").getAsFloat(), scale.get("z").getAsFloat());
-        gameObject.transform.setLocalScale(sca);
-
-        // Deserialize the components
+        // Deserialize transform
+        gameObject.transform.setLocalPosition(parseVector(jsonObject.getAsJsonObject("position")));
+        gameObject.transform.setLocalRotation(parseVector(jsonObject.getAsJsonObject("rotation")));
+        gameObject.transform.setLocalScale(parseVector(jsonObject.getAsJsonObject("scale")));
+        
+        JsonArray childrenArray = jsonObject.getAsJsonArray("children");
+        for (JsonElement childElement : childrenArray) {
+            GameObject child = deserializeGameObject(childElement.getAsJsonObject());
+            gameObject.addChild(child);
+        }
+        // Components (defer property setting)
         JsonArray componentsArray = jsonObject.getAsJsonArray("components");
+        List<Pair> componentList = new ArrayList<>();
         for (JsonElement componentElement : componentsArray) {
             JsonObject componentObject = componentElement.getAsJsonObject();
             String componentName = componentObject.get("name").getAsString();
 
-            // Dynamically create component using ComponentFactory
             Component component = ComponentFactory.create(componentName);
             if (component != null) {
-                // Deserialize properties
-                JsonObject properties = componentObject.getAsJsonObject("properties");
-                for (Map.Entry<String, JsonElement> entry : properties.entrySet()) {
-                    String propertyName = entry.getKey();
-                    JsonElement propertyValue = entry.getValue();
-                    component.setComponentProperty(propertyName, propertyValue); // Set property using the new method
-                }
-
-                // Add component to the GameObject
                 gameObject.addComponent(component);
+                JsonObject properties = componentObject.getAsJsonObject("properties");
+                componentList.add(new Pair(component, properties));
             }
         }
+        deferredComponentMap.put(gameObject, componentList);
 
-        // Deserialize the children
-        JsonArray childrenArray = jsonObject.getAsJsonArray("children");
-        for (JsonElement childElement : childrenArray) {
-            GameObject child = deserializeGameObject(childElement.getAsJsonObject());
-            gameObject.transform.addChild(child.transform);
-        }
+        // Children
 
         return gameObject;
+    }
+
+    private static Vector parseVector(JsonObject obj)
+    {
+        return new Vector(obj.get("x").getAsFloat(), obj.get("y").getAsFloat(), obj.get("z").getAsFloat());
     }
 }

@@ -12,10 +12,12 @@ import org.PiEngine.Math.Vector;
 public class SceneSerializerJSON {
 
     public static void serialize(Scene scene, String filePath) throws IOException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+        // TDO: need to remove setPrettyPrinting for faster and compact file size
 
         Map<String, Object> sceneData = new HashMap<>();
         sceneData.put("sceneName", scene.getName());
+        sceneData.put("GameCamera", GameObject.Location(scene.getGameCamera()));
 
         List<Object> gameObjects = new ArrayList<>();
         for (Transform child : scene.getRoot().transform.getChildren()) {
@@ -33,12 +35,14 @@ public class SceneSerializerJSON {
         objData.put("id", gameObject.getId());
         objData.put("name", gameObject.getName());
         objData.put("layer", gameObject.getLayerBit());
+        objData.put("Location", GameObject.Location(gameObject));
 
-
+        
+        
         objData.put("position", vectorToMap(gameObject.transform.getLocalPosition()));
         objData.put("rotation", vectorToMap(gameObject.transform.getLocalRotation()));
         objData.put("scale", vectorToMap(gameObject.transform.getLocalScale()));
-
+        
         List<Object> components = new ArrayList<>();
         for (Component component : gameObject.getComponents()) {
             Map<String, Object> compData = new HashMap<>();

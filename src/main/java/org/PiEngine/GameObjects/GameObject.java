@@ -7,14 +7,17 @@ import org.PiEngine.Core.LayerManager;
 import org.PiEngine.Math.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+
 
 public class GameObject
 {
     public String Name;
     public Transform transform;
     private int id;
-
+    public String Location; 
     private int layer = LayerManager.getLayerBit("Layer0");
 
     /**
@@ -26,6 +29,7 @@ public class GameObject
         this.transform = new Transform();
         this.transform.setGameObject(this);
         id = IDGenerator.generateUniqueID();
+        Location = Location(this);
     }
 
 
@@ -35,6 +39,8 @@ public class GameObject
     public void addChild(GameObject child)
     {
         this.transform.addChild(child.transform);
+        child.Location = Location(child);
+        // System.out.println(child.Name + " " + child.Location);
     }
 
     // Holds all components attached to this GameObject
@@ -51,10 +57,10 @@ public class GameObject
      */
     public void addComponent(Component component)
     {
-        component.gameObject = this;  // Link the component to this GameObject
+        component.gameObject = this;
         component.transform = this.transform;
-        components.add(component);    // Store it in the list
-        component.safeStart();            // Trigger its startup behavior
+        components.add(component);    
+        component.safeStart();          
     }
 
     /**
@@ -67,17 +73,16 @@ public class GameObject
      * @param type The class object representing the desired component type.
      * @return The component instance if found; otherwise, null.
      */
-    @SuppressWarnings("unchecked")
     public <T extends Component> T getComponent(Class<T> type)
     {
         for (Component c : components)
         {
-            if (type.isInstance(c)) // Check if the component matches the requested type
+            if (type.isInstance(c)) 
             {
-                return (T) c;       // Safe cast and return
+                return (T) c;       
             }
         }
-        return null; // No matching component found
+        return null; 
     }
 
     /**
@@ -113,7 +118,7 @@ public class GameObject
         // Update all components attached to this GameObject
         for (Component c : components)
         {
-            
+            c.updateFields();
             c.safeUpdate();
             
         }
@@ -183,6 +188,101 @@ public class GameObject
         }
     }
 
+    public void UpdateLocation()
+    {
+        for (Transform childTransform : transform.getChildren())
+        {
+            GameObject child = childTransform.getGameObject();
+            if (child != null)
+            {
+                child.UpdateLocation();
+            }
+            child.Location = GameObject.Location(child);
+        }
+    }
+
+    public static String Location(GameObject gb)
+    {
+        if(gb.transform.getParent() == null) return "/" + gb.Name; 
+        return Location(gb.transform.getParent().getGameObject()) + "/" + gb.Name; 
+    }
+
+    public static GameObject findGameObject(String path, GameObject root)
+    {
+        // Trim leading slash and split path
+        if (path.startsWith("/"))
+        {
+            path = path.substring(1);
+        }
+
+        String[] parts = path.split("/", 2); // Split into current part and the rest
+        String currentName = parts[0];
+
+        // Check current level name
+        if (!root.Name.equals(currentName))
+        {
+            return null;
+        }
+
+        // Base case: if there's no more path, return current object
+        if (parts.length == 1)
+        {
+            return root;
+        }
+
+        // Recurse into children
+        for (Transform childTransform : root.transform.getChildren())
+        {
+            GameObject child = childTransform.getGameObject();
+            GameObject result = findGameObject(parts[1], child);
+            if (result != null)
+            {
+                return result;
+            }
+        }
+
+        return null; // No match found
+    }
+
+    public static GameObject findGameObjectItrative(String path, GameObject root)
+    {
+        String[] parts = path.startsWith("/") ? path.substring(1).split("/") : path.split("/");
+
+        // Check if the path starts from this root
+        if (!root.Name.equals(parts[0]))
+        {
+            return null; // Root name doesn't match
+        }
+
+        GameObject current = root;
+
+        // Start from second part
+        for (int i = 1; i < parts.length; i++)
+        {
+            String part = parts[i];
+            boolean found = false;
+
+            for (Transform childTransform : current.transform.getChildren())
+            {
+                GameObject child = childTransform.getGameObject();
+                if (child.Name.equals(part))
+                {
+                    current = child;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                return null; // Path segment not found
+            }
+        }
+
+        return current;
+    }
+
+
 
 
     /**
@@ -211,37 +311,6 @@ public class GameObject
     }
 
     /**
-     * 
-     * @param position Position of the Object
-     * @param size Size of the Plane
-     */
-
-    // public void debugDrawSquare(Vector position, float size)
-    // {
-    //     float half = size / 2.0f;
-    //     float x = position.x;
-    //     float y = position.y;
-    //     float z = position.z;
-
-    //     //glColor3f(1.0f, 0.0f, 0.0f); // Red color
-
-    //     glBegin(GL_TRIANGLES);
-
-    //     // Triangle 1
-    //     glVertex3f(x - half, y - half, z);
-    //     glVertex3f(x + half, y - half, z);
-    //     glVertex3f(x + half, y + half, z);
-
-    //     // Triangle 2
-    //     glVertex3f(x - half, y - half, z);
-    //     glVertex3f(x + half, y + half, z);
-    //     glVertex3f(x - half, y + half, z);
-
-    //     glEnd();
-    // }
-
-
-    /**
      * Reparents this GameObject to a new parent GameObject.
      * 
      * This will remove this GameObject from its current parent's children list
@@ -251,6 +320,16 @@ public class GameObject
      */
     public void reparentTo(GameObject newParent)
     {
+        Transform cParent = newParent.transform;
+        while (cParent != null) 
+        {
+            if(cParent == transform)
+            {
+                reparentToChild();
+                break;
+            }
+            cParent = cParent.getParent();  
+        }
         // Remove from current parent if it exists
         Transform currentParent = this.transform.getParent();
         Vector gpos = transform.getWorldPosition();
@@ -259,7 +338,7 @@ public class GameObject
 
         if (currentParent != null)
         {
-            currentParent.getChildren().remove(this.transform);
+            currentParent.removeChild(transform);
         }
 
         // Add to new parent's children
@@ -267,7 +346,21 @@ public class GameObject
         this.transform.setWorldPosition(gpos);
         this.transform.setWorldRotation(grot);
         this.transform.setWorldScale(gscl);
+        this.Location = Location(this);
+    }
 
+    private void reparentToChild()
+    {
+        List<GameObject> repatentObjects = new ArrayList();
+        GameObject Parent = transform.getParent().getGameObject();
+        for (Transform gb : transform.getChildren())
+        {
+            repatentObjects.add(gb.getGameObject());
+        }
+        for (GameObject gameObject : repatentObjects) 
+        {
+            gameObject.reparentTo(Parent);
+        }
     }
 
 
@@ -339,34 +432,35 @@ public class GameObject
         components.remove(cmp);
     }
 
-    public void destroy()
+    public static void destroy(GameObject thisGb)
     {
-        for (Transform childTransform : new ArrayList<>(transform.getChildren()))
+        Collection<Transform> children = thisGb.transform.getChildren();
+        if (children != null)
         {
-            GameObject child = childTransform.getGameObject();
-            if (child != null)
+            for (Transform childTransform : new ArrayList<>(children))
             {
-                child.destroy(); 
+                GameObject child = childTransform.getGameObject();
+                if (child != null)
+                {
+                    destroy(child);
+                }
             }
         }
-
-        
-        transform.getChildren().clear();
-        components.clear();
-
-        Transform parent = transform.getParent();
+        Transform parent = thisGb.transform.getParent();
         if (parent != null)
         {
-            parent.getChildren().remove(transform);
+            parent.removeChild(thisGb.transform);
         }
-
-        transform.setGameObject(null);
+        thisGb.components.clear();
+        thisGb.transform.destroy();
+        if(children != null) children.clear();
+        children = null; 
     }
 
     @Override
-    protected void finalize() throws Throwable
+    protected void finalize()
     {
-        // System.out.println("Removed: " + this.Name);
+        System.out.println("Removed: " + this.Name);
     }
 
     public int getId() {

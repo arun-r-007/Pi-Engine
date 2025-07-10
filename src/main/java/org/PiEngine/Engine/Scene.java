@@ -8,16 +8,15 @@ import org.PiEngine.GameObjects.*;
 
 import java.io.Serializable;
 
+import org.PiEngine.Main;
 import org.PiEngine.Component.*;
 import org.PiEngine.Editor.*;
 import org.PiEngine.Render.*;
 import org.PiEngine.Render.Passes.*;
-import org.PiEngine.Scripting.*;
 
 
 public class Scene implements Serializable
 {
-    
     public String Name;
     private static Scene instance;
 
@@ -61,61 +60,6 @@ public class Scene implements Serializable
 
         // Root GameObject
         root = new GameObject(Name);
-
-        // GameObject player = new GameObject("Player");
-        // GameObject enemy = new GameObject("Enemy");
-        // GameObject enemy1 = new GameObject("Enemy1");
-        // GameObject enemy2 = new GameObject("Enemy2");
-        // GameObject enemy3 = new GameObject("Enemy3");
-        // GameObject holder = new GameObject("Holder");
-        // GameObject childHolder = new GameObject("ChildHolder");
-        // GameObject cChildHolder = new GameObject("CChildHolder");
-        // // Setup hierarchy
-        // root.addChild(player);
-        // root.addChild(enemy);
-        // root.addChild(enemy1);
-        // root.addChild(enemy2);
-        // root.addChild(enemy3);
-        // root.addChild(holder);
-        // holder.addChild(childHolder);
-        // childHolder.addChild(cChildHolder);
-        
-        // // Setup transforms
-        // player.transform.setLocalPosition(new Vector(0f, 0, 0));
-        // holder.transform.setLocalPosition(new Vector(4f, 0, 0));
-        // childHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
-        // cChildHolder.transform.setLocalPosition(new Vector(5f, 0, 0));
-        
-        // cChildHolder.setLayer(LayerManager.getLayerBit("Layer30"));
-        
-        // // Add Components
-        // player.addComponent(new Movemet());
-        // enemy.addComponent(new Follower());
-        // enemy1.addComponent(new Follower());
-        // enemy2.addComponent(new Follower());
-        // enemy3.addComponent(new Follower());
-        // holder.addComponent(new SpinComponent());
-        
-        // player.addComponent(new RendererComponent());
-        // enemy.addComponent(new RendererComponent());
-        // enemy1.addComponent(new RendererComponent());
-        // enemy2.addComponent(new RendererComponent());
-        // enemy3.addComponent(new RendererComponent());
-        // holder.addComponent(new RendererComponent());
-        // childHolder.addComponent(new RendererComponent());
-        // cChildHolder.addComponent(new RendererComponent());
-        
-        // player.setLayerByName("Layer1", false);
-        // enemy.setLayerByName("Layer1", false);
-        // enemy1.setLayerByName("Layer1", false);
-        // enemy2.setLayerByName("Layer1", false);
-        // enemy3.setLayerByName("Layer1", false);
-        
-        // enemy.getComponent(Follower.class).Target = cChildHolder;
-        // enemy1.getComponent(Follower.class).Target = enemy;
-        // enemy2.getComponent(Follower.class).Target = enemy1;
-        // enemy3.getComponent(Follower.class).Target = enemy2;
-        
         GameObject cameraObject = new GameObject("Main Camera");
         GameCamera = cameraObject;
         root.addChild(cameraObject);
@@ -123,39 +67,41 @@ public class Scene implements Serializable
         cameraObject.addComponent(new CameraComponent());
         
         // Setup Editor
-        editor = Editor.getInstance(window, false);
-        editor.init();
+        editor = Editor.getInstance();
         editor.addWindow(new DockingWindow());
         editor.addWindow(new LayerWindow());
-        editor.addWindow(new HierarchyWindow(root));
-        editor.addWindow(new InspectorWindow(false));
+        editor.addWindow(new HierarchyWindow());
         editor.addWindow(new PerfomanceWindow());
         editor.addWindow(new ConsoleWindow());
         editor.addWindow(new NavigationWindow());
         editor.queueAddWindow(new FileWindow());
 
         // Setup Renderers
-        Shader DefaultShader = new Shader(
-            "src\\main\\resources\\Shaders\\Camera\\Default.vert",
-            "src\\main\\resources\\Shaders\\Camera\\Default.frag",
+        Shader DefaultShader = new Shader
+        (
+            Main.ResourceFolder + "Shaders/Camera/Default.vert",
+            Main.ResourceFolder + "Shaders/Camera/Default.frag",
             null
         );
 
-        Shader CRTShader = new Shader(
-            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert",
-            "src\\main\\resources\\Shaders\\PostProcess\\CRT.frag",
+        Shader CRTShader = new Shader
+        (
+            Main.ResourceFolder + "Shaders/PostProcess/SCREEN.vert",
+            Main.ResourceFolder + "Shaders/PostProcess/CRT.frag",
             null
         );
 
-        Shader BloomShader = new Shader(
-            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert",
-            "src\\main\\resources\\Shaders\\PostProcess\\BLUR.frag",
+        Shader BloomShader = new Shader
+        (
+            Main.ResourceFolder + "Shaders/PostProcess/SCREEN.vert",
+            Main.ResourceFolder + "Shaders/PostProcess/BLUR.frag",
             null
         );
 
-        Shader FinalShader = new Shader(
-            "src\\main\\resources\\Shaders\\PostProcess\\SCREEN.vert",
-            "src\\main\\resources\\Shaders\\PostProcess\\FINAL.frag",
+        Shader FinalShader = new Shader
+        (
+            Main.ResourceFolder + "Shaders/PostProcess/SCREEN.vert",
+            Main.ResourceFolder +"Shaders/PostProcess/FINAL.frag",
             null
         );
 
@@ -184,11 +130,13 @@ public class Scene implements Serializable
         gameRenderer.setFinalPass("FINAL");
         gameRenderer.connect("Geometry", "CRT", 0);
         gameRenderer.connect("Box", "BLUR", 0);
-        gameRenderer.connect("BLUR", "CRT", 1);
+        // gameRenderer.connect("BLUR", "CRT", 1);
         gameRenderer.connect("CRT", "FINAL", 0);
 
         editor.addWindow(new RendererInspector(gameRenderer));
         editor.addWindow(new RenderGraphEditorWindow(gameRenderer));
+        editor.addWindow(new InspectorWindow(false));
+
 
         // Scene Windows
         editorSceneWindow = new SceneWindow("Scene");
@@ -196,9 +144,6 @@ public class Scene implements Serializable
 
         gameSceneWindow = new SceneWindow("Game");
         editor.addWindow(gameSceneWindow);
-
-        // Scripts
-        ScriptLoader.getInstance().loadComponentScripts("Compiled/Scripts");
 
         Time.timeScale = 1.0f;
     }
@@ -230,7 +175,7 @@ public class Scene implements Serializable
     {
         try 
         {
-            SceneSerializerJSON.serialize(instance, "src\\main\\resources\\Test.json");
+            SceneSerializerJSON.serialize(instance, Main.ResourceFolder+"Test.json");
         } 
         catch (Exception e) 
         {
@@ -240,9 +185,11 @@ public class Scene implements Serializable
 
     public void Load()
     {
+        InspectorWindow.inspectObject = null;
         try 
         {
-            SceneDeserializerJSON.deserialize("src\\main\\resources\\Test.json");
+            SceneDeserializerJSON.deserialize(Main.ResourceFolder+"Test.json");
+            IDGenerator.resetIDCounter();
         } 
         catch (Exception e) 
         {

@@ -3,10 +3,6 @@ package org.PiEngine;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.*;
 
 import imgui.ImGui;
@@ -18,13 +14,17 @@ import imgui.glfw.ImGuiImplGlfw;
 import org.PiEngine.Core.*;
 import org.PiEngine.Editor.Editor;
 import org.PiEngine.Engine.Scene;
+import org.PiEngine.Manager.AssetManager;
+import org.PiEngine.Scripting.CompileScripts;
 
 
 public class Main
 {
     public static long Windowthis = 0;
+    public static String ResourceFolder = "src/main/resources/";
     public static void main(String[] args)
     {
+        
         if (!glfwInit())
         {
             throw new IllegalStateException("Unable to initialize GLFW");
@@ -41,9 +41,9 @@ public class Main
         Input.init(window);
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
-
+        
         glViewport(0, 0, width, height);
-
+        
         ImGui.createContext();
         ImGuiIO io = ImGui.getIO();
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
@@ -51,19 +51,33 @@ public class Main
         ImGuiImplGl3 imguiGl3 = new ImGuiImplGl3();
         imguiGlfw.init(window, true);
         imguiGl3.init("#version 330 core");
+        
+        CompileScripts.getInstance(Main.ResourceFolder + "Scripts", "Compiled", null);
+
+
+        Thread assetThread = new Thread(() -> {
+            AssetManager assetManager = new AssetManager() {};
+            assetManager.run();
+        });
+        assetThread.start();
+
+        String javaHome = System.getProperty("java.home");
+        System.out.println("Running with JRE at: " + javaHome);
+        
+        Editor.getInstance(window, false);
+        Editor.getInstance().init();
+
 
         Scene.getInstance().init(window, width, height);
 
-        // Scene.getInstance().Save();
-        // Scene.getInstance().Load();
 
         boolean isLoop = false;
 
-
+        
         while (!glfwWindowShouldClose(window))
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+            AssetManager.processAssetQueue();
             Time.update();
             Input.update();
 
@@ -77,7 +91,7 @@ public class Main
                 Scene.getInstance().update();
             }
             Scene.getInstance().render();
-
+            
             Editor.getInstance().update();
             
             glfwSwapBuffers(window);

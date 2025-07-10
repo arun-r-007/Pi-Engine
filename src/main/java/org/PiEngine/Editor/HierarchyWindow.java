@@ -37,9 +37,8 @@ public class HierarchyWindow extends EditorWindow {
     public static int count = 0;
 
 
-    public HierarchyWindow(GameObject root) {
+    public HierarchyWindow() {
         super("Hierarchy");
-        this.root = root;
         id = count++;
         
     }
@@ -50,6 +49,7 @@ public class HierarchyWindow extends EditorWindow {
 
     public void onUpdate()
     {
+        root = Scene.getInstance().getRoot();
         setCustomTheme();
 
         Iterator<List<GameObject>> reparentIterator = toReparent.iterator();
@@ -73,13 +73,11 @@ public class HierarchyWindow extends EditorWindow {
             addIterator.remove(); // remove from pending list
         }
 
-
-        Iterator<GameObject> removeCompo = toRemove.iterator();
-        while (removeCompo.hasNext())
+        for (GameObject gameObject : toRemove) 
         {
-            GameObject go = removeCompo.next();
-            go.destroy();
+            GameObject.destroy(gameObject);    
         }
+        toRemove.clear();
     }
 
     /**
@@ -124,7 +122,7 @@ public class HierarchyWindow extends EditorWindow {
     
         boolean isRoot = (obj == root);
         boolean isLeaf = obj.transform.getChildren().isEmpty();
-        int flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.DefaultOpen;
+        int flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.DefaultOpen; 
         if (isLeaf) flags |= ImGuiTreeNodeFlags.Leaf;
     
         boolean nodeOpen;

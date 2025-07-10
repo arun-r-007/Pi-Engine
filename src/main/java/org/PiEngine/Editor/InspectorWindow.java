@@ -6,6 +6,7 @@ import imgui.flag.ImGuiTreeNodeFlags;
 
 import org.PiEngine.GameObjects.*;
 import org.PiEngine.Math.Vector;
+import org.PiEngine.Utils.ComponentFactory;
 import org.reflections.Reflections;
 import org.PiEngine.Component.*;
 import org.PiEngine.Core.LayerManager;
@@ -92,7 +93,7 @@ public class InspectorWindow extends EditorWindow {
     public void onRender() {
         String sname = !actAsProperty ? name : "Property (" + propertyObject.Name +")";
         GameObject current = actAsProperty ? propertyObject : inspectObject;
-    
+
         // Define a boolean to control the window's visibility
         ImBoolean isOpen = new ImBoolean(true);
     
@@ -121,10 +122,11 @@ public class InspectorWindow extends EditorWindow {
         String[] layers = LayerManager.GetLayerNameArray();
         int currentLayer = LayerManager.getIndexFromBitmask(current.getLayerBit());
         ImInt selected = new ImInt(currentLayer);
-    
+        ImGui.sameLine();
         if (ImGui.combo("##LayerCombo", selected, layers, layers.length)) {
             current.setLayerByName(LayerManager.getLayerName(selected.get()), false);
         }
+        ImGui.separator();
     
         if (ImGui.collapsingHeader("Transform", ImGuiTreeNodeFlags.DefaultOpen)) {
             renderTransformEditor(current);
@@ -179,43 +181,50 @@ public class InspectorWindow extends EditorWindow {
     private final Map<String, VectorField> transformBlocks = new HashMap<>();
     private void renderTransformEditor(GameObject obj)
     {
-        ImGui.text("All Transform Properties of " + obj.Name);
-        ImGui.separator();
-
         ImGui.text("GLOBAL");
         ImGui.separator();
 
         String id = obj.Name;
-
-        transformBlocks.computeIfAbsent(id + "_worldPos", k -> new VectorField("Position  ", "worldPos"))
+        if(obj.transform == null) return;
+        try 
+        {
+            transformBlocks.computeIfAbsent(id + "_worldPos", k -> new VectorField("Position  ", "worldPos"))
             .syncWith(obj.transform::getWorldPosition, obj.transform::setWorldPosition);
-        transformBlocks.get(id + "_worldPos").handle();
+            transformBlocks.get(id + "_worldPos").handle();
 
-        transformBlocks.computeIfAbsent(id + "_worldRot", k -> new VectorField("Rotation  ", "worldRot"))
-            .syncWith(obj.transform::getWorldRotation, obj.transform::setWorldRotation);
-        transformBlocks.get(id + "_worldRot").handle();
+            transformBlocks.computeIfAbsent(id + "_worldRot", k -> new VectorField("Rotation  ", "worldRot"))
+                .syncWith(obj.transform::getWorldRotation, obj.transform::setWorldRotation);
+            transformBlocks.get(id + "_worldRot").handle();
 
-        transformBlocks.computeIfAbsent(id + "_worldScale", k -> new VectorField("Size      ", "worldScale"))
-            .syncWith(obj.transform::getWorldScale, obj.transform::setWorldScale);
-        transformBlocks.get(id + "_worldScale").handle();
+            transformBlocks.computeIfAbsent(id + "_worldScale", k -> new VectorField("Size      ", "worldScale"))
+                .syncWith(obj.transform::getWorldScale, obj.transform::setWorldScale);
+            transformBlocks.get(id + "_worldScale").handle();
 
-        ImGui.separator();
-        ImGui.text("LOCAL");
-        ImGui.separator();
+            ImGui.separator();
+            ImGui.text("LOCAL");
+            ImGui.separator();
 
-        transformBlocks.computeIfAbsent(id + "_localPos", k -> new VectorField("Position  ", "localPos"))
-            .syncWith(obj.transform::getLocalPosition, obj.transform::setLocalPosition);
-        transformBlocks.get(id + "_localPos").handle();
+            transformBlocks.computeIfAbsent(id + "_localPos", k -> new VectorField("Position  ", "localPos"))
+                .syncWith(obj.transform::getLocalPosition, obj.transform::setLocalPosition);
+            transformBlocks.get(id + "_localPos").handle();
 
-        transformBlocks.computeIfAbsent(id + "_localRot", k -> new VectorField("Rotation  ", "localRot"))
-            .syncWith(obj.transform::getLocalRotation, obj.transform::setLocalRotation);
-        transformBlocks.get(id + "_localRot").handle();
+            transformBlocks.computeIfAbsent(id + "_localRot", k -> new VectorField("Rotation  ", "localRot"))
+                .syncWith(obj.transform::getLocalRotation, obj.transform::setLocalRotation);
+            transformBlocks.get(id + "_localRot").handle();
 
-        transformBlocks.computeIfAbsent(id + "_localScale", k -> new VectorField("Size      ", "localScale"))
-            .syncWith(obj.transform::getLocalScale, obj.transform::setLocalScale);
-        transformBlocks.get(id + "_localScale").handle();
+            transformBlocks.computeIfAbsent(id + "_localScale", k -> new VectorField("Size      ", "localScale"))
+                .syncWith(obj.transform::getLocalScale, obj.transform::setLocalScale);
+            transformBlocks.get(id + "_localScale").handle();
 
-        ImGui.separator();
+            ImGui.separator();
+        } 
+        catch (Exception e) 
+        {
+            inspectObject = null;
+            propertyObject = null;
+        }
+
+        
     }
 
     private void handleVectorField(String key, String name, String label, Vector current, Consumer<Vector> setter)
@@ -240,6 +249,8 @@ public class InspectorWindow extends EditorWindow {
      */
     private void renderComponentEditor(GameObject obj) 
     {
+        if(obj.transform == null) return;
+
         ImGui.text("All Component Properties of " + obj.Name);
         ImGui.separator();
 

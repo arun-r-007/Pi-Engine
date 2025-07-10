@@ -29,11 +29,11 @@ public class DoubleField extends SerializeField<Double> {
             }
 
             boolean changed = false;
-            ImGui.text(name);
-            ImGui.sameLine();
+            // ImGui.text(name);
+            // ImGui.sameLine();
 
             ImGui.pushID(label);
-            changed = ImGui.dragFloat("###drag", value, 0.1f);  // Use float[] for ImGui compatibility
+            changed = ImGui.dragFloat(name, value, 0.1f);  
             ImGui.popID();
 
             if (changed) {
@@ -46,11 +46,19 @@ public class DoubleField extends SerializeField<Double> {
 
     @Override
     public void draw() {
-        ImGui.text(name);
-        ImGui.sameLine();
+        // ImGui.text(name);
+        // ImGui.sameLine();
 
         ImGui.pushID(label);
-        ImGui.dragFloat("###drag", value, 0.1f);
+        ImGui.dragFloat(name, value, 0.1f);
         ImGui.popID();
+        ImGui.sameLine();
+        ImGui.textDisabled("(?)");
+        if (ImGui.isItemHovered())
+        {
+            ImGui.beginTooltip();
+            ImGui.text("is set to null in script");
+            ImGui.endTooltip();
+        }
     }
 }

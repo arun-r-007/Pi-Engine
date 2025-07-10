@@ -6,12 +6,16 @@ import java.util.Map;
 
 import org.PiEngine.Core.Camera;
 import org.PiEngine.GameObjects.*;
+import org.PiEngine.Manager.AssetManager;
 import org.PiEngine.Math.Vector;
+import org.PiEngine.Utils.ComponentFactory;
+import org.PiEngine.Utils.GUIDProvider;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.PiEngine.Engine.Console;
+import org.PiEngine.Engine.Scene;
 
 /**
  * Base class for all components that can be attached to a GameObject.
@@ -68,10 +72,19 @@ public abstract class Component
 
 
     // A helper method to get the line number from the exception
-    private String getLineNumber(Exception e) {
+    private String getLineNumber(Exception e)
+    {
         StackTraceElement[] stackTrace = e.getStackTrace();
-        if (stackTrace.length > 0) {
-            return "Line: " + stackTrace[0].getLineNumber();
+        if (stackTrace.length > 0)
+        {
+            for (StackTraceElement element : stackTrace)
+            {
+                // Filter or check specific methods for line numbers
+                if (element.getClassName().equals(this.getClass().getName())) 
+                {
+                    return "Line: " + element.getLineNumber();
+                }
+            }
         }
         return "Unknown Line";
     }
@@ -128,55 +141,173 @@ public abstract class Component
         }
     }
 
-    public Map<String, Object> getProperties() {
+    public Map<String, Object> getProperties() 
+    {
         Map<String, Object> properties = new HashMap<>();
-        
-        
+    
         Field[] fields = this.getClass().getDeclaredFields();
-        
-        
-        for (Field field : fields) {
-            field.setAccessible(true); 
+    
+        for (Field field : fields) 
+        {
+            field.setAccessible(true);
             try {
+                Object value = field.get(this);
+                if (value instanceof GameObject) 
+                {
+                    value = GameObject.Location((GameObject)value);
+                }
+                if (Component.class.isAssignableFrom(field.getType()))
+                {
+                    Component cmp = (Component)field.get(this);
+                    if(cmp != null)
+                    { 
+                        Object fieldValue = field.get(this);
+                        String str = GameObject.Location(cmp.gameObject) + "<" + fieldValue.getClass().getSimpleName() +">";
+                        value = str;
+                    }
+                }
+                else if (value instanceof GUIDProvider)
+                {
+                    value = ((GUIDProvider)value).getGUID();
+                }
                 
-                properties.put(field.getName(), field.get(this));
+    
+                properties.put(field.getName(), value);
             } catch (IllegalAccessException e) {
-                e.printStackTrace(); 
+                e.printStackTrace();
             }
         }
-        // System.out.println(properties);
+    
         return properties;
     }
+    
+    public static String Location(Component cmp)
+    {
+        return GameObject.Location(cmp.gameObject) + "<" + cmp.getClass().getSimpleName() +">";
+    }
 
-
-    public void setComponentProperty(String propertyName, JsonElement propertyValue) {
-        try {
-            
+    public void setComponentProperty(String propertyName, JsonElement propertyValue) 
+    {
+        try 
+        {
             Field field = this.getClass().getDeclaredField(propertyName);
-            field.setAccessible(true); 
+            Object value = field.get(this);
+            field.setAccessible(true);
 
-            // Handle different property types
-            if (field.getType() == String.class) {
+            Class<?> fieldType = field.getType();
+
+            if (fieldType == String.class) 
+            {
                 field.set(this, propertyValue.getAsString());
-            } else if (field.getType() == Integer.class) {
+            } 
+            else if (fieldType == Integer.class || fieldType == int.class) 
+            {
                 field.set(this, propertyValue.getAsInt());
-            } else if (field.getType() == Float.class) {
+            } else if (fieldType == Float.class || fieldType == float.class) 
+            {
                 field.set(this, propertyValue.getAsFloat());
-            } else if (field.getType() == Boolean.class) {
+            } 
+            else if (fieldType == Boolean.class || fieldType == boolean.class) 
+            {
                 field.set(this, propertyValue.getAsBoolean());
-            } else if (field.getType() == Vector.class) {
+            } 
+            else if (fieldType == Vector.class) 
+            {
                 JsonObject vectorObject = propertyValue.getAsJsonObject();
                 float x = vectorObject.get("x").getAsFloat();
                 float y = vectorObject.get("y").getAsFloat();
                 float z = vectorObject.get("z").getAsFloat();
-                field.set(this, new Vector(x, y, z));  
-            } else {
-                System.out.println("Unsupported field type: " + field.getType());
+                field.set(this, new Vector(x, y, z));
+            } 
+            else if (fieldType == GameObject.class) 
+            {
+                String location = propertyValue.getAsString();
+                GameObject target = GameObject.findGameObject(location, Scene.getInstance().getRoot());
+                field.set(this, target);
+            } 
+            else if (Component.class.isAssignableFrom(field.getType()))
+            {
+                String full = propertyValue.getAsString();
+                int start = full.indexOf('<');
+                int end = full.indexOf('>');
+
+                String component = full.substring(start + 1, end);
+                String path = full.substring(0, start);
+
+                
+                GameObject target = GameObject.findGameObject(path, Scene.getInstance().getRoot());
+                Class<? extends Component> componentClass = ComponentFactory.GetClass(component);
+                if (componentClass != null && target != null) 
+                {    
+                    field.set(this, target.getComponent(componentClass));
+                }
             }
+            if (GUIDProvider.class.isAssignableFrom(field.getType()))
+            {
+                value = AssetManager.get(propertyValue.getAsString());
+                field.set(this, value);
+            }
+
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();  
+            e.printStackTrace();
         }
     }
+
+    final public void updateFields()
+    {
+        Class<?> clazz = this.getClass();
+        while (clazz != null && clazz != Component.class)
+        {
+            for (Field field : clazz.getDeclaredFields())
+            {
+                field.setAccessible(true);
+                Class<?> fieldType = field.getType();
+                try
+                {
+                    if (GameObject.class.isAssignableFrom(fieldType))
+                    {
+                        GameObject val = (GameObject) field.get(this);
+                        if (val != null)
+                        {
+                            GameObject g = GameObject.findGameObject(val.Location, Scene.getInstance().getRoot());
+                            if (g == null)
+                            {
+                                field.set(this, null);
+                            }
+                        }
+                    }
+                    else if (Component.class.isAssignableFrom(fieldType))
+                    {
+                        Component val = (Component) field.get(this);
+                        if (val != null && val.gameObject != null)
+                        {
+                            GameObject g = GameObject.findGameObject(val.gameObject.Location, Scene.getInstance().getRoot());
+                            if (g == null)
+                            {
+                                field.set(this, null); 
+                            }
+                        }
+                    }
+                    else if (GUIDProvider.class.isAssignableFrom(field.getType()))
+                    {
+                        GUIDProvider val = (GUIDProvider) field.get(this);
+                        Object guid = AssetManager.get(val.getGUID());
+                        field.set(this, guid);
+                    }
+                }
+                catch (IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+    }
+
+    
+    
+
+
 
     public GameObject getGameObject() {
         return gameObject;
