@@ -3,6 +3,9 @@ package org.PiEngine.Component;
 import org.PiEngine.Core.*;
 import org.PiEngine.Math.Vector;
 
+/**
+ * CameraComponent attaches a Camera to a GameObject and synchronizes its transform.
+ */
 public class CameraComponent extends Component
 {
 
@@ -22,15 +25,26 @@ public class CameraComponent extends Component
 
     }
 
+    /**
+     * Returns the Camera instance managed by this component.
+     * @return The Camera instance
+     */
     public Camera getCamera() {
         return camera;
     }
 
+    /**
+     * Called once when the component is first added to a GameObject.
+     * Sets the camera position to the GameObject's world position.
+     */
     @Override
     public void start() {
         camera.setPosition(gameObject.transform.getWorldPosition());
     }
 
+    /**
+     * Called every frame. Updates the camera's position and rotation to match the GameObject's transform.
+     */
     @Override
     public void update() {
         Vector pos = new Vector(gameObject.transform.getWorldPosition());

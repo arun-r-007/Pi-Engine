@@ -7,6 +7,10 @@ import org.PiEngine.Render.*;
 
 public class RendererComponent extends Component
 {
+    /**
+     * RendererComponent handles mesh rendering for a GameObject, including mesh geometry, color, shader, and texture assignment.
+     */
+
     public boolean Render = true;
     public Mesh mesh;
     public Float size = 2.5f;
@@ -14,6 +18,10 @@ public class RendererComponent extends Component
     public Vector Color;
     public Texture texture;
 
+    /**
+     * Called once when the component is first added to a GameObject.
+     * Initializes color, mesh, and shader for rendering.
+     */
     @Override
     public void start()
     {
@@ -29,12 +37,18 @@ public class RendererComponent extends Component
         // texture = TextureLoader.loadTexture("src\\main\\resources\\Sprites\\Box.png", GL11.GL_NEAREST, GL11.GL_NEAREST);
     }
 
+    /**
+     * Called every frame. Updates the mesh geometry if needed.
+     */
     @Override
     public void update()
     {
         updateMesh();
     }
 
+    /**
+     * Updates the mesh geometry based on the current size.
+     */
     private void updateMesh()
     {
         float x = 0;
@@ -62,6 +76,10 @@ public class RendererComponent extends Component
         }
     }
 
+    /**
+     * Renders the mesh using the assigned shader and texture.
+     * @param camera The camera to use for rendering
+     */
     @Override
     public void render(Camera camera)
     {
@@ -80,6 +98,10 @@ public class RendererComponent extends Component
         mesh.render();
     }
 
+    /**
+     * Called once before the component is removed or the GameObject is destroyed.
+     * Disposes of the mesh resources.
+     */
     @Override
     public void onDestroy()
     {
