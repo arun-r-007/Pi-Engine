@@ -4,21 +4,27 @@ import org.lwjgl.BufferUtils;
 
 /**
  * Represents a 4x4 matrix used for 3D transformations (translation, rotation, scale, projection, etc).
- * Stored in column-major order to match OpenGL expectations.
+ * This class stores matrix data in column-major order to match OpenGL expectations and provides
+ * comprehensive functionality for matrix operations and transformations in 3D space.
  */
 public class Matrix4
 {
-    public float[] elements = new float[16]; // 4x4 matrix stored in column-major order
+    /** The matrix elements stored in column-major order */
+    public float[] elements = new float[16];
 
-    /** Constructor creates an identity matrix by default */
+    /**
+     * Default constructor creates an uninitialized matrix.
+     * Use identity() to create an identity matrix.
+     */
     public Matrix4()
     {
-        this.elements = new float[16]; // Just allocate memory, don't call identity
+        this.elements = new float[16];
     }
 
     /**
      * Creates and returns an identity matrix.
-     * Diagonal is set to 1, rest is 0.
+     * An identity matrix has 1's on the diagonal and 0's elsewhere.
+     * @return New identity matrix
      */
     public static Matrix4 identity() 
     {
@@ -33,7 +39,10 @@ public class Matrix4
 
     /**
      * Multiplies two matrices and returns the result.
-     * Used for chaining transformations.
+     * Matrix multiplication is not commutative: a * b != b * a
+     * @param a First matrix (left operand)
+     * @param b Second matrix (right operand)
+     * @return Result of a * b
      */
     public static Matrix4 multiply(Matrix4 a, Matrix4 b) 
     {
@@ -53,13 +62,20 @@ public class Matrix4
         return result;
     }
 
-    /** Instance version of matrix multiplication. Returns this * other. */
+    /**
+     * Instance version of matrix multiplication.
+     * @param other Matrix to multiply with
+     * @return Result of this * other
+     */
     public Matrix4 multiply(Matrix4 other) 
     {
         return Matrix4.multiply(this, other);
     }
 
-    /** Copies this matrix into a new matrix instance. */
+    /**
+     * Creates a deep copy of this matrix.
+     * @return New matrix with same values
+     */
     public Matrix4 copy() 
     {
         Matrix4 result = new Matrix4();
@@ -68,8 +84,9 @@ public class Matrix4
     }
 
     /**
-     * Transposes this matrix.
-     * Converts rows to columns (useful for some OpenGL shader setups).
+     * Creates a transposed version of this matrix.
+     * Rows become columns and columns become rows.
+     * @return New transposed matrix
      */
     public Matrix4 transpose() 
     {
@@ -85,7 +102,9 @@ public class Matrix4
     }
 
     /**
-     * Creates a translation matrix based on a vector.
+     * Creates a translation matrix from a vector.
+     * @param vector Translation amounts for x, y, z
+     * @return Translation matrix
      */
     public static Matrix4 translate(Vector vector) 
     {
@@ -96,7 +115,13 @@ public class Matrix4
         return result;
     }
 
-    /** Overload: Translation from float components */
+    /**
+     * Creates a translation matrix from components.
+     * @param x X translation
+     * @param y Y translation
+     * @param z Z translation
+     * @return Translation matrix
+     */
     public static Matrix4 translate(float x, float y, float z) 
     {
         return translate(new Vector(x, y, z));
@@ -104,6 +129,8 @@ public class Matrix4
 
     /**
      * Creates a scale matrix from a vector.
+     * @param vector Scale factors for x, y, z
+     * @return Scale matrix
      */
     public static Matrix4 scale(Vector vector) 
     {
@@ -114,15 +141,24 @@ public class Matrix4
         return result;
     }
 
-    /** Overload: Scale from float components */
+    /**
+     * Creates a scale matrix from components.
+     * @param x X scale factor
+     * @param y Y scale factor
+     * @param z Z scale factor
+     * @return Scale matrix
+     */
     public static Matrix4 scale(float x, float y, float z) 
     {
         return scale(new Vector(x, y, z));
     }
 
     /**
-     * Creates a rotation matrix for a given angle and axis (normalized assumed).
+     * Creates a rotation matrix for a given angle and axis.
      * Uses Rodrigues' rotation formula.
+     * @param angleDeg Rotation angle in degrees
+     * @param axis Rotation axis (should be normalized)
+     * @return Rotation matrix
      */
     public static Matrix4 rotate(float angleDeg, Vector axis) 
     {
@@ -154,7 +190,11 @@ public class Matrix4
 
     /**
      * Creates a perspective projection matrix.
-     * Used for 3D rendering with depth.
+     * @param fov Field of view in degrees
+     * @param aspect Aspect ratio (width/height)
+     * @param near Near clipping plane distance
+     * @param far Far clipping plane distance
+     * @return Perspective projection matrix
      */
     public static Matrix4 perspective(float fov, float aspect, float near, float far) 
     {
@@ -173,10 +213,15 @@ public class Matrix4
         return result;
     }
 
-
     /**
      * Creates an orthographic projection matrix.
-     * Used for 2D rendering or UI.
+     * @param left Left plane coordinate
+     * @param right Right plane coordinate
+     * @param bottom Bottom plane coordinate
+     * @param top Top plane coordinate
+     * @param near Near plane distance
+     * @param far Far plane distance
+     * @return Orthographic projection matrix
      */
     public static Matrix4 orthographic(float left, float right, float bottom, float top, float near, float far) 
     {
@@ -196,6 +241,8 @@ public class Matrix4
     /**
      * Multiplies this matrix with a vector (assuming w=1).
      * Performs a perspective divide if w ≠ 1.
+     * @param v Vector to transform
+     * @return Transformed vector
      */
     public Vector multiply(Vector v) 
     {
@@ -216,7 +263,9 @@ public class Matrix4
     }
 
     /**
-     * Returns the underlying array of elements (useful for OpenGL uniform uploads).
+     * Returns the underlying array of elements.
+     * Useful for OpenGL uniform uploads.
+     * @return Array of matrix elements in column-major order
      */
     public float[] toArray() 
     {
@@ -224,10 +273,9 @@ public class Matrix4
     }
 
     /**
- * Extracts and returns the translation component (position) from this matrix.
- *
- * @return A {@code Vector} representing the position in 3D space.
- */
+     * Extracts and returns the translation component from this matrix.
+     * @return Vector representing the position in 3D space
+     */
     public Vector getTranslation()
     {
         return new Vector
@@ -240,6 +288,7 @@ public class Matrix4
 
     /**
      * Returns a readable string representation of the matrix.
+     * @return String showing matrix elements in row-major format
      */
     @Override
     public String toString() 
@@ -258,14 +307,13 @@ public class Matrix4
     }
 
     /**
-     * This buffer can then be passed to OpenGL (e.g., glLoadMatrixf).
-     * @return FloatBuffer containing the matrix elements in OpenGL-compatible format.
+     * Creates an OpenGL-compatible FloatBuffer containing matrix elements.
+     * @return FloatBuffer ready for use with OpenGL
      */
     public FloatBuffer toFloatBuffer()
     {
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(16); // Allocate space for 4x4 matrix
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 
-        // Fill buffer in column-major order (OpenGL expects this)
         for (int col = 0; col < 4; col++)
         {
             for (int row = 0; row < 4; row++)
@@ -274,21 +322,16 @@ public class Matrix4
             }
         }
 
-        buffer.flip(); // Prepare buffer for reading by OpenGL
+        buffer.flip();
         return buffer;
     }
 
     /**
-     * Calculates and returns the inverse of this 4x4 matrix.
-     * <p>
-     * This method uses the cofactor approach to compute the inverse. If the matrix is
-     * not invertible (i.e., determinant is zero), it returns an identity matrix as a fallback.
-     * <p>
-     * Useful for transforming coordinates from world space to local space,
-     * or for undoing a transformation.
-     *
-     * @return A new {@code Matrix4} that is the inverse of this matrix.
-     */    
+     * Calculates the inverse of a matrix.
+     * Returns identity matrix if matrix is not invertible.
+     * @param m Matrix to invert
+     * @return Inverted matrix
+     */
     public static Matrix4 invert(Matrix4 m) 
     {
         float[] inv = new float[16];
@@ -301,115 +344,113 @@ public class Matrix4
                 mat[13] * mat[6]  * mat[11] - 
                 mat[13] * mat[7]  * mat[10];
 
-        inv[4] = -mat[4]  * mat[10] * mat[15] + 
+        inv[4] = -mat[4] * mat[10] * mat[15] + 
                 mat[4]  * mat[11] * mat[14] + 
                 mat[8]  * mat[6]  * mat[15] - 
                 mat[8]  * mat[7]  * mat[14] - 
                 mat[12] * mat[6]  * mat[11] + 
                 mat[12] * mat[7]  * mat[10];
 
-        inv[8] = mat[4]  * mat[9] * mat[15] - 
+        inv[8] = mat[4]  * mat[9]  * mat[15] - 
                 mat[4]  * mat[11] * mat[13] - 
-                mat[8]  * mat[5] * mat[15] + 
-                mat[8]  * mat[7] * mat[13] + 
-                mat[12] * mat[5] * mat[11] - 
-                mat[12] * mat[7] * mat[9];
+                mat[8]  * mat[5]  * mat[15] + 
+                mat[8]  * mat[7]  * mat[13] + 
+                mat[12] * mat[5]  * mat[11] - 
+                mat[12] * mat[7]  * mat[9];
 
-        inv[12] = -mat[4]  * mat[9] * mat[14] + 
+        inv[12] = -mat[4] * mat[9]  * mat[14] + 
                 mat[4]  * mat[10] * mat[13] +
-                mat[8]  * mat[5] * mat[14] - 
-                mat[8]  * mat[6] * mat[13] - 
-                mat[12] * mat[5] * mat[10] + 
-                mat[12] * mat[6] * mat[9];
+                mat[8]  * mat[5]  * mat[14] - 
+                mat[8]  * mat[6]  * mat[13] - 
+                mat[12] * mat[5]  * mat[10] + 
+                mat[12] * mat[6]  * mat[9];
 
-        inv[1] = -mat[1]  * mat[10] * mat[15] + 
+        inv[1] = -mat[1] * mat[10] * mat[15] + 
                 mat[1]  * mat[11] * mat[14] + 
-                mat[9]  * mat[2] * mat[15] - 
-                mat[9]  * mat[3] * mat[14] - 
-                mat[13] * mat[2] * mat[11] + 
-                mat[13] * mat[3] * mat[10];
+                mat[9]  * mat[2]  * mat[15] - 
+                mat[9]  * mat[3]  * mat[14] - 
+                mat[13] * mat[2]  * mat[11] + 
+                mat[13] * mat[3]  * mat[10];
 
         inv[5] = mat[0]  * mat[10] * mat[15] - 
                 mat[0]  * mat[11] * mat[14] - 
-                mat[8]  * mat[2] * mat[15] + 
-                mat[8]  * mat[3] * mat[14] + 
-                mat[12] * mat[2] * mat[11] - 
-                mat[12] * mat[3] * mat[10];
+                mat[8]  * mat[2]  * mat[15] + 
+                mat[8]  * mat[3]  * mat[14] + 
+                mat[12] * mat[2]  * mat[11] - 
+                mat[12] * mat[3]  * mat[10];
 
-        inv[9] = -mat[0]  * mat[9] * mat[15] + 
+        inv[9] = -mat[0] * mat[9]  * mat[15] + 
                 mat[0]  * mat[11] * mat[13] + 
-                mat[8]  * mat[1] * mat[15] - 
-                mat[8]  * mat[3] * mat[13] - 
-                mat[12] * mat[1] * mat[11] + 
-                mat[12] * mat[3] * mat[9];
+                mat[8]  * mat[1]  * mat[15] - 
+                mat[8]  * mat[3]  * mat[13] - 
+                mat[12] * mat[1]  * mat[11] + 
+                mat[12] * mat[3]  * mat[9];
 
-        inv[13] = mat[0]  * mat[9] * mat[14] - 
+        inv[13] = mat[0]  * mat[9]  * mat[14] - 
                 mat[0]  * mat[10] * mat[13] - 
-                mat[8]  * mat[1] * mat[14] + 
-                mat[8]  * mat[2] * mat[13] + 
-                mat[12] * mat[1] * mat[10] - 
-                mat[12] * mat[2] * mat[9];
+                mat[8]  * mat[1]  * mat[14] + 
+                mat[8]  * mat[2]  * mat[13] + 
+                mat[12] * mat[1]  * mat[10] - 
+                mat[12] * mat[2]  * mat[9];
 
-        inv[2] = mat[1]  * mat[6] * mat[15] - 
-                mat[1]  * mat[7] * mat[14] - 
-                mat[5]  * mat[2] * mat[15] + 
-                mat[5]  * mat[3] * mat[14] + 
-                mat[13] * mat[2] * mat[7] - 
-                mat[13] * mat[3] * mat[6];
+        inv[2] = mat[1]  * mat[6]  * mat[15] - 
+                mat[1]  * mat[7]  * mat[14] - 
+                mat[5]  * mat[2]  * mat[15] + 
+                mat[5]  * mat[3]  * mat[14] + 
+                mat[13] * mat[2]  * mat[7] - 
+                mat[13] * mat[3]  * mat[6];
 
-        inv[6] = -mat[0]  * mat[6] * mat[15] + 
-                mat[0]  * mat[7] * mat[14] + 
-                mat[4]  * mat[2] * mat[15] - 
-                mat[4]  * mat[3] * mat[14] - 
-                mat[12] * mat[2] * mat[7] + 
-                mat[12] * mat[3] * mat[6];
+        inv[6] = -mat[0] * mat[6]  * mat[15] + 
+                mat[0]  * mat[7]  * mat[14] + 
+                mat[4]  * mat[2]  * mat[15] - 
+                mat[4]  * mat[3]  * mat[14] - 
+                mat[12] * mat[2]  * mat[7] + 
+                mat[12] * mat[3]  * mat[6];
 
-        inv[10] = mat[0]  * mat[5] * mat[15] - 
-                mat[0]  * mat[7] * mat[13] - 
-                mat[4]  * mat[1] * mat[15] + 
-                mat[4]  * mat[3] * mat[13] + 
-                mat[12] * mat[1] * mat[7] - 
-                mat[12] * mat[3] * mat[5];
+        inv[10] = mat[0]  * mat[5]  * mat[15] - 
+                mat[0]  * mat[7]  * mat[13] - 
+                mat[4]  * mat[1]  * mat[15] + 
+                mat[4]  * mat[3]  * mat[13] + 
+                mat[12] * mat[1]  * mat[7] - 
+                mat[12] * mat[3]  * mat[5];
 
-        inv[14] = -mat[0]  * mat[5] * mat[14] + 
-                mat[0]  * mat[6] * mat[13] + 
-                mat[4]  * mat[1] * mat[14] - 
-                mat[4]  * mat[2] * mat[13] - 
-                mat[12] * mat[1] * mat[6] + 
-                mat[12] * mat[2] * mat[5];
+        inv[14] = -mat[0] * mat[5]  * mat[14] + 
+                mat[0]  * mat[6]  * mat[13] + 
+                mat[4]  * mat[1]  * mat[14] - 
+                mat[4]  * mat[2]  * mat[13] - 
+                mat[12] * mat[1]  * mat[6] + 
+                mat[12] * mat[2]  * mat[5];
 
-        inv[3] = -mat[1] * mat[6] * mat[11] + 
-                mat[1] * mat[7] * mat[10] + 
-                mat[5] * mat[2] * mat[11] - 
-                mat[5] * mat[3] * mat[10] - 
-                mat[9] * mat[2] * mat[7] + 
-                mat[9] * mat[3] * mat[6];
+        inv[3] = -mat[1] * mat[6]  * mat[11] + 
+                mat[1]  * mat[7]  * mat[10] + 
+                mat[5]  * mat[2]  * mat[11] - 
+                mat[5]  * mat[3]  * mat[10] - 
+                mat[9]  * mat[2]  * mat[7] + 
+                mat[9]  * mat[3]  * mat[6];
 
-        inv[7] = mat[0] * mat[6] * mat[11] - 
-                mat[0] * mat[7] * mat[10] - 
-                mat[4] * mat[2] * mat[11] + 
-                mat[4] * mat[3] * mat[10] + 
-                mat[8] * mat[2] * mat[7] - 
-                mat[8] * mat[3] * mat[6];
+        inv[7] = mat[0]  * mat[6]  * mat[11] - 
+                mat[0]  * mat[7]  * mat[10] - 
+                mat[4]  * mat[2]  * mat[11] + 
+                mat[4]  * mat[3]  * mat[10] + 
+                mat[8]  * mat[2]  * mat[7] - 
+                mat[8]  * mat[3]  * mat[6];
 
-        inv[11] = -mat[0] * mat[5] * mat[11] + 
-                mat[0] * mat[7] * mat[9] + 
-                mat[4] * mat[1] * mat[11] - 
-                mat[4] * mat[3] * mat[9] - 
-                mat[8] * mat[1] * mat[7] + 
-                mat[8] * mat[3] * mat[5];
+        inv[11] = -mat[0] * mat[5]  * mat[11] + 
+                mat[0]  * mat[7]  * mat[9] + 
+                mat[4]  * mat[1]  * mat[11] - 
+                mat[4]  * mat[3]  * mat[9] - 
+                mat[8]  * mat[1]  * mat[7] + 
+                mat[8]  * mat[3]  * mat[5];
 
-        inv[15] = mat[0] * mat[5] * mat[10] - 
-                mat[0] * mat[6] * mat[9] - 
-                mat[4] * mat[1] * mat[10] + 
-                mat[4] * mat[2] * mat[9] + 
-                mat[8] * mat[1] * mat[6] - 
-                mat[8] * mat[2] * mat[5];
+        inv[15] = mat[0]  * mat[5]  * mat[10] - 
+                mat[0]  * mat[6]  * mat[9] - 
+                mat[4]  * mat[1]  * mat[10] + 
+                mat[4]  * mat[2]  * mat[9] + 
+                mat[8]  * mat[1]  * mat[6] - 
+                mat[8]  * mat[2]  * mat[5];
 
         float det = mat[0] * inv[0] + mat[1] * inv[4] + mat[2] * inv[8] + mat[3] * inv[12];
-
-        if (det == 0)
-            return Matrix4.identity(); // Return identity if not invertible
+        if (det == 0) return identity();
 
         det = 1.0f / det;
 

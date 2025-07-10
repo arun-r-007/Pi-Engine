@@ -9,22 +9,34 @@ import static org.lwjgl.opengl.GL30.*;
 /**
  * The Camera class handles view and projection matrix generation
  * for a 3D scene using position, rotation, and projection parameters.
+ * Supports both perspective and orthographic projections, and layer-based rendering.
  */
 public class Camera
 {
-    private Vector position;         // Position of the camera in world space
-    private Vector rotation;         // Rotation of the camera (pitch, yaw, roll)
-    private Matrix4 viewMatrix;      // View matrix (world-to-camera transformation)
-    private Matrix4 projectionMatrix; // Projection matrix (camera-to-clip transformation)
+    /** Position of the camera in world space */
+    private Vector position;
+    /** Rotation of the camera (pitch, yaw, roll) */
+    private Vector rotation;
+    /** View matrix (world-to-camera transformation) */
+    private Matrix4 viewMatrix;
+    /** Projection matrix (camera-to-clip transformation) */
+    private Matrix4 projectionMatrix;
 
-    private float fov;               // Field of view (in degrees)
-    private float aspectRatio;       // Aspect ratio (width / height)
-    private float nearPlane;         // Near clipping plane
-    private float farPlane;          // Far clipping plane
+    /** Field of view (in degrees) */
+    private float fov;
+    /** Aspect ratio (width / height) */
+    private float aspectRatio;
+    /** Near clipping plane */
+    private float nearPlane;
+    /** Far clipping plane */
+    private float farPlane;
 
     private boolean isOrthographic = false;
     private float orthoLeft, orthoRight, orthoBottom, orthoTop;
 
+    /**
+     * Default constructor for Camera.
+     */
     public Camera()
     {
 
@@ -32,6 +44,9 @@ public class Camera
     
     /**
      * Constructs a new Camera with the specified projection parameters.
+     * @param aspectRatio The aspect ratio (width/height)
+     * @param nearPlane The near clipping plane
+     * @param farPlane The far clipping plane
      */
     public Camera(float aspectRatio, float nearPlane, float farPlane)
     {
@@ -42,6 +57,12 @@ public class Camera
 
     /**
      * Sets this camera to use orthographic projection.
+     * @param left Left plane
+     * @param right Right plane
+     * @param bottom Bottom plane
+     * @param top Top plane
+     * @param near Near plane
+     * @param far Far plane
      */
     public void setOrthographic(float left, float right, float bottom, float top, float near, float far)
     {
@@ -57,6 +78,10 @@ public class Camera
 
     /**
      * Sets this camera to use perspective projection.
+     * @param fov Field of view in degrees
+     * @param aspectRatio Aspect ratio (width/height)
+     * @param near Near plane
+     * @param far Far plane
      */
     public void setPerspective(float fov, float aspectRatio, float near, float far)
     {
@@ -98,9 +123,9 @@ public class Camera
         this.viewMatrix = rotationMatrix.multiply(translationMatrix);
     }
     
-    
     /**
      * Returns the view matrix.
+     * @return The view matrix
      */
     public Matrix4 getViewMatrix()
     {
@@ -109,6 +134,7 @@ public class Camera
 
     /**
      * Returns the projection matrix.
+     * @return The projection matrix
      */
     public Matrix4 getProjectionMatrix()
     {
@@ -117,6 +143,7 @@ public class Camera
 
     /**
      * Returns the position of the camera.
+     * @return The camera position
      */
     public Vector getPosition()
     {
@@ -125,6 +152,7 @@ public class Camera
 
     /**
      * Sets the camera position.
+     * @param position The new camera position
      */
     public void setPosition(Vector position)
     {
@@ -134,6 +162,7 @@ public class Camera
 
     /**
      * Returns the rotation of the camera.
+     * @return The camera rotation
      */
     public Vector getRotation()
     {
@@ -142,6 +171,7 @@ public class Camera
 
     /**
      * Sets the camera rotation.
+     * @param rotation The new camera rotation
      */
     public void setRotation(Vector rotation)
     {
@@ -163,18 +193,22 @@ public class Camera
         glLoadMatrixf(viewMatrix.toFloatBuffer());
     }
 
-
+    /**
+     * Applies this camera's projection and view matrix to the given shader.
+     * @param shader The shader to apply camera matrices to
+     */
     public void applyToShader(Shader shader)
     {
 
     }
 
 
-    // Add this field to filter what layers this camera will render
+    /** Add this field to filter what layers this camera will render */
     private int renderLayerMask = 0xFFFFFFFF; // Default: all layers visible
 
     /**
      * Returns the current render layer bitmask.
+     * @return The render layer bitmask
      */
     public int getRenderLayerMask()
     {
@@ -183,6 +217,7 @@ public class Camera
 
     /**
      * Sets the render layer bitmask. Only GameObjects with matching layers will be rendered.
+     * @param mask The new render layer bitmask
      */
     public void setRenderLayerMask(int mask)
     {
@@ -191,6 +226,7 @@ public class Camera
 
     /**
      * Enables rendering for the given layer (bitwise OR).
+     * @param layerBit The layer bit to enable
      */
     public void addRenderLayer(int layerBit)
     {
@@ -199,6 +235,7 @@ public class Camera
 
     /**
      * Disables rendering for the given layer (bitwise AND NOT).
+     * @param layerBit The layer bit to disable
      */
     public void removeRenderLayer(int layerBit)
     {
@@ -207,6 +244,8 @@ public class Camera
 
     /**
      * Checks whether this camera is set to render the given layer.
+     * @param layerBit The layer bit to check
+     * @return True if the camera renders the layer, false otherwise
      */
     public boolean canRenderLayer(int layerBit)
     {

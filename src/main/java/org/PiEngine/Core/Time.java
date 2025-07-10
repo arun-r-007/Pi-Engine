@@ -70,6 +70,88 @@ public class Time
     }
 
     /**
+     * Returns the time in seconds since the engine started.
+     * @return The elapsed time in seconds
+     */
+    public static float getTime()
+    {
+        return (float) glfwGetTime();
+    }
+
+    /**
+     * Returns the time in milliseconds since the engine started.
+     * @return The elapsed time in milliseconds
+     */
+    public static float getTimeMillis()
+    {
+        return (float) (glfwGetTime() * 1000.0);
+    }
+
+    /**
+     * Returns the time in nanoseconds since the engine started.
+     * @return The elapsed time in nanoseconds
+     */
+    public static float getTimeNanos()
+    {
+        return (float) (glfwGetTime() * 1000000.0);
+    }
+
+    /**
+     * Returns the time between the last two frames in seconds (delta time).
+     * @return The delta time in seconds
+     */
+    public static float getDeltaTime()
+    {
+        return deltaTime;
+    }
+
+    /**
+     * Returns the unscaled time between the last two frames in seconds (unscaled delta time).
+     * @return The unscaled delta time in seconds
+     */
+    public static float getUnscaledDeltaTime()
+    {
+        return unscaledDeltaTime;
+    }
+
+    /**
+     * Returns the fixed delta time in seconds, used for fixed updates.
+     * @return The fixed delta time in seconds
+     */
+    public static float getFixedDeltaTime()
+    {
+        return fixedDeltaTime;
+    }
+
+    /**
+     * Returns the current time scale multiplier.
+     * @return The time scale
+     */
+    public static float getTimeScale()
+    {
+        return timeScale;
+    }
+
+    /**
+     * Sets a new time scale multiplier.
+     * @param scale The new time scale
+     */
+    public static void setTimeScale(float scale)
+    {
+        timeScale = scale;
+    }
+
+    /**
+     * Returns the accumulated fixed time in seconds.
+     * This value increases over time and is used to determine when to perform fixed updates.
+     * @return The accumulated fixed time
+     */
+    public static float getFixedTime()
+    {
+        return fixedTime;
+    }
+
+    /**
      * Returns the frame delta time history for plotting graphs.
      *
      * @return A float array of unscaled delta times in order.

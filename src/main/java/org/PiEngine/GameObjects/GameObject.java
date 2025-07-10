@@ -14,14 +14,20 @@ import java.util.List;
 
 public class GameObject
 {
+    /** The name of the GameObject */
     public String Name;
+    /** The Transform component for position, rotation, scale */
     public Transform transform;
+    /** Unique identifier for this GameObject */
     private int id;
+    /** Hierarchical path of this GameObject */
     public String Location; 
+    /** Layer bitmask for rendering and filtering */
     private int layer = LayerManager.getLayerBit("Layer0");
 
     /**
      * Constructs a GameObject with a given name and initializes its Transform.
+     * @param name The name of the GameObject
      */
     public GameObject(String name)
     {
@@ -32,9 +38,9 @@ public class GameObject
         Location = Location(this);
     }
 
-
     /**
      * Adds a child GameObject by parenting its Transform to this GameObject's Transform.
+     * @param child The child GameObject to add
      */
     public void addChild(GameObject child)
     {
@@ -43,17 +49,13 @@ public class GameObject
         // System.out.println(child.Name + " " + child.Location);
     }
 
-    // Holds all components attached to this GameObject
+    /** Holds all components attached to this GameObject */
     private List<Component> components = new ArrayList<>();
 
     /**
      * Adds a component to this GameObject.
-     * 
-     * - Sets the component's reference to this GameObject.
-     * - Adds it to the internal component list.
-     * - Calls the component's start() method for any initialization logic.
-     *
-     * @param component The component instance to attach.
+     * Sets the component's reference to this GameObject and its transform, adds it to the internal list, and calls its start method.
+     * @param component The component instance to attach
      */
     public void addComponent(Component component)
     {
@@ -65,13 +67,10 @@ public class GameObject
 
     /**
      * Retrieves the first component of the specified type attached to this GameObject.
-     * 
-     * - Uses Java generics to return the correct type.
-     * - Returns null if no component of the requested type is found.
-     *
-     * @param <T>  The class type of the component.
-     * @param type The class object representing the desired component type.
-     * @return The component instance if found; otherwise, null.
+     * Uses Java generics to return the correct type. Returns null if not found.
+     * @param <T>  The class type of the component
+     * @param type The class object representing the desired component type
+     * @return The component instance if found; otherwise, null
      */
     public <T extends Component> T getComponent(Class<T> type)
     {
@@ -108,10 +107,8 @@ public class GameObject
         }
     }
 
-
     /**
-     * Called once every frame.
-     * Updates all components and recursively updates all children.
+     * Called once every frame. Updates all components and recursively updates all children.
      */
     public void update()
     {
@@ -135,8 +132,9 @@ public class GameObject
     }
 
     /**
-     * Called once every frame after update().
-     * Responsible for rendering this GameObject and its children.
+     * Called once every frame after update(). Responsible for rendering this GameObject and its children.
+     * @param camera The camera to render with
+     * @param layerMask The layer mask for rendering
      */
     public void render(Camera camera, int layerMask)
     {
@@ -164,8 +162,7 @@ public class GameObject
     }
 
     /**
-     * Called after render(), only in debug mode or when needed.
-     * Used to draw debug visuals like bounding boxes, axis lines, etc.
+     * Called after render(), only in debug mode or when needed. Used to draw debug visuals like bounding boxes, axis lines, etc.
      */
     public void debugRender()
     {
@@ -188,6 +185,9 @@ public class GameObject
         }
     }
 
+    /**
+     * Recursively updates the Location string for this GameObject and all children.
+     */
     public void UpdateLocation()
     {
         for (Transform childTransform : transform.getChildren())
@@ -196,17 +196,28 @@ public class GameObject
             if (child != null)
             {
                 child.UpdateLocation();
+                child.Location = GameObject.Location(child);
             }
-            child.Location = GameObject.Location(child);
         }
     }
 
+    /**
+     * Returns the hierarchical path of the GameObject in the scene tree.
+     * @param gb The GameObject
+     * @return The path string
+     */
     public static String Location(GameObject gb)
     {
         if(gb.transform.getParent() == null) return "/" + gb.Name; 
         return Location(gb.transform.getParent().getGameObject()) + "/" + gb.Name; 
     }
 
+    /**
+     * Finds a GameObject by its path, recursively searching the hierarchy.
+     * @param path The path string
+     * @param root The root GameObject to search from
+     * @return The found GameObject, or null if not found
+     */
     public static GameObject findGameObject(String path, GameObject root)
     {
         // Trim leading slash and split path
@@ -244,6 +255,12 @@ public class GameObject
         return null; // No match found
     }
 
+    /**
+     * Finds a GameObject by its path using an iterative approach.
+     * @param path The path string
+     * @param root The root GameObject to search from
+     * @return The found GameObject, or null if not found
+     */
     public static GameObject findGameObjectItrative(String path, GameObject root)
     {
         String[] parts = path.startsWith("/") ? path.substring(1).split("/") : path.split("/");
@@ -282,9 +299,6 @@ public class GameObject
         return current;
     }
 
-
-
-
     /**
      * Recursively prints the hierarchy of GameObjects starting from this one.
      */
@@ -311,12 +325,8 @@ public class GameObject
     }
 
     /**
-     * Reparents this GameObject to a new parent GameObject.
-     * 
-     * This will remove this GameObject from its current parent's children list
-     * and add it to the specified new parent's children list.
-     *
-     * @param newParent The GameObject to become the new parent of this GameObject.
+     * Reparents this GameObject to a new parent GameObject, preserving world transform.
+     * @param newParent The GameObject to become the new parent
      */
     public void reparentTo(GameObject newParent)
     {
@@ -363,19 +373,27 @@ public class GameObject
         }
     }
 
-
+    /**
+     * Gets the layer bitmask.
+     * @return The layer bitmask
+     */
     public int getLayerBit()
     {
         return layer;
     }
 
+    /**
+     * Sets the layer bitmask.
+     * @param newLayer The new layer bitmask
+     */
     public void setLayer(int newLayer)
     {
         this.layer = newLayer;
     }
 
     /**
-     * Sets the layer(bit) for this object only.
+     * Sets the layer for this object only.
+     * @param newLayer The new layer bitmask
      */
     public void setLayerOnly(int newLayer)
     {
@@ -383,7 +401,8 @@ public class GameObject
     }
 
     /**
-     * Sets the layer(bit) for this object and all its children recursively.
+     * Sets the layer for this object and all its children recursively.
+     * @param layerBit The new layer bitmask
      */
     public void setLayerRecursively(int layerBit)
     {
@@ -396,6 +415,8 @@ public class GameObject
 
     /**
      * Sets the layer from layer(bit) name (for convenience).
+     * @param layerName The name of the layer
+     * @param recursive Whether to set recursively
      */
     public void setLayerByName(String layerName, boolean recursive)
     {
@@ -410,9 +431,9 @@ public class GameObject
         }
     }
 
-
     /**
      * Returns a readable string representation of the GameObject.
+     * @return String representation
      */
     @Override
     public String toString()
@@ -420,18 +441,27 @@ public class GameObject
         return String.format("GameObject(Name: %s)", Name);
     }
 
-     /**
-     * @return return all the components of a Gameobject 
+    /**
+     * Returns all the components of a GameObject.
+     * @return List of components
      */
     public List<Component> getAllComponents() {
         return new ArrayList<>(components);
     }    
 
+    /**
+     * Removes a component from this GameObject.
+     * @param cmp The component to remove
+     */
     public void removeComponent(Component cmp)
     {
         components.remove(cmp);
     }
 
+    /**
+     * Destroys a GameObject and all its children, removing them from the hierarchy and clearing components.
+     * @param thisGb The GameObject to destroy
+     */
     public static void destroy(GameObject thisGb)
     {
         Collection<Transform> children = thisGb.transform.getChildren();
@@ -457,56 +487,82 @@ public class GameObject
         children = null; 
     }
 
-    @Override
-    protected void finalize()
-    {
-        System.out.println("Removed: " + this.Name);
-    }
-
+    /**
+     * Gets the unique ID of this GameObject.
+     * @return The unique ID
+     */
     public int getId() {
         return id;
     }
 
-
+    /**
+     * Gets the name of this GameObject.
+     * @return The name
+     */
     public String getName() {
         return Name;
     }
 
-
+    /**
+     * Sets the name of this GameObject.
+     * @param name The new name
+     */
     public void setName(String name) {
         Name = name;
     }
 
-
+    /**
+     * Gets the Transform of this GameObject.
+     * @return The Transform
+     */
     public Transform getTransform() {
         return transform;
     }
 
-
+    /**
+     * Sets the Transform of this GameObject.
+     * @param transform The new Transform
+     */
     public void setTransform(Transform transform) {
         this.transform = transform;
     }
 
-
+    /**
+     * Sets the unique ID of this GameObject.
+     * @param id The new ID
+     */
     public void setId(int id) {
         this.id = id;
     }
 
-
+    /**
+     * Gets the layer of this GameObject.
+     * @return The layer
+     */
     public int getLayer() {
         return layer;
     }
 
-
+    /**
+     * Gets the list of components attached to this GameObject.
+     * @return List of components
+     */
     public List<Component> getComponents() {
         return components;
     }
 
-
+    /**
+     * Sets the list of components attached to this GameObject.
+     * @param components The new list of components
+     */
     public void setComponents(List<Component> components) {
         this.components = components;
     }
 
+    /**
+     * Gets the number of components attached to this GameObject.
+     * @return The number of components
+     */
     public int getComponentCount()
     {
         return components.size();
