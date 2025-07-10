@@ -15,6 +15,10 @@ public class Input
     private static boolean[] buttons = new boolean[MAX_BUTTONS];
     private static boolean[] buttonsLast = new boolean[MAX_BUTTONS];
 
+    /**
+     * Initializes the input system with the window handle.
+     * @param windowHandle The GLFW window handle
+     */
     public static void init(long windowHandle)
     {
         window = windowHandle;
@@ -40,6 +44,8 @@ public class Input
 
     /**
      * Returns true while the key is held down.
+     * @param key The GLFW key code
+     * @return True if the key is down
      */
     public static boolean isKeyDown(int key)
     {
@@ -48,6 +54,8 @@ public class Input
 
     /**
      * Returns true only on the frame the key was pressed.
+     * @param key The GLFW key code
+     * @return True if the key was pressed this frame
      */
     public static boolean isKeyPressed(int key)
     {
@@ -56,6 +64,8 @@ public class Input
 
     /**
      * Returns true only on the frame the key was released.
+     * @param key The GLFW key code
+     * @return True if the key was released this frame
      */
     public static boolean isKeyReleased(int key)
     {
@@ -64,6 +74,8 @@ public class Input
 
     /**
      * Returns true while the mouse button is held down.
+     * @param button The GLFW mouse button code
+     * @return True if the button is down
      */
     public static boolean isMouseDown(int button)
     {
@@ -72,6 +84,8 @@ public class Input
 
     /**
      * Returns true only on the frame the mouse button was pressed.
+     * @param button The GLFW mouse button code
+     * @return True if the button was pressed this frame
      */
     public static boolean isMousePressed(int button)
     {
@@ -80,6 +94,8 @@ public class Input
 
     /**
      * Returns true only on the frame the mouse button was released.
+     * @param button The GLFW mouse button code
+     * @return True if the button was released this frame
      */
     public static boolean isMouseReleased(int button)
     {
@@ -88,6 +104,7 @@ public class Input
 
     /**
      * Gets current mouse X position.
+     * @return Mouse X position in window coordinates
      */
     public static float getMouseX()
     {
@@ -98,11 +115,40 @@ public class Input
 
     /**
      * Gets current mouse Y position.
+     * @return Mouse Y position in window coordinates
      */
     public static float getMouseY()
     {
         double[] y = new double[1];
         glfwGetCursorPos(window, new double[1], y);
         return (float) y[0];
+    }
+
+    /**
+     * Returns the current state of the specified key.
+     * @param key The key code to check
+     * @return True if the key is pressed, false otherwise
+     */
+    public static boolean getKeyState(int key)
+    {
+        return keys[key];
+    }
+
+    /**
+     * Returns the current state of the specified mouse button.
+     * @param button The mouse button code to check
+     * @return True if the mouse button is pressed, false otherwise
+     */
+    public static boolean getMouseButtonState(int button)
+    {
+        return buttons[button];
+    }
+
+    /**
+     * Updates the input state. Should be called once per frame.
+     */
+    public static void updateInput()
+    {
+        update();
     }
 }

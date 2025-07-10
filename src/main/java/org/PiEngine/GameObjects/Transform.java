@@ -41,6 +41,7 @@ public class Transform
 
     /**
      * Adds a child Transform to this Transform.
+     * @param child The child Transform to add
      */
     public void addChild(Transform child)
     {
@@ -50,6 +51,7 @@ public class Transform
 
     /**
      * Removes a child Transform from this Transform.
+     * @param child The child Transform to remove
      */
     public void removeChild(Transform child)
     {
@@ -60,6 +62,7 @@ public class Transform
 
     /**
      * Returns the parent Transform.
+     * @return The parent Transform, or null if root
      */
     public Transform getParent()
     {
@@ -68,6 +71,7 @@ public class Transform
 
     /**
      * Returns the list of child Transforms.
+     * @return List of child Transforms
      */
     public List<Transform> getChildren()
     {
@@ -80,6 +84,7 @@ public class Transform
 
     /**
      * Returns the local position relative to the parent.
+     * @return Local position vector
      */
     public Vector getLocalPosition()
     {
@@ -88,6 +93,7 @@ public class Transform
 
     /**
      * Returns the local rotation.
+     * @return Local rotation vector
      */
     public Vector getLocalRotation()
     {
@@ -96,6 +102,7 @@ public class Transform
 
     /**
      * Returns the local scale.
+     * @return Local scale vector
      */
     public Vector getLocalScale()
     {
@@ -108,6 +115,7 @@ public class Transform
 
     /**
      * Sets the local position.
+     * @param pos The new local position
      */
     public void setLocalPosition(Vector pos)
     {
@@ -116,6 +124,7 @@ public class Transform
 
     /**
      * Sets the local rotation.
+     * @param rot The new local rotation
      */
     public void setLocalRotation(Vector rot)
     {
@@ -124,6 +133,7 @@ public class Transform
 
     /**
      * Sets the local scale.
+     * @param scale The new local scale
      */
     public void setLocalScale(Vector scale)
     {
@@ -136,6 +146,7 @@ public class Transform
 
     /**
      * Returns the transformation matrix built from position, rotation, and scale.
+     * @return Local transformation Matrix4
      */
     public Matrix4 getLocalMatrix() 
     {
@@ -165,6 +176,7 @@ public class Transform
 
     /**
      * Returns the world transformation matrix by combining with parent transforms recursively.
+     * @return World transformation Matrix4
      */
     public Matrix4 getWorldMatrix()
     {
@@ -178,6 +190,7 @@ public class Transform
 
     /**
      * Gets the position in world space.
+     * @return World position vector
      */
     public Vector getWorldPosition()
     {
@@ -186,6 +199,7 @@ public class Transform
 
     /**
      * Gets the rotation in world space by recursively adding parent rotations.
+     * @return World rotation vector
      */
     public Vector getWorldRotation()
     {
@@ -198,6 +212,7 @@ public class Transform
 
     /**
      * Gets the scale in world space by accumulating parent scales.
+     * @return World scale vector
      */
     public Vector getWorldScale()
     {
@@ -220,6 +235,7 @@ public class Transform
 
     /**
      * Sets the position in world space by converting it to local space.
+     * @param worldPos The new world position
      */
     public void setWorldPosition(Vector worldPos)
     {
@@ -239,6 +255,7 @@ public class Transform
     /**
      * Sets the world rotation by converting it to local rotation.
      * Only Z rotation is considered in 2D.
+     * @param worldRot The new world rotation
      */
     public void setWorldRotation(Vector worldRot)
     {
@@ -255,6 +272,7 @@ public class Transform
 
     /**
      * Sets the world scale by converting it to local scale.
+     * @param worldScale The new world scale
      */
     public void setWorldScale(Vector worldScale)
     {
@@ -279,6 +297,7 @@ public class Transform
 
     /**
      * Returns the cached world transformation matrix.
+     * @return The cached world Matrix4
      */
     public Matrix4 getMatrix()
     {
@@ -303,6 +322,7 @@ public class Transform
 
     /**
      * Sets the GameObject that owns this Transform.
+     * @param obj The GameObject to set
      */
     public void setGameObject(GameObject obj)
     {
@@ -311,6 +331,7 @@ public class Transform
 
     /**
      * Returns the GameObject that owns this Transform.
+     * @return The GameObject
      */
     public GameObject getGameObject()
     {
@@ -343,6 +364,7 @@ public class Transform
 
     /**
      * Returns a readable string representation of the Transform.
+     * @return String representation
      */
     @Override
     public String toString()
@@ -353,6 +375,9 @@ public class Transform
         );
     }
 
+    /**
+     * Destroys this Transform and all its children, removing them from the hierarchy.
+     */
     public void destroy()
     {
         position = null;              

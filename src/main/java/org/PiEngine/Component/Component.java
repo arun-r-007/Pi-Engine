@@ -19,9 +19,9 @@ import org.PiEngine.Engine.Scene;
 
 /**
  * Base class for all components that can be attached to a GameObject.
- * 
- * - Subclass this to create custom behaviors (e.g., physics, scripts, renderers).
- * - Lifecycle methods are called by the engine automatically.
+ * <p>
+ * Subclass this to create custom behaviors (e.g., physics, scripts, renderers).
+ * Lifecycle methods are called by the engine automatically.
  */
 public abstract class Component
 {
@@ -61,6 +61,7 @@ public abstract class Component
     /**
      * Called every frame for rendering-related behavior.
      * Override if your component needs to draw visuals using OpenGL or other rendering logic.
+     * @param camera The camera to use for rendering
      */
     public void render(Camera camera) {}
 
@@ -89,6 +90,9 @@ public abstract class Component
         return "Unknown Line";
     }
 
+    /**
+     * Runs update() safely, catching and logging exceptions with line numbers.
+     */
     final public void safeUpdate() 
     {
         try 
@@ -102,6 +106,9 @@ public abstract class Component
         }
     }
 
+    /**
+     * Runs start() safely, catching and logging exceptions with line numbers.
+     */
     final public void safeStart() 
     {
         try 
@@ -115,6 +122,9 @@ public abstract class Component
         }
     }
 
+    /**
+     * Runs fixedUpdate() safely, catching and logging exceptions with line numbers.
+     */
     final public void safeFixedUpdate() 
     {
         try 
@@ -141,6 +151,11 @@ public abstract class Component
         }
     }
 
+    /**
+     * Returns a map of property names and values for this component, including
+     * serialized references for GameObjects and Components.
+     * @return A map of property names to their values
+     */
     public Map<String, Object> getProperties() 
     {
         Map<String, Object> properties = new HashMap<>();
@@ -181,11 +196,21 @@ public abstract class Component
         return properties;
     }
     
+    /**
+     * Returns the serialized location of the GameObject and component type.
+     * @param cmp The component to get the location for
+     * @return A string representing the location of the component
+     */
     public static String Location(Component cmp)
     {
         return GameObject.Location(cmp.gameObject) + "<" + cmp.getClass().getSimpleName() +">";
     }
 
+    /**
+     * Sets a component property using reflection, with support for nested GameObjects and Components.
+     * @param propertyName The name of the property to set
+     * @param propertyValue The value to set the property to
+     */
     public void setComponentProperty(String propertyName, JsonElement propertyValue) 
     {
         try 
@@ -253,6 +278,10 @@ public abstract class Component
         }
     }
 
+    /**
+     * Updates fields in this component using reflection, clearing references to
+     * destroyed GameObjects and Components.
+     */
     final public void updateFields()
     {
         Class<?> clazz = this.getClass();
