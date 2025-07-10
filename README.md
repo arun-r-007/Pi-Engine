@@ -8,6 +8,20 @@ PiEngine is a modular, component-based Java game engine built from scratch for 2
 ![RenderGraph Screenshots](docs/screenshots/RenderGraph.png)
 
 
+## Documentation
+
+Comprehensive documentation is available in the [`docs/`](docs/README.md) folder. It covers:
+- Math utilities ([Math](docs/Math/README.md))
+- GameObject/entity system ([GameObject](docs/GameObject/README.md))
+- Components ([Components](docs/Components/README.md))
+- Core engine systems ([Core](docs/Core/README.md))
+
+Each section includes function/property tables, usage examples, best practices, and cross-references. Start with [`docs/README.md`](docs/README.md) for an index of all docs.
+
+> **Acknowledgment**
+>
+> Much of the documentation for PiEngine was generated with the help of GitHub Copilot (AI), under the supervision and review of the core developers ([Shri Hari (TanPi)](https://github.com/ItsTanPI) and [Gunavarthan](https://github.com/Gunavarthan)).
+> As a small team with limited time, we used AI tools to accelerate the writing process and ensure comprehensive, high-quality docs for the community. All content was checked and curated by us.
 
 ## Features
 
@@ -31,6 +45,7 @@ Pi-Engine/
 ├── resources/
 │   ├── shaders/                # External GLSL shaders
 │   └── Test.json               # Sample scene
+├── docs/                       # Engine documentation (see above)
 ├── build.gradle                # Gradle setup
 
 ```
