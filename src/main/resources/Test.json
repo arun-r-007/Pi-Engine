@@ -5,14 +5,14 @@
       "components": [
         {
           "name": "Movemet",
-          "id": 30,
+          "id": 5,
           "properties": {
             "speed": 10.0
           }
         },
         {
           "name": "RendererComponent",
-          "id": 31,
+          "id": 6,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -37,8 +37,8 @@
       },
       "id": 1,
       "position": {
-        "x": 2.240202,
-        "y": 1.6527187,
+        "x": 7.5474544,
+        "y": 5.783069,
         "z": 0.0
       },
       "layer": 2
@@ -47,7 +47,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 33,
+          "id": 8,
           "properties": {
             "zindex": 0.0,
             "MinumDist": 1.25,
@@ -56,7 +56,7 @@
         },
         {
           "name": "RendererComponent",
-          "id": 34,
+          "id": 9,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -91,7 +91,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 36,
+          "id": 11,
           "properties": {
             "zindex": 0.0,
             "MinumDist": 1.25,
@@ -100,7 +100,7 @@
         },
         {
           "name": "RendererComponent",
-          "id": 37,
+          "id": 12,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -135,7 +135,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 39,
+          "id": 14,
           "properties": {
             "zindex": 0.0,
             "MinumDist": 1.25,
@@ -144,7 +144,7 @@
         },
         {
           "name": "RendererComponent",
-          "id": 40,
+          "id": 15,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -179,7 +179,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 42,
+          "id": 17,
           "properties": {
             "zindex": 0.0,
             "MinumDist": 1.25,
@@ -188,7 +188,7 @@
         },
         {
           "name": "RendererComponent",
-          "id": 43,
+          "id": 18,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -223,7 +223,7 @@
       "components": [
         {
           "name": "SpinComponent",
-          "id": 45,
+          "id": 20,
           "properties": {
             "dir": 1.0,
             "speed": 100.0
@@ -231,7 +231,7 @@
         },
         {
           "name": "RendererComponent",
-          "id": 46,
+          "id": 21,
           "properties": {
             "size": 2.5,
             "Color": {
@@ -247,7 +247,7 @@
           "components": [
             {
               "name": "RendererComponent",
-              "id": 48,
+              "id": 23,
               "properties": {
                 "size": 2.5,
                 "Color": {
@@ -263,7 +263,7 @@
               "components": [
                 {
                   "name": "RendererComponent",
-                  "id": 50,
+                  "id": 25,
                   "properties": {
                     "size": 2.5,
                     "Color": {
@@ -318,7 +318,7 @@
       "rotation": {
         "x": 0.0,
         "y": 0.0,
-        "z": 77.44839
+        "z": 146.32256
       },
       "name": "Holder",
       "scale": {
@@ -338,7 +338,7 @@
       "components": [
         {
           "name": "CameraComponent",
-          "id": 52,
+          "id": 27,
           "properties": {
             "Far": 100.0,
             "Near": 0.01
@@ -362,6 +362,41 @@
         "x": 0.0,
         "y": 0.0,
         "z": 20.0
+      },
+      "layer": 1
+    },
+    {
+      "components": [
+        {
+          "name": "RendererComponent",
+          "id": 29,
+          "properties": {
+            "size": 2.5,
+            "Color": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "hello",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 28,
+      "position": {
+        "x": -7.5,
+        "y": 0.0,
+        "z": 0.0
       },
       "layer": 1
     }
