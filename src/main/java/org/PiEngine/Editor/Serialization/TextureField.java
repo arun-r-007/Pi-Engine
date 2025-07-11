@@ -44,7 +44,7 @@ public class TextureField extends SerializeField<Texture>
     public void draw() {
         
         String displayName = (value != null) ? "Texture ID: " + value.getTextureID() : "NULL";
-        ImGui.inputText("Texture ID", new ImString(displayName), ImGuiInputTextFlags.ReadOnly);
+        ImGui.inputText(label, new ImString(displayName), ImGuiInputTextFlags.ReadOnly);
         
         if (value != null) {
             ImGui.image(value.getTextureID(), 64, 64, 0, 1, 1 , 0);

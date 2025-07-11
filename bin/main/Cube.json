@@ -1,0 +1,1349 @@
+{
+  "sceneName": "Scene",
+  "GameCamera": "/Scene/Main Camera",
+  "gameObjects": [
+    {
+      "components": [
+        {
+          "name": "CameraComponent",
+          "id": 5,
+          "properties": {
+            "Far": 100.0,
+            "FOV": 70.0,
+            "Near": 0.01
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "Main Camera",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 1,
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 20.0
+      },
+      "layer": 1,
+      "Location": "/Scene/Main Camera"
+    },
+    {
+      "components": [
+        {
+          "name": "Spin3DComponent",
+          "id": 19,
+          "properties": {
+            "speedZ": 10.0,
+            "speedY": 125.0,
+            "speedX": 30.0
+          }
+        }
+      ],
+      "children": [
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 8,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceFront",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 8,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.25
+          },
+          "layer": 2,
+          "Location": "/Scene/Cube1/FaceFront"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 10,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 180.0,
+            "z": 0.0
+          },
+          "name": "FaceBack",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 9,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.25
+          },
+          "layer": 2,
+          "Location": "/Scene/Cube1/FaceBack"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 12,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 90.0,
+            "z": 0.0
+          },
+          "name": "FaceRight",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 12,
+          "position": {
+            "x": 1.25,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "layer": 2,
+          "Location": "/Scene/Cube1/FaceRight"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 14,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 270.0,
+            "z": 0.0
+          },
+          "name": "FaceLeft",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 14,
+          "position": {
+            "x": -1.25,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "layer": 2,
+          "Location": "/Scene/Cube1/FaceLeft"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 16,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 270.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceUp",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 16,
+          "position": {
+            "x": 0.0,
+            "y": 1.25,
+            "z": 0.0
+          },
+          "layer": 2,
+          "Location": "/Scene/Cube1/FaceUp"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 18,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 90.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceDown",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 18,
+          "position": {
+            "x": 0.0,
+            "y": -1.2,
+            "z": 0.0
+          },
+          "layer": 2,
+          "Location": "/Scene/Cube1/FaceDown"
+        }
+      ],
+      "rotation": {
+        "x": 143.17096,
+        "y": 56.56207,
+        "z": 47.722317
+      },
+      "name": "Cube1",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 7,
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "layer": 2,
+      "Location": "/Scene/Cube1"
+    },
+    {
+      "components": [
+        {
+          "name": "Spin3DComponent",
+          "id": 33,
+          "properties": {
+            "speedZ": 10.0,
+            "speedY": 125.0,
+            "speedX": -50.8
+          }
+        }
+      ],
+      "children": [
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 22,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceFront",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 8,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.25
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube2/FaceFront"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 24,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 180.0,
+            "z": 0.0
+          },
+          "name": "FaceBack",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 9,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.25
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube2/FaceBack"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 26,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 90.0,
+            "z": 0.0
+          },
+          "name": "FaceRight",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 12,
+          "position": {
+            "x": 1.25,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube2/FaceRight"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 28,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 270.0,
+            "z": 0.0
+          },
+          "name": "FaceLeft",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 14,
+          "position": {
+            "x": -1.25,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube2/FaceLeft"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 30,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 270.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceUp",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 16,
+          "position": {
+            "x": 0.0,
+            "y": 1.25,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube2/FaceUp"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 32,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 90.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceDown",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 18,
+          "position": {
+            "x": 0.0,
+            "y": -1.2,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube2/FaceDown"
+        }
+      ],
+      "rotation": {
+        "x": 290.35757,
+        "y": 56.56207,
+        "z": 47.722317
+      },
+      "name": "Cube2",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 7,
+      "position": {
+        "x": 5.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "layer": 1,
+      "Location": "/Scene/Cube2"
+    },
+    {
+      "components": [
+        {
+          "name": "Spin3DComponent",
+          "id": 47,
+          "properties": {
+            "speedZ": 10.0,
+            "speedY": 125.0,
+            "speedX": 50.0
+          }
+        }
+      ],
+      "children": [
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 36,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceFront",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 8,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.25
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube3/FaceFront"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 38,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 180.0,
+            "z": 0.0
+          },
+          "name": "FaceBack",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 9,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.25
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube3/FaceBack"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 40,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 90.0,
+            "z": 0.0
+          },
+          "name": "FaceRight",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 12,
+          "position": {
+            "x": 1.25,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube3/FaceRight"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 42,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 270.0,
+            "z": 0.0
+          },
+          "name": "FaceLeft",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 14,
+          "position": {
+            "x": -1.25,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube3/FaceLeft"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 44,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 270.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceUp",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 16,
+          "position": {
+            "x": 0.0,
+            "y": 1.25,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube3/FaceUp"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 46,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 90.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceDown",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 18,
+          "position": {
+            "x": 0.0,
+            "y": -1.2,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube3/FaceDown"
+        }
+      ],
+      "rotation": {
+        "x": 238.62843,
+        "y": 56.56207,
+        "z": 47.722317
+      },
+      "name": "Cube3",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 7,
+      "position": {
+        "x": -5.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "layer": 1,
+      "Location": "/Scene/Cube3"
+    },
+    {
+      "components": [
+        {
+          "name": "Spin3DComponent",
+          "id": 61,
+          "properties": {
+            "speedZ": 10.0,
+            "speedY": 50.0,
+            "speedX": 125.0
+          }
+        }
+      ],
+      "children": [
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 50,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceFront",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 8,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.25
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube4/FaceFront"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 52,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 180.0,
+            "z": 0.0
+          },
+          "name": "FaceBack",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 9,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.25
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube4/FaceBack"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 54,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 90.0,
+            "z": 0.0
+          },
+          "name": "FaceRight",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 12,
+          "position": {
+            "x": 1.25,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube4/FaceRight"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 56,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 270.0,
+            "z": 0.0
+          },
+          "name": "FaceLeft",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 14,
+          "position": {
+            "x": -1.25,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube4/FaceLeft"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 58,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 270.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceUp",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 16,
+          "position": {
+            "x": 0.0,
+            "y": 1.25,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube4/FaceUp"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 60,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 90.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceDown",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 18,
+          "position": {
+            "x": 0.0,
+            "y": -1.2,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube4/FaceDown"
+        }
+      ],
+      "rotation": {
+        "x": 56.56207,
+        "y": 238.62843,
+        "z": 47.722317
+      },
+      "name": "Cube4",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 7,
+      "position": {
+        "x": 0.0,
+        "y": 5.0,
+        "z": 0.0
+      },
+      "layer": 1,
+      "Location": "/Scene/Cube4"
+    },
+    {
+      "components": [
+        {
+          "name": "Spin3DComponent",
+          "id": 75,
+          "properties": {
+            "speedZ": 10.0,
+            "speedY": -50.0,
+            "speedX": 125.0
+          }
+        }
+      ],
+      "children": [
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 64,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceFront",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 8,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.25
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube5/FaceFront"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 66,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 180.0,
+            "z": 0.0
+          },
+          "name": "FaceBack",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 9,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.25
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube5/FaceBack"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 68,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 90.0,
+            "z": 0.0
+          },
+          "name": "FaceRight",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 12,
+          "position": {
+            "x": 1.25,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube5/FaceRight"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 70,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 270.0,
+            "z": 0.0
+          },
+          "name": "FaceLeft",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 14,
+          "position": {
+            "x": -1.25,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube5/FaceLeft"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 72,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 270.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceUp",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 16,
+          "position": {
+            "x": 0.0,
+            "y": 1.25,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube5/FaceUp"
+        },
+        {
+          "components": [
+            {
+              "name": "RendererComponent",
+              "id": 74,
+              "properties": {
+                "size": 2.5,
+                "Render": true,
+                "texture": "57f20d580da08507",
+                "Color": {
+                  "x": 1.0,
+                  "y": 1.0,
+                  "z": 1.0
+                }
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 90.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "FaceDown",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 18,
+          "position": {
+            "x": 0.0,
+            "y": -1.2,
+            "z": 0.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Cube5/FaceDown"
+        }
+      ],
+      "rotation": {
+        "x": 56.56207,
+        "y": 121.37436,
+        "z": 47.722317
+      },
+      "name": "Cube5",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 7,
+      "position": {
+        "x": 0.0,
+        "y": -5.0,
+        "z": 0.0
+      },
+      "layer": 1,
+      "Location": "/Scene/Cube5"
+    }
+  ]
+}
