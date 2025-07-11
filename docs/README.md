@@ -38,7 +38,10 @@ Welcome to the Pi-Engine documentation! This index provides an overview and quic
 
 ---
 
-### AI-Assisted Documentation
-This documentation was generated and curated with the assistance of AI tools (GitHub Copilot). Please review and validate for accuracy and completeness.
+> **Acknowledgment**
+>
+> Much of the documentation for PiEngine was generated with the help of GitHub Copilot (AI), under the supervision and review of the core developers ([Shri Hari (TanPi)](https://github.com/ItsTanPI) and [Gunavarthan](https://github.com/Gunavarthan)).
+> As a small team with limited time, we used AI tools to accelerate the writing process and ensure comprehensive, high-quality docs for the community. All content was checked and curated by us.
 
 For more information, see the individual package documentation above.
+    
