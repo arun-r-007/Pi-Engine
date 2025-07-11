@@ -13,12 +13,18 @@ public class ConsoleWindow extends EditorWindow
     private static int currentFilter = 0; // 0 = All
     public static int count = 0;
 
+    /**
+     * Constructs a new ConsoleWindow.
+     */
     public ConsoleWindow()
     {
         super("Console");
         id = count++;
     }
 
+    /**
+     * Renders the Console window, including filter dropdown and message area.
+     */
     @Override
     public void onRender()
     {

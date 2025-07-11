@@ -11,12 +11,21 @@ public class SceneWindow extends EditorWindow
     private int outputTex;
     public static int count = 0;
 
+    /**
+     * Constructs a new SceneWindow with the given name.
+     * @param name The window name
+     */
     public SceneWindow(String name)
     {
         super(name);
         id = count++;
     }
 
+    /**
+     * Constructs a new SceneWindow with the given name and framebuffer.
+     * @param name The window name
+     * @param fb The framebuffer to display
+     */
     public SceneWindow(String name, Framebuffer fb)
     {
         super(name);
@@ -24,16 +33,27 @@ public class SceneWindow extends EditorWindow
         frame = fb;
     }
 
+    /**
+     * Sets the output texture ID for rendering.
+     * @param o The texture ID
+     */
     public void setid(int o)
     {
         outputTex = o;
     }
 
+    /**
+     * Sets the framebuffer to display.
+     * @param fb The framebuffer
+     */
     public void setFrameBuffer(Framebuffer fb)
     {
         frame = fb;
     }
 
+    /**
+     * Renders the scene window and its framebuffer output.
+     */
     @Override
     public void onRender()
     {

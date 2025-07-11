@@ -42,6 +42,10 @@ public class ComponentPropertyBlock {
         // Add other mappings as needed (e.g., String.class -> StringField.class)
     }
 
+    /**
+     * Constructs a new ComponentPropertyBlock with the given label.
+     * @param label The label for the property block
+     */
     public ComponentPropertyBlock(String label) {
         this.label = label;
     }
@@ -50,6 +54,7 @@ public class ComponentPropertyBlock {
      * Draws UI fields for all public attributes of a Component.
      * Skips internal fields like 'gameObject' or 'transform'.
      * Supports editing float, Vector, and GameObject references.
+     * @param c The component to edit
      */
     public void drawComponentFields(Component c) {
         Field[] fields = c.getClass().getFields(); // Only public fields

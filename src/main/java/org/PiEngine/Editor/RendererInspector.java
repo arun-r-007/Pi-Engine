@@ -23,6 +23,10 @@ public class RendererInspector extends EditorWindow
     public static int count = 0;
     
 
+    /**
+     * Constructs a new RendererInspector for the given renderer.
+     * @param renderer The renderer to inspect
+     */
     public RendererInspector(Renderer renderer)
     {
         super("Renderer Inspector");
@@ -30,6 +34,9 @@ public class RendererInspector extends EditorWindow
         id = count++;
     }
 
+    /**
+     * Renders the renderer inspector window and its passes.
+     */
     @Override
     public void onRender()
     {

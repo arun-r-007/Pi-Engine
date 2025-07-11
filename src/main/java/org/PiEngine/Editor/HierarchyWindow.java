@@ -37,16 +37,26 @@ public class HierarchyWindow extends EditorWindow {
     public static int count = 0;
 
 
+    /**
+     * Constructs a new HierarchyWindow.
+     */
     public HierarchyWindow() {
         super("Hierarchy");
         id = count++;
         
     }
 
+    /**
+     * Sets the root GameObject for the hierarchy view.
+     * @param root The root GameObject
+     */
     public void setRoot(GameObject root) {
         this.root = root;
     }
 
+    /**
+     * Called every frame to update hierarchy logic and handle reparenting.
+     */
     public void onUpdate()
     {
         root = Scene.getInstance().getRoot();
@@ -81,7 +91,7 @@ public class HierarchyWindow extends EditorWindow {
     }
 
     /**
-     * Called every frame to render the hierarchy window contents.
+     * Renders the hierarchy window and all GameObjects.
      */
     @Override
    public void onRender() 

@@ -11,14 +11,24 @@ public class DockingWindow extends EditorWindow {
 
     private final List<EditorWindow> dockedWindows = new ArrayList<>();
 
+    /**
+     * Constructs a new DockingWindow.
+     */
     public DockingWindow() {
         super("Docker");
     }
 
+    /**
+     * Adds an EditorWindow to the docked windows list.
+     * @param window The window to dock
+     */
     public void addDockedWindow(EditorWindow window) {
         dockedWindows.add(window);
     }
 
+    /**
+     * Called when the window is created. Sets up size and position.
+     */
     @Override
     public void onCreate() {
         ImGuiIO io = ImGui.getIO();
@@ -33,6 +43,9 @@ public class DockingWindow extends EditorWindow {
         }
     }
 
+    /**
+     * Called every frame to update docked windows.
+     */
     @Override
     public void onUpdate() {
         for (EditorWindow window : dockedWindows) {
@@ -40,6 +53,9 @@ public class DockingWindow extends EditorWindow {
         }
     }
 
+    /**
+     * Renders the docking window and all docked windows.
+     */
     @Override
     public void onRender() {
         ImGuiIO io = ImGui.getIO();

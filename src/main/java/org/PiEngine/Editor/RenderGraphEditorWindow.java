@@ -42,6 +42,10 @@ public class RenderGraphEditorWindow extends EditorWindow
     
     public static int count = 0;
 
+    /**
+     * Constructs a new RenderGraphEditorWindow for the given renderer.
+     * @param renderer The renderer to edit
+     */
     public RenderGraphEditorWindow(Renderer renderer)
     {
         super("Render Graph Editor");
@@ -53,6 +57,9 @@ public class RenderGraphEditorWindow extends EditorWindow
         onCreate();
     }
 
+    /**
+     * Called when the window is created. Sets up ImNodes context.
+     */
     @Override
     public void onCreate()
     {
@@ -118,6 +125,9 @@ public class RenderGraphEditorWindow extends EditorWindow
         return -1;
     }
 
+    /**
+     * Renders the render graph editor window and its nodes.
+     */
     @Override
     public void onRender()
     {
