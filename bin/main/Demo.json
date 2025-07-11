@@ -6,9 +6,10 @@
       "components": [
         {
           "name": "CameraComponent",
-          "id": 5,
+          "id": 2,
           "properties": {
             "Far": 100.0,
+            "FOV": 70.0,
             "Near": 0.01
           }
         }
@@ -37,18 +38,13 @@
     {
       "components": [
         {
-          "name": "Movemet",
-          "id": 7,
-          "properties": {
-            "speed": 10.0
-          }
-        },
-        {
           "name": "RendererComponent",
-          "id": 8,
+          "id": 4,
           "properties": {
+            "FlipY": false,
             "size": 2.5,
             "Render": true,
+            "FlipX": false,
             "texture": "40d1c26df636151a",
             "Color": {
               "x": 1.0,
@@ -59,15 +55,28 @@
         },
         {
           "name": "FieldTester",
-          "id": 9,
+          "id": 5,
           "properties": {
+            "Movement": "/Scene/Player<Movement>",
             "Gameobject": "/Scene/Player",
-            "Movemet": "/Scene/Player<Movemet>",
             "RendererComponent": "/Scene/Holder/ChildHolder/CChildHolder<RendererComponent>",
             "Follower": "/Scene/Enemy<Follower>",
             "CameraComponent": "/Scene/Main Camera<CameraComponent>",
-            "SpinComponent": "/Scene/Holder<SpinComponent>",
-            "Component": "/Scene/Player<Movemet>"
+            "SpinComponent": "/Scene/Holder<SpinComponent>"
+          }
+        },
+        {
+          "name": "Movement",
+          "id": 0,
+          "properties": {
+            "useRun1": true,
+            "isGrounded": true,
+            "animSpeed": 0.15,
+            "gravity": -30.0,
+            "jumpForce": 15.0,
+            "animTimer": 0.0,
+            "velocityY": 0.0,
+            "speed": 10.0
           }
         }
       ],
@@ -96,7 +105,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 11,
+          "id": 7,
           "properties": {
             "Target": "/Scene/Holder/ChildHolder/CChildHolder",
             "zindex": 0.0,
@@ -106,10 +115,12 @@
         },
         {
           "name": "RendererComponent",
-          "id": 12,
+          "id": 8,
           "properties": {
+            "FlipY": false,
             "size": 2.5,
             "Render": true,
+            "FlipX": false,
             "texture": "57f20d580da08507",
             "Color": {
               "x": 1.0,
@@ -133,8 +144,8 @@
       },
       "id": 2,
       "position": {
-        "x": 0.0,
-        "y": 0.0,
+        "x": 5.1436753,
+        "y": 9.377547,
         "z": 0.0
       },
       "layer": 2,
@@ -144,7 +155,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 14,
+          "id": 10,
           "properties": {
             "Target": "/Scene/Enemy",
             "zindex": 0.0,
@@ -154,10 +165,12 @@
         },
         {
           "name": "RendererComponent",
-          "id": 15,
+          "id": 11,
           "properties": {
+            "FlipY": false,
             "size": 2.5,
             "Render": true,
+            "FlipX": false,
             "texture": "57f20d580da08507",
             "Color": {
               "x": 1.0,
@@ -181,8 +194,8 @@
       },
       "id": 3,
       "position": {
-        "x": 0.0,
-        "y": 0.0,
+        "x": 7.9103746,
+        "y": 8.022241,
         "z": 0.0
       },
       "layer": 2,
@@ -192,7 +205,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 17,
+          "id": 13,
           "properties": {
             "Target": "/Scene/Enemy1",
             "zindex": 0.0,
@@ -202,10 +215,12 @@
         },
         {
           "name": "RendererComponent",
-          "id": 18,
+          "id": 14,
           "properties": {
+            "FlipY": false,
             "size": 2.5,
             "Render": true,
+            "FlipX": false,
             "texture": "57f20d580da08507",
             "Color": {
               "x": 1.0,
@@ -229,8 +244,8 @@
       },
       "id": 4,
       "position": {
-        "x": 0.0,
-        "y": 0.0,
+        "x": 9.96466,
+        "y": 5.9600115,
         "z": 0.0
       },
       "layer": 2,
@@ -240,7 +255,7 @@
       "components": [
         {
           "name": "Follower",
-          "id": 20,
+          "id": 16,
           "properties": {
             "Target": "/Scene/Enemy2",
             "zindex": 0.0,
@@ -250,10 +265,12 @@
         },
         {
           "name": "RendererComponent",
-          "id": 21,
+          "id": 17,
           "properties": {
+            "FlipY": false,
             "size": 2.5,
             "Render": true,
+            "FlipX": false,
             "texture": "57f20d580da08507",
             "Color": {
               "x": 1.0,
@@ -277,8 +294,8 @@
       },
       "id": 5,
       "position": {
-        "x": 0.0,
-        "y": 0.0,
+        "x": 11.16456,
+        "y": 3.4866812,
         "z": 0.0
       },
       "layer": 2,
@@ -298,8 +315,10 @@
           "name": "RendererComponent",
           "id": 24,
           "properties": {
+            "FlipY": false,
             "size": 2.5,
             "Render": true,
+            "FlipX": false,
             "texture": "1bdeddb3fdedfca9",
             "Color": {
               "x": 1.0,
@@ -314,10 +333,12 @@
           "components": [
             {
               "name": "RendererComponent",
-              "id": 26,
+              "id": 22,
               "properties": {
+                "FlipY": false,
                 "size": 2.5,
                 "Render": true,
+                "FlipX": false,
                 "texture": "1bdeddb3fdedfca9",
                 "Color": {
                   "x": 1.0,
@@ -332,10 +353,12 @@
               "components": [
                 {
                   "name": "RendererComponent",
-                  "id": 28,
+                  "id": 21,
                   "properties": {
+                    "FlipY": false,
                     "size": 2.5,
                     "Render": true,
+                    "FlipX": false,
                     "texture": "1bdeddb3fdedfca9",
                     "Color": {
                       "x": 1.0,
@@ -391,7 +414,7 @@
       "rotation": {
         "x": 0.0,
         "y": 0.0,
-        "z": 0.0
+        "z": 102.30097
       },
       "name": "Holder",
       "scale": {

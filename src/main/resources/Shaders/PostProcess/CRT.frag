@@ -2,7 +2,7 @@
 
 #define CURVATURE 5.4
 #define BLUR 0.001
-#define CA_AMT 1.015
+#define CA_AMT 1.005
 
 uniform sampler2D u_Texture1;
 

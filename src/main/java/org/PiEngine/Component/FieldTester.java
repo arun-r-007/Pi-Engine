@@ -13,7 +13,7 @@ public class FieldTester extends Component
     public Vector Vector;
     public GameObject Gameobject;
     public Component Component;
-    public Movemet Movemet;
+    public Movement Movement;
     public SpinComponent SpinComponent;
     public Follower Follower;
     public RendererComponent RendererComponent;

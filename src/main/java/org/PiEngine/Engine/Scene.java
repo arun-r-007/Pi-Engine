@@ -171,24 +171,34 @@ public class Scene implements Serializable
         }
     }
 
-    public void Save()
+    public void Save(String Filename)
     {
         try 
         {
-            SceneSerializerJSON.serialize(instance, Main.ResourceFolder+"Test.json");
+            SceneSerializerJSON.serialize(instance, Main.ResourceFolder + Filename);
         } 
         catch (Exception e) 
         {
             Console.error(e.toString());
         }
     }
+    // {
+    //     try 
+    //     {
+    //         SceneSerializerJSON.serialize(instance, Main.ResourceFolder+"Test.json");
+    //     } 
+    //     catch (Exception e) 
+    //     {
+    //         Console.error(e.toString());
+    //     }
+    // }
 
-    public void Load()
+    public void Load(String FileName)
     {
         InspectorWindow.inspectObject = null;
         try 
         {
-            SceneDeserializerJSON.deserialize(Main.ResourceFolder+"Test.json");
+            SceneDeserializerJSON.deserialize(Main.ResourceFolder+FileName);
             IDGenerator.resetIDCounter();
         } 
         catch (Exception e) 

@@ -1,0 +1,294 @@
+{
+  "sceneName": "Scene",
+  "GameCamera": "/Scene/Holder/Main Camera",
+  "gameObjects": [
+    {
+      "components": [
+        {
+          "name": "RendererComponent",
+          "id": 5,
+          "properties": {
+            "FlipY": false,
+            "size": 1.0,
+            "Render": false,
+            "FlipX": false,
+            "texture": "c304bab08b8f2744",
+            "Color": {
+              "x": 0.25,
+              "y": 0.25,
+              "z": 0.25
+            }
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "BG1",
+      "scale": {
+        "x": 150.0,
+        "y": 25.0,
+        "z": 1.0
+      },
+      "id": 0,
+      "position": {
+        "x": 0.0,
+        "y": 7.4999995,
+        "z": -20.0
+      },
+      "layer": 1,
+      "Location": "/Scene/BG1"
+    },
+    {
+      "components": [
+        {
+          "name": "RendererComponent",
+          "id": 1,
+          "properties": {
+            "FlipY": false,
+            "size": 1.0,
+            "Render": true,
+            "FlipX": false,
+            "texture": "253da5b3057a7d4d",
+            "Color": {
+              "x": 0.35,
+              "y": 0.35,
+              "z": 0.35
+            }
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "bg3",
+      "scale": {
+        "x": 150.0,
+        "y": 25.0,
+        "z": 1.0
+      },
+      "id": 0,
+      "position": {
+        "x": 0.0,
+        "y": 10.2,
+        "z": -10.0
+      },
+      "layer": 1,
+      "Location": "/Scene/bg3"
+    },
+    {
+      "components": [
+        {
+          "name": "RendererComponent",
+          "id": 7,
+          "properties": {
+            "FlipY": false,
+            "size": 1.0,
+            "Render": true,
+            "FlipX": false,
+            "texture": "f43c2517c360c7f0",
+            "Color": {
+              "x": 0.5,
+              "y": 0.5,
+              "z": 0.5
+            }
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "BG2",
+      "scale": {
+        "x": 150.0,
+        "y": 25.0,
+        "z": 1.0
+      },
+      "id": 0,
+      "position": {
+        "x": 0.0,
+        "y": 9.5,
+        "z": -3.5
+      },
+      "layer": 1,
+      "Location": "/Scene/BG2"
+    },
+    {
+      "components": [
+        {
+          "name": "RendererComponent",
+          "id": 9,
+          "properties": {
+            "FlipY": false,
+            "size": 1.0,
+            "Render": true,
+            "FlipX": false,
+            "texture": "41c74a6d4c0e18f2",
+            "Color": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "Floor",
+      "scale": {
+        "x": 150.0,
+        "y": 25.0,
+        "z": 1.0
+      },
+      "id": 0,
+      "position": {
+        "x": 0.0,
+        "y": 3.75,
+        "z": 0.0
+      },
+      "layer": 1,
+      "Location": "/Scene/Floor"
+    },
+    {
+      "components": [
+        {
+          "name": "Follower",
+          "id": 13,
+          "properties": {
+            "Target": "/Scene/Sysra",
+            "zindex": 0.0,
+            "MinumDist": 0.5,
+            "speed": 1.0
+          }
+        }
+      ],
+      "children": [
+        {
+          "components": [
+            {
+              "name": "CameraComponent",
+              "id": 12,
+              "properties": {
+                "Far": 100.0,
+                "FOV": 90.0,
+                "Near": 0.01
+              }
+            }
+          ],
+          "children": [],
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "name": "Main Camera",
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "id": 1,
+          "position": {
+            "x": 0.0,
+            "y": 5.0,
+            "z": 20.0
+          },
+          "layer": 1,
+          "Location": "/Scene/Holder/Main Camera"
+        }
+      ],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "Holder",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 0,
+      "position": {
+        "x": 35.976273,
+        "y": 0.0072084065,
+        "z": 0.0
+      },
+      "layer": 1,
+      "Location": "/Scene/Holder"
+    },
+    {
+      "components": [
+        {
+          "name": "RendererComponent",
+          "id": 15,
+          "properties": {
+            "FlipY": false,
+            "size": 2.5,
+            "Render": true,
+            "FlipX": false,
+            "texture": "9ad5d70533b6300b",
+            "Color": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        {
+          "name": "Movement",
+          "id": 16,
+          "properties": {
+            "Run2": "70e9c8f764055d68",
+            "Run1": "2da4111d6df73f31",
+            "useRun1": false,
+            "jumpForce": 25.0,
+            "velocityY": 0.0,
+            "Jump": "6afd62ce7a2ab740",
+            "speed": 10.0,
+            "isGrounded": true,
+            "animSpeed": 0.15,
+            "gravity": -50.0,
+            "Idle": "9ad5d70533b6300b",
+            "Renderer": "/Scene/Sysra<RendererComponent>",
+            "Fall": "210c13b8511e6ee2",
+            "animTimer": 0.1067431
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "Sysra",
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "id": 3,
+      "position": {
+        "x": 36.47584,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "layer": 1,
+      "Location": "/Scene/Sysra"
+    }
+  ]
+}

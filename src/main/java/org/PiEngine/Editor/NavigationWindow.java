@@ -35,12 +35,42 @@ public class NavigationWindow extends EditorWindow
             }
             if (ImGui.menuItem("Open", "Ctrl+O"))
             {
-                Scene.getInstance().Load();   
             }
-            if (ImGui.menuItem("Save", "Ctrl+S"))
+
+            if (ImGui.beginMenu("Load"))
             {
-                Scene.getInstance().Save();
+                if (ImGui.menuItem("Cube")) 
+                {
+                    Scene.getInstance().Load("Cube.json");       
+                }
+                if (ImGui.menuItem("Sysra")) 
+                {
+                    Scene.getInstance().Load("Sysra.json");   
+                }
+                if (ImGui.menuItem("Demo")) 
+                {
+                    Scene.getInstance().Load("Demo.json");   
+                }
+                ImGui.endMenu();
             }
+
+            if (ImGui.beginMenu("Save"))
+            {
+                if (ImGui.menuItem("Cube")) 
+                {
+                    Scene.getInstance().Save("Cube.json");       
+                }
+                if (ImGui.menuItem("Sysra")) 
+                {
+                    Scene.getInstance().Save("Sysra.json");;   
+                }
+                if (ImGui.menuItem("Demo")) 
+                {
+                    Scene.getInstance().Save("Demo.json");
+                }
+                ImGui.endMenu();
+            }
+
             if (ImGui.menuItem("Exit", "Ctrl+Esc"))
             {
                 // Handle exit action

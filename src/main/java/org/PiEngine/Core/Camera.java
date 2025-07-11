@@ -113,6 +113,7 @@ public class Camera
      */
     public void updateViewMatrix() 
     {
+
         Matrix4 rotationMatrix = Matrix4.identity()
             .multiply(Matrix4.rotate(-rotation.z, new Vector(0, 0, 1)))
             .multiply(Matrix4.rotate(-rotation.x, new Vector(1, 0, 0))) 

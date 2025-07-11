@@ -52,7 +52,7 @@ public class Main
         imguiGlfw.init(window, true);
         imguiGl3.init("#version 330 core");
         
-        CompileScripts.getInstance(Main.ResourceFolder + "Scripts", "Compiled", null);
+        CompileScripts.getInstance(Main.ResourceFolder + "Scripts", Main.ResourceFolder + "Compiled", null);
 
 
         Thread assetThread = new Thread(() -> {
@@ -77,6 +77,10 @@ public class Main
         while (!glfwWindowShouldClose(window))
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glEnable(GL_CULL_FACE);          
+            glCullFace(GL_BACK);             
+            glFrontFace(GL_CCW);            
+
             AssetManager.processAssetQueue();
             Time.update();
             Input.update();
