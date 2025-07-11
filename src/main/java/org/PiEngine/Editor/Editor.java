@@ -37,6 +37,12 @@ public class Editor
 
     private Editor() { }
 
+    /**
+     * Returns the singleton instance of the Editor, initializing it if necessary.
+     * @param windowPtr The window pointer for ImGui
+     * @param enableMultiViewport Whether to enable multi-viewport support
+     * @return The Editor instance
+     */
     public static Editor getInstance(long windowPtr, boolean enableMultiViewport)
     {
         if (instance == null)
@@ -48,10 +54,19 @@ public class Editor
         return instance;
     }
 
+    /**
+     * Returns the singleton instance of the Editor.
+     * @return The Editor instance
+     */
     public static Editor getInstance()
     {
         return instance;
     }
+    /**
+     * Returns the singleton instance of the Editor, throws if not initialized.
+     * @return The Editor instance
+     * @throws IllegalStateException if Editor is not initialized
+     */
     public static Editor get()
     {
         if (instance == null)
@@ -61,6 +76,9 @@ public class Editor
         return instance;
     }
 
+    /**
+     * Initializes the ImGui context and sets up the editor environment.
+     */
     public void init() {
         if (initialized) return;
     
@@ -81,6 +99,9 @@ public class Editor
         initialized = true;
     }
 
+    /**
+     * Sets the custom ImGui theme for the editor UI.
+     */
     public static void setTheme() {
 
         ImGui.pushStyleColor(ImGuiCol.WindowBg, ImGui.colorConvertFloat4ToU32(0.12f, 0.12f, 0.12f, 1.00f));
@@ -105,6 +126,9 @@ public class Editor
     
 
     
+    /**
+     * Destroys the editor and releases all resources.
+     */
     public void destroy()
     {
         for (EditorWindow window : editorWindows)
@@ -116,6 +140,9 @@ public class Editor
         GLFW.glfwTerminate();
     }
 
+    /**
+     * Updates the editor and all windows. Should be called once per frame.
+     */
     public void update() {
         // Add new windows
         for (EditorWindow aw : windowsToAdd) {
@@ -146,21 +173,37 @@ public class Editor
         imguiGl3.renderDrawData(ImGui.getDrawData());
     }
 
+    /**
+     * Adds an EditorWindow to the editor.
+     * @param window The window to add
+     */
     public void addWindow(EditorWindow window)
     {
         editorWindows.add(window);
     }
 
+    /**
+     * Removes an EditorWindow from the editor.
+     * @param window The window to remove
+     */
     public void removeWindow(EditorWindow window)
     {
         editorWindows.remove(window);
     }
 
+    /**
+     * Queues an EditorWindow to be added next frame.
+     * @param window The window to add
+     */
     public void queueAddWindow(EditorWindow window) 
     {
         windowsToAdd.add(window);
     }
 
+    /**
+     * Queues an EditorWindow to be removed next frame.
+     * @param window The window to remove
+     */
     public void queueRemoveWindow(EditorWindow window) 
     {
         windowsToRemove.add(window);

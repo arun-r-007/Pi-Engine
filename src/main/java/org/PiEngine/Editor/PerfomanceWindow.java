@@ -9,18 +9,28 @@ public class PerfomanceWindow extends EditorWindow
 {
     public static int count = 0;
 
+    /**
+     * Constructs a new PerfomanceWindow.
+     */
     public PerfomanceWindow()
     {
         super("Perfomance");
         id = count++;
     }
 
+    /**
+     * Constructs a new PerfomanceWindow with a custom name.
+     * @param Name The window name
+     */
     public PerfomanceWindow(String Name)
     {
         super(Name);
         id = count++;
     }
 
+    /**
+     * Renders the performance window, showing FPS and memory usage.
+     */
     @Override
     public void onRender()
     {

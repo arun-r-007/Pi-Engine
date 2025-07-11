@@ -9,11 +9,17 @@ import imgui.ImGui;
 public class NavigationWindow extends EditorWindow
 {
 
+    /**
+     * Constructs a new NavigationWindow.
+     */
     public NavigationWindow()
     {
         super("Navigation");
     }
 
+    /**
+     * Renders the navigation window and its menu bar.
+     */
     @Override
     public void onRender()
     {

@@ -67,6 +67,9 @@ public class InspectorWindow extends EditorWindow {
         }
     }
 
+    /**
+     * Constructs a new InspectorWindow.
+     */
     public InspectorWindow()
     {
         super("Inspector");
@@ -86,8 +89,7 @@ public class InspectorWindow extends EditorWindow {
     }
 
     /**
-     * Renders the GUI contents of the Inspector or Property window.
-     * Displays Transform and Component information for the selected GameObject.
+     * Called every frame to update inspector logic.
      */
     @Override
     public void onRender() {

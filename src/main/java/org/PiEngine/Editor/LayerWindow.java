@@ -14,6 +14,9 @@ public class LayerWindow extends EditorWindow {
     public static int count = 0;
     
 
+    /**
+     * Constructs a new LayerWindow and initializes layer names.
+     */
     public LayerWindow() {
         super("Layer");
         id = count++;
@@ -26,6 +29,9 @@ public class LayerWindow extends EditorWindow {
         }
     }
 
+    /**
+     * Renders the layer window and allows editing layer names.
+     */
     @Override
     public void onRender() {
         

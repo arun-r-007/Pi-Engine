@@ -29,6 +29,9 @@ public class FileWindow extends EditorWindow
     private static final Path ABSOLUTE_BASE = Paths.get("").toAbsolutePath().normalize();
     private static final Path RELATIVE_BASE = Paths.get(Main.ResourceFolder).normalize();
 
+    /**
+     * Constructs a new FileWindow and sets the root directory.
+     */
     public FileWindow()
     {
         super("File Explorer");
@@ -37,11 +40,17 @@ public class FileWindow extends EditorWindow
         // System.out.println(rootDirectory.exists() + " " + rootDirectory.isDirectory()); 
     }
 
+    /**
+     * Called every frame to update window logic.
+     */
     @Override
     public void onUpdate()
     {
     }
 
+    /**
+     * Renders the file explorer window and its contents.
+     */
     @Override
     public void onRender()
     {
