@@ -10,12 +10,14 @@ Welcome to the Pi-Engine documentation! This index provides an overview and quic
 | [GameObject](GameObject/README.md) | Entity system: GameObject, Transform, ID management    |
 | [Components](Components/README.md)  | Attachable behaviors: rendering, camera, custom logic  |
 | [Core](Core/README.md)         | Engine systems: input, timing, window, camera         |
+| [Editor](Editor/README.md)     | Editor windows, tools, and extensibility              |
 
 ## Quick Links
 - [Math Package](Math/README.md)
 - [GameObject Package](GameObject/README.md)
 - [Components Package](Components/README.md)
 - [Core Package](Core/README.md)
+- [Editor Package](Editor/README.md)
 
 ## How to Use
 - Browse each section for detailed class and function documentation.
@@ -27,6 +29,7 @@ Welcome to the Pi-Engine documentation! This index provides an overview and quic
 - For entity logic: [GameObject](GameObject/GameObject.md), [Transform](GameObject/Transform.md)
 - For components: [Component](Components/Component.md), [CameraComponent](Components/CameraComponent.md), [RendererComponent](Components/RendererComponent.md)
 - For engine systems: [Camera](Core/Camera.md), [Input](Core/Input.md), [Time](Core/Time.md), [Window](Core/Window.md)
+- For editor windows: [Editor](Editor/Editor.md), [EditorWindow](Editor/EditorWindow.md), [ConsoleWindow](Editor/ConsoleWindow.md), [DockingWindow](Editor/DockingWindow.md), [FileWindow](Editor/FileWindow.md), [HierarchyWindow](Editor/HierarchyWindow.md), [InspectorWindow](Editor/InspectorWindow.md), [LayerWindow](Editor/LayerWindow.md), [NavigationWindow](Editor/NavigationWindow.md), [PerfomanceWindow](Editor/PerfomanceWindow.md), [RendererInspector](Editor/RendererInspector.md), [RenderGraphEditorWindow](Editor/RenderGraphEditorWindow.md), [SceneWindow](Editor/SceneWindow.md), [ComponentPropertyBlock](Editor/ComponentPropertyBlock.md)
 
 ## Best Practices
 - Start with the package README for an overview.
@@ -34,5 +37,8 @@ Welcome to the Pi-Engine documentation! This index provides an overview and quic
 - Refer to example code for integration tips.
 
 ---
+
+### AI-Assisted Documentation
+This documentation was generated and curated with the assistance of AI tools (GitHub Copilot). Please review and validate for accuracy and completeness.
 
 For more information, see the individual package documentation above.
