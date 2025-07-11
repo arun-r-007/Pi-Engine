@@ -2,6 +2,13 @@
 
 Welcome to the Pi-Engine documentation! This index provides an overview and quick links to all major documentation sections and class references in the engine.
 
+> **Acknowledgment**
+>
+> Much of the documentation for PiEngine was generated with the help of GitHub Copilot (AI), under the supervision and review of the core developers ([Shri Hari (TanPi)](https://github.com/ItsTanPI) and [Gunavarthan](https://github.com/Gunavarthan)).
+> As a small team with limited time, we used AI tools to accelerate the writing process and ensure comprehensive, high-quality docs for the community. All content was checked and curated by us.
+
+## If you find any errors or issues in the documentation, please open an issue so we can fix it promptly.
+
 ## Documentation Structure
 
 | Section      | Description                                      |
@@ -37,11 +44,3 @@ Welcome to the Pi-Engine documentation! This index provides an overview and quic
 - Refer to example code for integration tips.
 
 ---
-
-> **Acknowledgment**
->
-> Much of the documentation for PiEngine was generated with the help of GitHub Copilot (AI), under the supervision and review of the core developers ([Shri Hari (TanPi)](https://github.com/ItsTanPI) and [Gunavarthan](https://github.com/Gunavarthan)).
-> As a small team with limited time, we used AI tools to accelerate the writing process and ensure comprehensive, high-quality docs for the community. All content was checked and curated by us.
-
-For more information, see the individual package documentation above.
-    
