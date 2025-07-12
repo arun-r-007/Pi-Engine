@@ -107,7 +107,7 @@ PiEngine is a personal and collaborative project created with dedication, curios
 We started this project as part of our college work, and it became a dream journey into game engine development. This engine represents our first step toward learning how real engines are built — and we’re excited to keep improving it with the help of the open-source community.
 
 ## Discord
- - [Join the Discord Channel](https://github.com/ItsTanPI/Pi-Engine)
+ - [Join the Discord Channel](https://discord.gg/67RBFr6HpG)
 
 
 ## Contributing
