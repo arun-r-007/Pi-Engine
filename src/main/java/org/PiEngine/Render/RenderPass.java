@@ -1,8 +1,10 @@
 package org.PiEngine.Render;
 
+
 import static org.lwjgl.opengl.GL30.*;
 
 import org.PiEngine.Core.Camera;
+import org.PiEngine.Core.Time;
 import org.PiEngine.GameObjects.GameObject;
 import org.PiEngine.Math.Vector;
 import org.lwjgl.opengl.GL11;
@@ -88,6 +90,7 @@ public abstract class RenderPass
 
         shader.use();
         shader.setUniformVec2("u_Resolution", new Vector(framebuffer.getWidth(), framebuffer.getHeight(), 0));
+        shader.setUniform1f("u_Time", Time.Time);
 
         for (int i = 0; i < inputCount; i++)
         {

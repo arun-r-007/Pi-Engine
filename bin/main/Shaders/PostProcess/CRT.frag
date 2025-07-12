@@ -4,15 +4,20 @@
 #define BLUR 0.001
 #define CA_AMT 1.005
 
+uniform sampler2D u_Texture0;
 uniform sampler2D u_Texture1;
 
-
-
-uniform sampler2D u_Texture0;
 uniform vec2 u_Resolution;
+uniform float u_Time;
 
 in vec2 v_UV;
 out vec4 fragColor;
+
+// Simple hash-based noise function
+float rand(vec2 co)
+{
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
 
 void main()
 {
@@ -31,17 +36,14 @@ void main()
     // Chromatic aberration
     vec3 col;
     col.r = texture(u_Texture0, (crtUV - 0.5) * CA_AMT + 0.5).r;
-    col.g = texture(u_Texture0, crtUV).g; 
+    col.g = texture(u_Texture0, crtUV).g;
     col.b = texture(u_Texture0, (crtUV - 0.5) / CA_AMT + 0.5).b;
     col *= edge.x * edge.y;
 
-    //Scanlines and pixel lines
-    if (mod(fragCoord.y, 2.0) < 0.7)
-        col *= 0.9;
-    else if (mod(fragCoord.x, 3.0) < 0.8)
-        col *= 0.9;
-    else
-        col *= 1.2;
+    // Film grain (animated noise)
+    float grainStrength = 0.0;
+    float grain = rand(fragCoord.xy * 0.5 + u_Time * 10.0);
+    col += grainStrength * (grain - 0.5); // center it around 0
 
     fragColor = vec4(col, 1.0) + vec4(texture(u_Texture1, v_UV).x * 5.0, 0.0, 0.0, 1.0);
 }
