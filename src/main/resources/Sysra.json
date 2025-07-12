@@ -10,46 +10,6 @@
           "properties": {
             "FlipY": false,
             "size": 1.0,
-            "Render": false,
-            "FlipX": false,
-            "texture": "c304bab08b8f2744",
-            "Color": {
-              "x": 0.25,
-              "y": 0.25,
-              "z": 0.25
-            }
-          }
-        }
-      ],
-      "children": [],
-      "rotation": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "name": "BG1",
-      "scale": {
-        "x": 150.0,
-        "y": 25.0,
-        "z": 1.0
-      },
-      "id": 0,
-      "position": {
-        "x": 0.0,
-        "y": 7.4999995,
-        "z": -20.0
-      },
-      "layer": 1,
-      "Location": "/Scene/BG1"
-    },
-    {
-      "components": [
-        {
-          "name": "RendererComponent",
-          "id": 1,
-          "properties": {
-            "FlipY": false,
-            "size": 1.0,
             "Render": true,
             "FlipX": false,
             "texture": "253da5b3057a7d4d",
@@ -223,8 +183,8 @@
       },
       "id": 0,
       "position": {
-        "x": 35.976273,
-        "y": 0.0072084065,
+        "x": -15.543979,
+        "y": 0.04501164,
         "z": 0.0
       },
       "layer": 1,
@@ -265,7 +225,7 @@
             "Idle": "9ad5d70533b6300b",
             "Renderer": "/Scene/Sysra<RendererComponent>",
             "Fall": "210c13b8511e6ee2",
-            "animTimer": 0.1067431
+            "animTimer": 0.0136731
           }
         }
       ],
@@ -283,12 +243,102 @@
       },
       "id": 3,
       "position": {
-        "x": 36.47584,
+        "x": -15.264995,
         "y": 0.0,
         "z": 0.0
       },
       "layer": 1,
       "Location": "/Scene/Sysra"
+    },
+    {
+      "components": [
+        {
+          "name": "RendererComponent",
+          "id": 18,
+          "properties": {
+            "FlipY": false,
+            "size": 1.0,
+            "Render": true,
+            "FlipX": false,
+            "texture": "a90cee780ceaedf3",
+            "Color": {
+              "x": 0.75,
+              "y": 0.75,
+              "z": 0.75
+            }
+          }
+        },
+        {
+          "name": "Animate",
+          "id": 19,
+          "properties": {
+            "reference": "/Scene/FG2<RendererComponent>",
+            "frameOne": "730ddfa8a27a8264",
+            "FRAME_DURATION": 0.5,
+            "frameTwo": "a90cee780ceaedf3"
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "FG2",
+      "scale": {
+        "x": 150.0,
+        "y": 25.0,
+        "z": 1.0
+      },
+      "id": 0,
+      "position": {
+        "x": -4.9,
+        "y": -9.7,
+        "z": 0.0
+      },
+      "layer": 1,
+      "Location": "/Scene/FG2"
+    },
+    {
+      "components": [
+        {
+          "name": "RendererComponent",
+          "id": 21,
+          "properties": {
+            "FlipY": false,
+            "size": 1.0,
+            "Render": true,
+            "FlipX": false,
+            "texture": "d56b5cb82c8c0ac6",
+            "Color": {
+              "x": 0.8,
+              "y": 0.8,
+              "z": 0.8
+            }
+          }
+        }
+      ],
+      "children": [],
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "name": "BG1",
+      "scale": {
+        "x": 150.0,
+        "y": 25.0,
+        "z": 1.0
+      },
+      "id": 0,
+      "position": {
+        "x": 0.0,
+        "y": 0.5,
+        "z": 11.8
+      },
+      "layer": 1,
+      "Location": "/Scene/BG1"
     }
   ]
 }

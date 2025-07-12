@@ -30,8 +30,8 @@ public class Main
             throw new IllegalStateException("Unable to initialize GLFW");
         }
 
-        int width = 1600;
-        int height = 900;
+        int width = 1920;
+        int height = 1080;
         long window = glfwCreateWindow(width, height, "Pi-Engine", 0, 0);
         if (window == 0)
         {
