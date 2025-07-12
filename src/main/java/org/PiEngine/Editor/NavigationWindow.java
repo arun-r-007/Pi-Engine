@@ -47,11 +47,15 @@ public class NavigationWindow extends EditorWindow
                 {
                     Scene.getInstance().Load("Sysra.json");   
                 }
+                if (ImGui.menuItem("Level")) 
+                {
+                    Scene.getInstance().Load("Level.json");   
+                }
                 if (ImGui.menuItem("Demo")) 
                 {
                     Scene.getInstance().Load("Demo.json");   
                 }
-                ImGui.endMenu();
+                ImGui.endMenu();    
             }
 
             if (ImGui.beginMenu("Save"))
@@ -63,6 +67,10 @@ public class NavigationWindow extends EditorWindow
                 if (ImGui.menuItem("Sysra")) 
                 {
                     Scene.getInstance().Save("Sysra.json");;   
+                }
+                if (ImGui.menuItem("Level")) 
+                {
+                    Scene.getInstance().Save("Level.json");
                 }
                 if (ImGui.menuItem("Demo")) 
                 {

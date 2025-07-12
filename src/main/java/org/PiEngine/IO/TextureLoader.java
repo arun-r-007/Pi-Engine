@@ -39,12 +39,11 @@ public class TextureLoader
                 for (int x = 0; x < width; x++)
                 {
                     int i = (y * width + x) * 4;
-                    int r = image.get(i)     ;  // <-- use 0xFF, not 0xFFF
-                    int g = image.get(i + 1) ;
-                    int b = image.get(i + 2) ;
-                    int a = image.get(i + 3) ;
+                    int r = image.get(i)     & 0xFF;
+                    int g = image.get(i + 1) & 0xFF;
+                    int b = image.get(i + 2) & 0xFF;
+                    int a = image.get(i + 3) & 0xFF;
 
-                    // pack into ARGB (matches your Texture constructor)
                     pixels[y * width + x] = (a << 24) | (r << 16) | (g << 8) | b;
                 }
             }

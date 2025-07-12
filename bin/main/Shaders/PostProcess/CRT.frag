@@ -41,7 +41,7 @@ void main()
     col *= edge.x * edge.y;
 
     // Film grain (animated noise)
-    float grainStrength = 0.4;
+    float grainStrength = 0.0;
     float grain = rand(fragCoord.xy * 0.5 + u_Time * 10.0);
     col += grainStrength * (grain - 0.5); // center it around 0
 
