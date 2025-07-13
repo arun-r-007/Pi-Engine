@@ -1,4 +1,3 @@
-
 package org.PiEngine.Engine;
 
 import org.PiEngine.Math.*;
@@ -35,6 +34,10 @@ public class Scene implements Serializable
 
     Scene() {}
 
+    /**
+     * Returns the singleton instance of the Scene.
+     * @return The Scene instance
+     */
     public static Scene getInstance()
     {
         if (instance == null)
@@ -46,6 +49,12 @@ public class Scene implements Serializable
         return instance;
     }
 
+    /**
+     * Initializes the scene, cameras, editor, and renderers.
+     * @param window The window handle
+     * @param width The window width
+     * @param height The window height
+     */
     public void init(long window, int width, int height)
     {
         this.windowHandle = window;
@@ -148,12 +157,18 @@ public class Scene implements Serializable
         Time.timeScale = 1.0f;
     }
 
+    /**
+     * Updates the editor camera and root game object.
+     */
     public void update()
     {   
         editorCamera.updateViewMatrix();
         root.update();
     }
 
+    /**
+     * Renders the scene and game views.
+     */
     public void render()
     {
         sceneRenderer.renderPipeline(editorCamera, root);
@@ -171,6 +186,10 @@ public class Scene implements Serializable
         }
     }
 
+    /**
+     * Saves the scene to a JSON file.
+     * @param Filename The file name to save to
+     */
     public void Save(String Filename)
     {
         try 
@@ -193,6 +212,10 @@ public class Scene implements Serializable
     //     }
     // }
 
+    /**
+     * Loads the scene from a JSON file.
+     * @param FileName The file name to load from
+     */
     public void Load(String FileName)
     {
         InspectorWindow.inspectObject = null;
@@ -207,88 +230,172 @@ public class Scene implements Serializable
         }
     }
 
+    /**
+     * Gets the root game object.
+     * @return The root GameObject
+     */
     public GameObject getRoot()
     {
         return root;
     }
 
+    /**
+     * Gets the editor camera.
+     * @return The editor Camera
+     */
     public Camera getEditorCamera()
     {
         return editorCamera;
     }
 
+    /**
+     * Gets the name of the scene.
+     * @return The scene name
+     */
     public String getName() {
         return Name;
     }
 
+    /**
+     * Sets the name of the scene.
+     * @param name The new scene name
+     */
     public void setName(String name) {
         Name = name;
     }
 
+    /**
+     * Sets the singleton instance of the Scene.
+     * @param instance The Scene instance
+     */
     public static void setInstance(Scene instance) {
         Scene.instance = instance;
     }
 
+    /**
+     * Sets the root game object.
+     * @param root The root GameObject
+     */
     public void setRoot(GameObject root) {
         this.root = root;
     }
 
+    /**
+     * Sets the editor camera.
+     * @param editorCamera The editor Camera
+     */
     public void setEditorCamera(Camera editorCamera) {
         this.editorCamera = editorCamera;
     }
 
+    /**
+     * Gets the game camera object.
+     * @return The game camera GameObject
+     */
     public GameObject getGameCamera() {
         return GameCamera;
     }
 
+    /**
+     * Sets the game camera object.
+     * @param gameCamera The game camera GameObject
+     */
     public void setGameCamera(GameObject gameCamera) {
         GameCamera = gameCamera;
     }
 
+    /**
+     * Gets the editor renderer.
+     * @return The editor Renderer
+     */
     public Renderer getSceneRenderer() {
         return sceneRenderer;
     }
 
+    /**
+     * Sets the editor renderer.
+     * @param sceneRenderer The editor Renderer
+     */
     public void setSceneRenderer(Renderer sceneRenderer) {
         this.sceneRenderer = sceneRenderer;
     }
 
+    /**
+     * Gets the game renderer.
+     * @return The game Renderer
+     */
     public Renderer getGameRenderer() {
         return gameRenderer;
     }
 
+    /**
+     * Sets the game renderer.
+     * @param gameRenderer The game Renderer
+     */
     public void setGameRenderer(Renderer gameRenderer) {
         this.gameRenderer = gameRenderer;
     }
 
+    /**
+     * Gets the editor instance.
+     * @return The Editor instance
+     */
     public Editor getEditor() {
         return editor;
     }
 
+    /**
+     * Sets the editor instance.
+     * @param editor The Editor instance
+     */
     public void setEditor(Editor editor) {
         this.editor = editor;
     }
 
+    /**
+     * Gets the editor scene window.
+     * @return The editor SceneWindow
+     */
     public SceneWindow getEditorSceneWindow() {
         return editorSceneWindow;
     }
 
+    /**
+     * Sets the editor scene window.
+     * @param editorSceneWindow The editor SceneWindow
+     */
     public void setEditorSceneWindow(SceneWindow editorSceneWindow) {
         this.editorSceneWindow = editorSceneWindow;
     }
 
+    /**
+     * Gets the game scene window.
+     * @return The game SceneWindow
+     */
     public SceneWindow getGameSceneWindow() {
         return gameSceneWindow;
     }
 
+    /**
+     * Sets the game scene window.
+     * @param gameSceneWindow The game SceneWindow
+     */
     public void setGameSceneWindow(SceneWindow gameSceneWindow) {
         this.gameSceneWindow = gameSceneWindow;
     }
 
+    /**
+     * Gets the window handle.
+     * @return The window handle
+     */
     public long getWindowHandle() {
         return windowHandle;
     }
 
+    /**
+     * Sets the window handle.
+     * @param windowHandle The window handle
+     */
     public void setWindowHandle(long windowHandle) {
         this.windowHandle = windowHandle;
     }

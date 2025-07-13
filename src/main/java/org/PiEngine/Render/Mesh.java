@@ -10,6 +10,10 @@ public class Mesh
     private int vertexCount;
     float[] vertices;
 
+    /**
+     * Creates a mesh from vertex data array (format: x,y,z,u,v per vertex).
+     * @param vertices The vertex data
+     */
     public Mesh(float[] vertices)
     {
         this.vertices = vertices;
@@ -35,6 +39,10 @@ public class Mesh
         glBindVertexArray(0);
     }
 
+    /**
+     * Updates the mesh's vertex data.
+     * @param newVertices The new vertex data
+     */
     public void updateVertices(float[] newVertices)
     {
         this.vertices = newVertices;
@@ -44,6 +52,9 @@ public class Mesh
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     
+    /**
+     * Renders the mesh using GL_TRIANGLES.
+     */
     public void render()
     {        
         glBindVertexArray(vao);
@@ -51,6 +62,9 @@ public class Mesh
         glBindVertexArray(0);
     }
 
+    /**
+     * Deletes the VAO and VBO.
+     */
     public void dispose()
     {
         glDeleteBuffers(vbo);

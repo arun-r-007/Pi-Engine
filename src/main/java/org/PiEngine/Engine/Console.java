@@ -20,12 +20,20 @@ public class Console
         Console.log("GLSL Version: " + glGetString(GL_SHADING_LANGUAGE_VERSION));
     }
 
+    /**
+     * Gets the current time as a string.
+     * @return The current time
+     */
     private static String getCurrentTime()
     {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         return formatter.format(new Date());
     }
 
+    /**
+     * Gets the file and line number of the caller.
+     * @return The caller info string
+     */
     private static String getCallerInfo()
     {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -40,6 +48,13 @@ public class Console
         return "Unknown";
     }
 
+    /**
+     * Adds a message to the queue.
+     * @param time The time of the message
+     * @param message The message text
+     * @param type The message type
+     * @param caller The caller info
+     */
     private static void addMessage(String time, String message, String type, String caller)
     {
         if (messages.size() >= MAX_MESSAGES)
@@ -49,21 +64,38 @@ public class Console
         messages.add(new String[] { time, message, type, caller });
     }
 
+    /**
+     * Logs a standard message.
+     * @param message The message to log
+     */
     public static void log(String message)
     {
         addMessage(getCurrentTime(), message, "LOG", getCallerInfo());
     }
 
+    /**
+     * Logs a warning message.
+     * @param message The warning message
+     */
     public static void warning(String message)
     {
         addMessage(getCurrentTime(), message, "WARNING", getCallerInfo());
     }
 
+    /**
+     * Logs an error message.
+     * @param message The error message
+     */
     public static void error(String message)
     {
         addMessage(getCurrentTime(), message, "ERROR", getCallerInfo());
     }
 
+    /**
+     * Logs an error with a specific component name.
+     * @param message The error message
+     * @param Component The component name
+     */
     public static void errorClass(String message, String Component)
     {
         addMessage(getCurrentTime(), message, "ERROR", Component);

@@ -18,6 +18,7 @@ public class RenderPassFactory {
 
     /**
      * Scans a package and registers all RenderPass subclasses.
+     * @param basePackage The base package to scan
      */
     public static void registerRenderPassesFromPackage(String basePackage) {
         Reflections reflections = new Reflections(basePackage);
@@ -36,6 +37,7 @@ public class RenderPassFactory {
 
     /**
      * Manually register a single RenderPass class.
+     * @param passClass The RenderPass class to register
      */
     public static void registerRenderPass(Class<? extends RenderPass> passClass) {
         passConstructors.put(passClass.getSimpleName(), () -> {
@@ -49,14 +51,17 @@ public class RenderPassFactory {
     }
 
     /**
-     * Get a list of all registered RenderPass names.
+     * Gets all registered RenderPass names.
+     * @return Set of registered pass names
      */
     public static Set<String> getRegisteredRenderPassNames() {
         return passConstructors.keySet();
     }
 
     /**
-     * Create a new instance of a registered RenderPass by name.
+     * Creates a new instance of a registered RenderPass by name.
+     * @param name The name of the pass
+     * @return The new RenderPass instance
      */
     public static RenderPass create(String name) {
         Supplier<RenderPass> constructor = passConstructors.get(name);
@@ -64,12 +69,19 @@ public class RenderPassFactory {
     }
 
     /**
-     * Check if a RenderPass is registered.
+     * Checks if a RenderPass is registered.
+     * @param name The name of the pass
+     * @return True if registered, false otherwise
      */
     public static boolean isRegistered(String name) {
         return passConstructors.containsKey(name);
     }
 
+    /**
+     * Registers a RenderPass constructor by name.
+     * @param name The name of the pass
+     * @param constructor The constructor supplier
+     */
     public static void register(String name, Supplier<RenderPass> constructor) {
         passConstructors.put(name, constructor);
     }
