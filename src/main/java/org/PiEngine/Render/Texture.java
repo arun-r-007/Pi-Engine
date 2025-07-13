@@ -19,6 +19,14 @@ public class Texture implements GUIDProvider
 
     private String GUID;
 
+    /**
+     * Creates a texture from raw RGBA pixel data with specified dimensions and filtering.
+     * @param imageData The RGBA pixel data
+     * @param width The texture width
+     * @param height The texture height
+     * @param minFilter The minification filter
+     * @param magFilter The magnification filter
+     */
     public Texture(int[] imageData, int width, int height, int minFilter, int magFilter)
     {
         this.width = width;
@@ -28,6 +36,11 @@ public class Texture implements GUIDProvider
         this.textureID = createTexture(imageData);
     }
 
+    /**
+     * Creates an OpenGL texture from pixel data.
+     * @param imageData The RGBA pixel data
+     * @return The OpenGL texture ID
+     */
     private int createTexture(int[] imageData)
     {
         IntBuffer buffer = BufferUtils.createIntBuffer(1);
@@ -62,32 +75,52 @@ public class Texture implements GUIDProvider
         return textureID;
     }
 
-    
+    /**
+     * Gets the OpenGL texture ID.
+     * @return The texture ID
+     */
     public int getTextureID()
     {
         return textureID;
     }
 
+    /**
+     * Binds the texture for rendering.
+     */
     public void bind()
     {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
     }
 
+    /**
+     * Unbinds the texture.
+     */
     public void unbind()
     {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
+    /**
+     * Gets the texture width.
+     * @return The width
+     */
     public int getWidth()
     {
         return width;
     }
 
+    /**
+     * Gets the texture height.
+     * @return The height
+     */
     public int getHeight()
     {
         return height;
     }
 
+    /**
+     * Deletes the texture and frees GPU memory.
+     */
     public void dispose()
     {
         if (textureID != 0)
@@ -97,14 +130,22 @@ public class Texture implements GUIDProvider
         }
     }
 
+    /**
+     * Sets the texture's GUID.
+     * @param guid The GUID string
+     */
     public void setGUID(String guid)
     {
         GUID = guid;
 
     }
 
+    /**
+     * Gets the texture's GUID.
+     * @return The GUID string
+     */
     @Override
-    public String getGUID() 
+    public String getGUID()
     {
         return GUID;
     }

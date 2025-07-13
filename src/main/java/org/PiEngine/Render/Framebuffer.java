@@ -14,10 +14,9 @@ public class Framebuffer
     private int width, height;
 
     /**
-     * Creates a new framebuffer with the given width and height.
-     *
-     * @param width  The width of the framebuffer.
-     * @param height The height of the framebuffer.
+     * Creates a new framebuffer with specified dimensions.
+     * @param width The framebuffer width
+     * @param height The framebuffer height
      */
     public Framebuffer(int width, int height)
     {
@@ -27,7 +26,7 @@ public class Framebuffer
     }
 
     /**
-     * Binds the framebuffer so that rendering is directed to it.
+     * Binds the framebuffer for rendering.
      */
     public void bind()
     {
@@ -35,7 +34,7 @@ public class Framebuffer
     }
 
     /**
-     * Unbinds the framebuffer, restoring default framebuffer (screen).
+     * Unbinds the framebuffer.
      */
     public void unbind()
     {
@@ -43,9 +42,8 @@ public class Framebuffer
     }
 
     /**
-     * Gets the OpenGL texture ID for the color attachment.
-     *
-     * @return The texture ID.
+     * Gets the color attachment texture ID.
+     * @return The texture ID
      */
     public int getTextureId()
     {
@@ -53,9 +51,8 @@ public class Framebuffer
     }
 
     /**
-     * Returns the current width of the framebuffer.
-     *
-     * @return Width in pixels.
+     * Gets the framebuffer width.
+     * @return The width
      */
     public int getWidth()
     {
@@ -63,9 +60,8 @@ public class Framebuffer
     }
 
     /**
-     * Returns the current height of the framebuffer.
-     *
-     * @return Height in pixels.
+     * Gets the framebuffer height.
+     * @return The height
      */
     public int getHeight()
     {
@@ -73,10 +69,9 @@ public class Framebuffer
     }
 
     /**
-     * Resizes the framebuffer and its attachments to the new width and height.
-     *
-     * @param newWidth  The new width in pixels.
-     * @param newHeight The new height in pixels.
+     * Resizes the framebuffer and its attachments.
+     * @param newWidth The new width
+     * @param newHeight The new height
      */
     public void resize(int newWidth, int newHeight)
     {
@@ -141,13 +136,13 @@ public class Framebuffer
     }
 
     /**
- * Disposes of all OpenGL resources used by this framebuffer.
- */
-public void dispose()
-{
-    glDeleteFramebuffers(fboId);
-    glDeleteTextures(colorTexture);
-    glDeleteRenderbuffers(depthRenderbuffer);
-}
+     * Deletes all OpenGL resources used by this framebuffer.
+     */
+    public void dispose()
+    {
+        glDeleteFramebuffers(fboId);
+        glDeleteTextures(colorTexture);
+        glDeleteRenderbuffers(depthRenderbuffer);
+    }
 
 }

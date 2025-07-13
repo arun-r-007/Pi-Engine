@@ -21,6 +21,14 @@ public abstract class RenderPass
     protected int width, height;
     protected int layerMask = 0xFFFFFFFF;
 
+    /**
+     * Constructor for RenderPass.
+     * @param name The name of the render pass
+     * @param shader The shader program to use
+     * @param width The width of the render target
+     * @param height The height of the render target
+     * @param inputCount The number of input textures
+     */
     public RenderPass(String name, Shader shader, int width, int height, int inputCount)
     {
         this.name = name;
@@ -39,6 +47,11 @@ public abstract class RenderPass
         this.framebuffer = new Framebuffer(width, height);
     }
 
+    /**
+     * Sets an input texture at the specified index.
+     * @param index The input index
+     * @param textureId The texture ID
+     */
     public void setInputTexture(int index, int textureId)
     {
         if (index >= 0 && index < inputCount)
@@ -47,6 +60,11 @@ public abstract class RenderPass
         }
     }
 
+    /**
+     * Gets the input texture ID at the specified index.
+     * @param index The input index
+     * @return The texture ID
+     */
     public int getInputTexture(int index)
     {
         if (index >= 0 && index < inputCount)
@@ -56,6 +74,10 @@ public abstract class RenderPass
         return 0;
     }
 
+    /**
+     * Clears the input texture at the specified index.
+     * @param index The input index
+     */
     public void clearInputTexture(int index)
     {
         if (index >= 0 && index < inputCount)
@@ -64,11 +86,20 @@ public abstract class RenderPass
         }
     }
 
+    /**
+     * Gets the number of input textures.
+     * @return The input count
+     */
     public int getInputCount()
     {
         return inputCount;
     }
 
+    /**
+     * Resizes the render target and framebuffer.
+     * @param width The new width
+     * @param height The new height
+     */
     public void resize(int width, int height)
     {
         this.width = width;
@@ -76,6 +107,10 @@ public abstract class RenderPass
         framebuffer.resize(width, height);
     }
 
+    /**
+     * Sets up the render pass for rendering.
+     * Binds framebuffer, sets viewport, clears buffers, and binds input textures.
+     */
     public void bindAndPrepare()
     {
         framebuffer.bind();
@@ -107,38 +142,70 @@ public abstract class RenderPass
         }
     }
 
+    /**
+     * Unbinds the framebuffer after rendering.
+     */
     public void unbindFramebuffer()
     {
         framebuffer.unbind();
     }
 
+    /**
+     * Abstract method to perform the actual rendering.
+     * @param camera The camera to render with
+     * @param scene The root GameObject to render
+     */
     public abstract void render(Camera camera, GameObject scene);
 
+    /**
+     * Gets the output texture ID.
+     * @return The output texture ID
+     */
     public int getOutputTexture()
     {
         return framebuffer.getTextureId();
     }
 
+    /**
+     * Gets the framebuffer object.
+     * @return The Framebuffer
+     */
     public Framebuffer getFramebuffer()
     {
         return framebuffer;
     }
 
+    /**
+     * Gets the current layer mask.
+     * @return The layer mask
+     */
     public int getLayerMask()
     {
         return layerMask;
     }
 
+    /**
+     * Sets the layer mask for filtering objects.
+     * @param mask The layer mask
+     */
     public void setLayerMask(int mask)
     {
         this.layerMask = mask;
     }
 
+    /**
+     * Gets the render pass name.
+     * @return The name
+     */
     public String getName()
     {
         return name;
     }
 
+    /**
+     * Sets the render pass name.
+     * @param name The new name
+     */
     public void setName(String name)
     {
         this.name = name;

@@ -27,6 +27,12 @@ public class SceneDeserializerJSON {
         }
     }
 
+    /**
+     * Loads a scene from a JSON file.
+     * @param filePath The file path to load from
+     * @return The loaded Scene
+     * @throws IOException If an I/O error occurs
+     */
     public static Scene deserialize(String filePath) throws IOException {
         JsonObject jsonObject = JsonParser.parseReader(new FileReader(filePath)).getAsJsonObject();
 
@@ -61,6 +67,11 @@ public class SceneDeserializerJSON {
         return scene;
     }
 
+    /**
+     * Loads a game object and its children from JSON.
+     * @param jsonObject The JSON object to parse
+     * @return The loaded GameObject
+     */
     private static GameObject deserializeGameObject(JsonObject jsonObject) {
         int id = jsonObject.get("id").getAsInt();  
         String name = jsonObject.get("name").getAsString();
@@ -101,6 +112,11 @@ public class SceneDeserializerJSON {
         return gameObject;
     }
 
+    /**
+     * Parses a vector from JSON.
+     * @param obj The JSON object
+     * @return The parsed Vector
+     */
     private static Vector parseVector(JsonObject obj)
     {
         return new Vector(obj.get("x").getAsFloat(), obj.get("y").getAsFloat(), obj.get("z").getAsFloat());

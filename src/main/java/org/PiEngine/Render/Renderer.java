@@ -11,11 +11,19 @@ public class Renderer
     private final Map<String, Map<Integer, String>> connections = new HashMap<>();
     private String finalPassName = null;
 
+    /**
+     * Adds a new render pass to the pipeline.
+     * @param pass The RenderPass to add
+     */
     public void addPass(RenderPass pass)
     {
         passes.put(pass.getName(), pass);
     }
 
+    /**
+     * Removes a render pass and its connections.
+     * @param passName The name of the pass to remove
+     */
     public void removePass(String passName)
     {
         // Remove the pass itself
@@ -43,6 +51,11 @@ public class Renderer
         }
     }
 
+    /**
+     * Updates the name of a render pass.
+     * @param oldName The old name
+     * @param newName The new name
+     */
     public void updatePassName(String oldName, String newName)
     {
         if (passes.containsKey(oldName))
@@ -65,7 +78,12 @@ public class Renderer
         }
     }
 
-    // Connect a pass to another pass by input index
+    /**
+     * Connects two render passes by input index.
+     * @param fromPassName The source pass name
+     * @param toPassName The target pass name
+     * @param inputIndex The input index to connect
+     */
     public void connect(String fromPassName, String toPassName, int inputIndex)
     {
         // Store the connection: target pass -> input index -> source pass
@@ -75,7 +93,11 @@ public class Renderer
 
     }
 
-    // Disconnect a pass from a specific input index
+    /**
+     * Disconnects an input from a render pass.
+     * @param toPassName The target pass name
+     * @param inputIndex The input index to disconnect
+     */
     public void disconnect(String toPassName, int inputIndex)
     {
         Map<Integer, String> inputMap = connections.get(toPassName);
@@ -91,13 +113,24 @@ public class Renderer
         }
     }
 
+    /**
+     * Sets the final pass in the pipeline.
+     * @param name The name of the final pass
+     */
     public void setFinalPass(String name)
     {
         finalPassName = name;
     }
 
+    /**
+     * Executes the entire rendering pipeline.
+     * Sets up input textures and calls render on each pass.
+     * @param camera The camera to render with
+     * @param scene The root GameObject to render
+     */
     public void renderPipeline(Camera camera, GameObject scene)
     {
+        // For each pass, set up input textures from connected passes
         for (RenderPass pass : passes.values())
         {
             int inputCount = pass.getInputCount();
@@ -117,6 +150,7 @@ public class Renderer
             }
         }
 
+        // For each pass, perform rendering and unbind framebuffer
         for (RenderPass pass : passes.values())
         {
             pass.render(camera, scene);
@@ -124,6 +158,10 @@ public class Renderer
         }
     }
 
+    /**
+     * Gets the texture ID of the final pass output.
+     * @return The texture ID
+     */
     public int getFinalTexture()
     {
         if (finalPassName != null && passes.containsKey(finalPassName))
@@ -133,6 +171,10 @@ public class Renderer
         return 0;
     }
 
+    /**
+     * Gets the framebuffer of the final pass.
+     * @return The Framebuffer
+     */
     public Framebuffer getFinalFramebuffer()
     {
         if (finalPassName != null && passes.containsKey(finalPassName))
@@ -142,13 +184,19 @@ public class Renderer
         return null;
     }
 
-    // Getter for all passes in the pipeline
+    /**
+     * Gets all render passes in the pipeline.
+     * @return Map of pass names to RenderPass objects
+     */
     public Map<String, RenderPass> getPasses()
     {
         return passes;
     }
 
-    // Getter for the connections between passes
+    /**
+     * Gets all connections between passes.
+     * @return Map of connections
+     */
     public Map<String, Map<Integer, String>> getConnections()
     {
         return connections;

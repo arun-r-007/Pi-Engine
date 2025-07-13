@@ -11,6 +11,12 @@ import org.PiEngine.Math.Vector;
 
 public class SceneSerializerJSON {
 
+    /**
+     * Serializes the scene to a JSON file.
+     * @param scene The scene to serialize
+     * @param filePath The file path to save to
+     * @throws IOException If an I/O error occurs
+     */
     public static void serialize(Scene scene, String filePath) throws IOException {
         Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
         // TDO: need to remove setPrettyPrinting for faster and compact file size
@@ -30,6 +36,11 @@ public class SceneSerializerJSON {
         }
     }
 
+    /**
+     * Serializes a game object and its children.
+     * @param gameObject The game object to serialize
+     * @param outputList The output list to add to
+     */
     private static void serializeGameObject(GameObject gameObject, List<Object> outputList) {
         Map<String, Object> objData = new HashMap<>();
         objData.put("id", gameObject.getId());
@@ -77,6 +88,11 @@ public class SceneSerializerJSON {
         outputList.add(objData);
     }
 
+    /**
+     * Converts a vector to a map for JSON.
+     * @param vector The vector to convert
+     * @return The map representation
+     */
     private static Map<String, Float> vectorToMap(Vector vector) {
         Map<String, Float> map = new HashMap<>();
         map.put("x", vector.getX());
@@ -85,6 +101,11 @@ public class SceneSerializerJSON {
         return map;
     }
 
+    /**
+     * Checks if a value is a simple type for safe serialization.
+     * @param value The value to check
+     * @return True if simple type, false otherwise
+     */
     private static boolean isSimpleType(Object value) {
         return value instanceof String || value instanceof Number || value instanceof Boolean;
     }
