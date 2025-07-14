@@ -8,13 +8,25 @@ import org.PiEngine.Component.Component;
 import org.PiEngine.Engine.Console;
 import org.PiEngine.Utils.ComponentFactory;
 
+/**
+ * Singleton class that handles runtime loading of compiled script components.
+ * Manages class loading, registration with ComponentFactory, and resource cleanup.
+ */
 public class ScriptLoader 
 {
+    /** Singleton instance */
     private static ScriptLoader instance;
 
+    /** Root directory for compiled scripts */
     private File rootDirectory;
+    /** ClassLoader for dynamically loading compiled scripts */
     private URLClassLoader urlClassLoader;
 
+    /**
+     * Private constructor initializes the class loader for the compiled scripts directory.
+     * @param compiledOutputPath Path to the compiled scripts directory
+     * @throws Exception If directory is invalid or class loader creation fails
+     */
     private ScriptLoader(String compiledOutputPath) throws Exception 
     {
         this.rootDirectory = new File(compiledOutputPath);
@@ -28,6 +40,10 @@ public class ScriptLoader
         this.urlClassLoader = new URLClassLoader(urls, getClass().getClassLoader());
     }
 
+    /**
+     * Gets or creates the ScriptLoader instance.
+     * @return The singleton ScriptLoader instance
+     */
     public static ScriptLoader getInstance() 
     {
         if (instance == null) 
@@ -44,6 +60,10 @@ public class ScriptLoader
         return instance;
     }
 
+    /**
+     * Resets the ScriptLoader state and cleans up resources.
+     * Clears loaded components and closes the class loader.
+     */
     public static void reset() 
     {
         if (instance != null) 
@@ -55,12 +75,20 @@ public class ScriptLoader
         }
     }
 
-
+    /**
+     * Loads a class by its fully qualified name.
+     * @param fullyQualifiedName The class name with package
+     * @return The loaded Class object
+     * @throws ClassNotFoundException If the class cannot be found
+     */
     public Class<?> loadClass(String fullyQualifiedName) throws ClassNotFoundException 
     {
         return urlClassLoader.loadClass(fullyQualifiedName);
     }
 
+    /**
+     * Closes the URLClassLoader and releases resources.
+     */
     public void close() 
     {
         try 
@@ -73,6 +101,10 @@ public class ScriptLoader
         }
     }
 
+    /**
+     * Loads and registers a class as a Component if applicable.
+     * @param fullClassName The full class name to load
+     */
     private void loadClassAndRegister(String fullClassName)
     {
         try 
@@ -104,6 +136,10 @@ public class ScriptLoader
         }
     }
 
+    /**
+     * Loads and registers a single component script file.
+     * @param scriptFile The .class file to load
+     */
     public void loadComponentScript(File scriptFile) 
     {
         String className = scriptFile.getName().replace(".class", "");
@@ -111,6 +147,10 @@ public class ScriptLoader
         loadClassAndRegister(fullClassName);
     }
 
+    /**
+     * Loads and registers all component scripts from a folder.
+     * @param folderPath Path to the folder containing .class files
+     */
     public void loadComponentFolder(String folderPath) 
     {
         File componentDir = new File(folderPath);
@@ -127,7 +167,10 @@ public class ScriptLoader
         }
     }
 
+    /** Loads system scripts from a folder (reserved for future use) */
     public void loadSystemScripts(String folderPath) { }
+
+    /** Loads behavior scripts from a folder (reserved for future use) */
     public void loadBehaviorScripts(String folderPath) { }
 
     @Override
