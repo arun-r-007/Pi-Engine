@@ -3,7 +3,7 @@ Made with love, learning, and long sleepless nights.
 
 PiEngine is a modular, component-based Java game engine built from scratch for 2D and (eventually) 3D games. It was created as a college project with a focus on learning, customization, and full control over the game development pipeline.
 
-### 🎥 PiEngine Demo
+### PiEngine Demo
 [![Watch the video](docs/screenshots/Editor.png)](https://www.youtube.com/watch?v=3pVAaNRfhNo)
 ![RenderGraph Screenshots](docs/screenshots/RenderGraph.png)
 
@@ -15,6 +15,12 @@ Comprehensive documentation is available in the [`docs/`](docs/README.md) folder
 - GameObject/entity system ([GameObject](docs/GameObject/README.md))
 - Components ([Components](docs/Components/README.md))
 - Core engine systems ([Core](docs/Core/README.md))
+- Rendering pipeline ([Render](docs/Render/README.md))
+- Engine internals ([Engine](docs/Engine/README.md))
+- Editor features ([Editor](docs/Editor/README.md))
+- Asset and texture management ([Manager](docs/Manager/README.md))
+- Scripting and runtime compilation ([Scripting](docs/Scripting/README.md))
+- Utility classes ([Utils](docs/Utils/README.md))
 
 Each section includes function/property tables, usage examples, best practices, and cross-references. Start with [`docs/README.md`](docs/README.md) for an index of all docs.
 
